@@ -21,7 +21,8 @@
                     <el-menu-item index="1-2"><i class="el-icon-folder-checked"></i><span>Achived</span></el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group title="Your categories">
-                    <el-menu-item index="1-3"><i class="el-icon-reading"></i><span>Notebook</span></el-menu-item>
+                    <el-menu-item index="1-3"><i class="el-icon-reading"></i><span>Notebooks</span> 
+                    </el-menu-item>
                     <el-menu-item index="1-4"><i class="el-icon-price-tag"></i><span>Tags</span></el-menu-item>
                     </el-menu-item-group>
                     <el-sub-menu index="1-4">
@@ -46,11 +47,15 @@
 
             
       </div>
+      <div class="main-display">
+           <Main/> 
+      </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import Main from './Main.vue';
 
 //import element svg icons
 import { Calendar,Notebook,Setting,Finished } from '@element-plus/icons'
@@ -60,7 +65,8 @@ import { Calendar,Notebook,Setting,Finished } from '@element-plus/icons'
         Calendar,
         Notebook,
         Setting,
-        Finished
+        Finished,
+        Main
     }
 })
 export default class Frame extends Vue {
@@ -72,9 +78,9 @@ export default class Frame extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainFrame{
-    height: 600px;
+    height: 605px;
     width: 100%;
-    background: green;
+    background: white;
     position: relative;
 }
 
@@ -89,5 +95,13 @@ export default class Frame extends Vue {
     width: 60px;
     height: inherit;
     position: absolute;
+}
+
+.main-display{
+    position: relative;
+    left:50px;
+    width: 900px;
+    height: 100%;
+    background: green;
 }
 </style>
