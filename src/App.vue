@@ -5,10 +5,12 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import Frame from './components/Frame.vue';
+import Main from './components/Main.vue';
 
 @Options({
   components: {
     Frame,
+    Main
   },
 })
 export default class App extends Vue {}
