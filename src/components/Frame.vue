@@ -61,6 +61,7 @@
 import { Options, Vue } from 'vue-class-component';
 import {Database} from '../database';
 import MainPage from './MainPage.vue';
+import bus from '../bus'
 
 //import element svg icons
 import { Calendar,Notebook,Setting,Finished,Edit} from '@element-plus/icons'
@@ -89,12 +90,15 @@ export default class Frame extends Vue {
   public async addNote() : Promise<void> {
       
       var time = new Date();
+      console.log("added")
 
-      this.db.notes.add({content: "This is a test message", tag:"first class",notebook:"my daily life", date: time.getTime(), isdone:1},).then(() => {
-          alert("sucess")
-      }).catch(e => {
-          console.log(e)
-      });
+      bus.emit("add-note-event", ["hello, my name is jerry zhang and i am writing this post as a test."])
+
+    //   this.db.notes.add({content: "This is a test message", tag:"first class",notebook:"my daily life", date: time.getTime(), isdone:1},).then(() => {
+    //       alert("sucess")
+    //   }).catch(e => {
+    //       console.log(e)
+    //   });
 
     // var tmp = this.db.notes.where('tag').equals('first class').toArray().then((data) =>{
     //     alert(data[0].content)

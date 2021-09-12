@@ -2,7 +2,7 @@
 <el-card class="notes" shadow="always">
                  
 
-    <span class="notes-text"><p align="left">Go to buy some stuff tomorrow, and wait until it finishes. Please do not go back until I call you to do so. Please do follow our rules otherwise you migh find it difficult to perform what you wish to do</p></span>
+    <span class="notes-text"><p align="left">{{contents}}</p></span>
     <div class="card-header note-opt">
                       
         <span style="font-size:13px;"> <el-icon style="width: 2em; height: 2em; margin-right: 5px;" @click="testRes"><circle-check-filled /></el-icon>
