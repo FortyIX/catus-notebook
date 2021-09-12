@@ -12,8 +12,7 @@
                 >
                 <el-sub-menu index="1">
                     <template #title>
-                    <el-icon :size="20" ><notebook/></el-icon>
-      
+                    <el-icon :size="20" ><notebook/></el-icon> 
                     <span>Browse</span>
                     </template>
                     <el-menu-item-group title="Your writings">
@@ -43,22 +42,28 @@
                     <el-icon :size="20"><setting/></el-icon>
                     <span>Navigator Four</span>
                 </el-menu-item>
+
+                <el-button class="add-note-btn" circle @click="addNote">
+                        <el-icon style="width: 1em; height: 1em;" :size="15"><edit/></el-icon>
+                </el-button>
+
                 </el-menu>
 
             
       </div>
       <div class="main-display">
-           <Main/> 
+           <MainPage/> 
       </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import Main from './Main.vue';
+import {Database} from '../database';
+import MainPage from './MainPage.vue';
 
 //import element svg icons
-import { Calendar,Notebook,Setting,Finished } from '@element-plus/icons'
+import { Calendar,Notebook,Setting,Finished,Edit} from '@element-plus/icons'
 
 @Options({
     components:{
@@ -66,11 +71,39 @@ import { Calendar,Notebook,Setting,Finished } from '@element-plus/icons'
         Notebook,
         Setting,
         Finished,
-        Main
+        Edit,
+        MainPage,
+        
     }
 })
 export default class Frame extends Vue {
-  msg!: string
+  
+  db! : Database;
+
+
+  mounted() {
+      this.db = new Database();
+  }
+
+
+  public async addNote() : Promise<void> {
+      
+      var time = new Date();
+
+      this.db.notes.add({content: "This is a test message", tag:"first class",notebook:"my daily life", date: time.getTime(), isdone:1},).then(() => {
+          alert("sucess")
+      }).catch(e => {
+          console.log(e)
+      });
+
+    // var tmp = this.db.notes.where('tag').equals('first class').toArray().then((data) =>{
+    //     alert(data[0].content)
+    // });
+   
+
+    
+    
+  }
 
 }
 </script>
@@ -103,5 +136,10 @@ export default class Frame extends Vue {
     width: 900px;
     height: 100%;
     background: green;
+}
+
+.add-note-btn{
+    position: relative;
+    top:300px;
 }
 </style>

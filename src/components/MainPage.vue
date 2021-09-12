@@ -4,6 +4,7 @@
           <el-scrollbar height="500px" class="note-container">
 
             <Note/>  
+            <Note/> 
           </el-scrollbar>
  
       </div>
@@ -25,7 +26,7 @@ import Note from './Note.vue';
 
 
 
-export default class Main extends Vue {
+export default class MainPage extends Vue {
   msg!: string
 
   public testRes() : void {

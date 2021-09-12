@@ -35,7 +35,11 @@ import { CircleCheckFilled,CaretBottom,PriceTag,Timer} from '@element-plus/icons
 @Options({
 
     props:{
-        noteInfo : String
+        contents : String,
+        tag : String,
+        notebook : String,
+        date:Number,
+        isdone:Number
     },
     components:{
       CircleCheckFilled,
