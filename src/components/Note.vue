@@ -33,7 +33,7 @@
             </template>
                 {{dateDisplay}}
           </el-popover>
-          <el-icon style="width: 1em; height: 1em;" :size="15" @click="editContent"><edit/></el-icon>
+          <el-icon v-if="!isEditingContent" style="width: 1em; height: 1em;" :size="15" @click="editContent"><edit/></el-icon>
 
         </span> 
       
@@ -47,7 +47,9 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook,Edit} from '@element-plus/icons';
+import {Database} from '../database'
 import dayjs from 'dayjs';
+
 @Options({
 
     props:{
@@ -55,7 +57,8 @@ import dayjs from 'dayjs';
         tag : String,
         notebook : String,
         date:Number,
-        isdone:Number
+        isdone:Number,
+        id: Number
     },
     components:{
       CircleCheckFilled,
@@ -75,6 +78,7 @@ export default class Main extends Vue {
   date! : number;
   tag!:string;
   contents! : string
+  id! : number;
   
 
   //prop wrapper (kind of)
@@ -88,12 +92,19 @@ export default class Main extends Vue {
 
   isAddingNewTag = false;
   newTagData = '';
+  db! : Database;
+
+
 
   created(){
-        this.contentParsed = this.contents;
-        this.editingContent = this.contentParsed;
+ 
+    this.contentParsed = this.contents;
+    this.editingContent = this.contentParsed;
   }
   mounted() {
+    //connect to the database 
+    this.db = new Database();  
+
     this.dateDisplay= dayjs(this.date).format('h:m A DD-MM-YYYY');
 
     this.parseTags()
@@ -105,9 +116,6 @@ export default class Main extends Vue {
   
   public enableNewTagInput() : void {
     this.isAddingNewTag = true;
-    // this.$nextTick(() => {
-    //   this.$refs.addNewTag.$refs.input.focus()
-    // })
   }
 
   public confirmInputHandler() : void {
@@ -131,8 +139,19 @@ export default class Main extends Vue {
   }
 
   public updateNote(): void {
-    this.contentParsed = this.editingContent;
+
+    //import the markdown parser
+    const marked = require('marked')
+
+    //parse the plain text into markdown and update the UI
+    this.contentParsed = marked(this.editingContent);
+
+    //hide the edit form 
     this.isEditingContent = false;
+
+    this.db.notes.update(this.id, {content: this.contentParsed});
+
+
   }
 
 }
@@ -142,13 +161,13 @@ export default class Main extends Vue {
 <style scoped>
 
 .notes{
-  width: 500px;
+  width: 850px;
   position: relative;
   right:-30px;
 }
 
 .note-container{
-  width: 600px;
+  width: 950px;
   position: relative;
   bottom: 600px;
 }

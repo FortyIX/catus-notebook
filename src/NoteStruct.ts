@@ -7,13 +7,15 @@ export class NoteStruct {
     tag : string;
     notebook : string
     isdone : number;
+    id? : number
 
-    constructor(content:string,tag:string,notebook:string, date:number,isdone:number){
+    constructor(content:string,tag:string,notebook:string, date:number,isdone:number,id?: number){
         this.content = content;
         this.date = date;
         this.isdone = isdone;
         this.tag = tag;
         this.notebook = notebook;
+        this.id = id;
     }
 
     

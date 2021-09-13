@@ -2,9 +2,9 @@
 <div class="mainPage">
   <div class="mainWindow">
       <div class="note-display-area">
-          <el-scrollbar height="600px" class="note-container">
+          <el-scrollbar height="600px" width="800px" class="note-container">
 
-            <Note v-for="li in listOfNotes" :key="li.id" :contents="li.content" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone"/>  
+            <Note v-for="li in listOfNotes" :key="li.id" :contents="li.content" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id"/>  
             
           </el-scrollbar>
  
@@ -59,7 +59,7 @@
         </template>
       </el-dialog>
 
-      <div class="note-timeline-area"></div>
+      <!-- <div class="note-timeline-area"></div> -->
   </div>
 </div> 
 </template>
@@ -135,6 +135,7 @@ export default class MainPage extends Vue {
      bus.on('add-note-event',(data) => {
       this.tagsHolderOnCreate = []; 
       // this.newNotePromptVisible = true;
+      this.addNote();
 
      }) 
 
@@ -145,19 +146,19 @@ export default class MainPage extends Vue {
 
   }
 
-  // public addNote() : void {
-  //      var time = new Date();
-  //      var newEntry = new NoteStruct("<html>This is a test <h1>message</h1> for testing the performance of the note</html>","first day-second day-third class", "default notebook-my notebook", time.getTime(),1)
-  //      this.listOfNotes.push(newEntry);
+  public addNote() : void {
+       var time = new Date();
+       var newEntry = new NoteStruct("New note added, click the edit button below to start editing","", "", time.getTime(),0)
+       this.listOfNotes.push(newEntry);
        
-  //      //add note contents and date to the note storage 
-  //      this.db.notes.add({content: newEntry.content,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, isdone:newEntry.isdone},).then(() => {
-  //         //success
-  //      }).catch(e => {
-  //          console.log(e);
-  //      });    
+       //add note contents and date to the note storage 
+       this.db.notes.add({content: newEntry.content,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, isdone:newEntry.isdone},).then(() => {
+          //success
+       }).catch(e => {
+           console.log(e);
+       });    
 
-  // }
+  }
 
 
   public addTag(id:number,tag:string) : void {
@@ -170,7 +171,7 @@ export default class MainPage extends Vue {
      var noteData = db.notes.toArray().then(notes => {
         notes.forEach(note => {
           this.listOfNotes.push(new NoteStruct(
-            note.content,note.tag, note.notebook,note.date,note.isdone
+            note.content,note.tag, note.notebook,note.date,note.isdone,note.id
           ));
         }
         )
@@ -213,11 +214,11 @@ export default class MainPage extends Vue {
 .note-display-area{
   position: relative;
   height: 655px;
-  width: 600px;
+  width: 102%;
   background:white;
 }
 
-.note-timeline-area{
+/* .note-timeline-area{
   position: relative;
   height: 655px;
   width: 310px;
@@ -225,16 +226,15 @@ export default class MainPage extends Vue {
   left: 600px;
   background: yellow;
 
-}
+} */
 
 .notes{
-  width: 600px;
-  position: relative;
-  right:-30px;
+  width: 150%;
+
 }
 
 .note-container{
-  width: 600px;
+  width: 100%;
   position: relative;
   bottom: 650px;
 }
