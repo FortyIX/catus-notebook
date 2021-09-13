@@ -5,9 +5,9 @@ import Dexie, { IndexableType } from "dexie";
 export interface INote{
     id? : number;
     content : string;
-    tag : string;
-    notebook : string;
     date : number;
+    tag:string;
+    notebook:string;
     isdone : number;
 }
 

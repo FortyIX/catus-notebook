@@ -10,14 +10,16 @@
             <template #reference>
                 <el-icon style="width: 2em; height: 2em; margin-right: 5px;"><price-tag /></el-icon>
             </template>
-            <el-tag type="success">Tag 2</el-tag> <el-tag type="success">Tag 2</el-tag>     
+            <el-space wrap>
+              <el-tag type="info" v-for="tag in tagsHolder" :key="tag" effect="plain" closable>{{tag}}</el-tag>  
+            </el-space> 
           </el-popover>
 
           <el-popover placement="bottom" :width="400" trigger="click">
             <template #reference>
                 <el-icon style="width: 2em; height: 2em; margin-right: 5px;"><timer/></el-icon>
             </template>
-                2015
+                {{dateDisplay}}
           </el-popover>
         </span>
       
@@ -30,8 +32,8 @@
       
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { CircleCheckFilled,CaretBottom,PriceTag,Timer} from '@element-plus/icons'
-
+import { CircleCheckFilled,CaretBottom,PriceTag,Timer} from '@element-plus/icons';
+import dayjs from 'dayjs';
 @Options({
 
     props:{
@@ -51,38 +53,28 @@ import { CircleCheckFilled,CaretBottom,PriceTag,Timer} from '@element-plus/icons
 
 
 
-
 export default class Main extends Vue {
 
-  scheduledTime!: string
+  //props 
+  date! : number;
+  tag!:string;
 
-  shortcut: unknown = [
-          {
-            text: 'Today',
-            value: new Date(),
-          },
-          {
-            text: 'Yesterday',
-            value: () => {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              return date
-            },
-          },
-          {
-            text: '1 hour later',
-            value: () => {
-              const date = new Date()
-              date.setTime(date.getTime() + 3600 * 1000 * 1)
-              return date
-            },
-          },
-        ];
+  //prop wrapper (kind of)
+  dateDisplay! : string;
+  tagsHolder : string[] = [];
 
+  mounted() {
+    this.dateDisplay= dayjs(this.date).format('h:m A DD-MM-YYYY');
+    this.parseTags()
+  }
+  
 
+  public parseTags() : void {
+    this.tag.split('-').forEach(tag => {
+      this.tagsHolder.push(tag)
+    })
 
-  public testRes() : void {
-    window.alert("test2");
+ 
   }
 
 }

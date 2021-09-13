@@ -87,7 +87,7 @@ export default class Frame extends Vue {
   }
 
 
-  public async addNote() : Promise<void> {
+  public addNote() : void {
       
       var time = new Date();
       console.log("added")
@@ -115,9 +115,9 @@ export default class Frame extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainFrame{
-    height: 605px;
+    height: 655px;
     width: 100%;
-    background: white;
+    background: red;
     position: relative;
 }
 
