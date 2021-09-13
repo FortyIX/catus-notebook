@@ -111,7 +111,8 @@ export default class Main extends Vue {
   }
 
   public removeTag(selectedTag : string) : void {
-    this.tagsHolder.splice(this.tagsHolder.indexOf(selectedTag),1)
+    this.tagsHolder.splice(this.tagsHolder.indexOf(selectedTag),1);
+    this.updateTags();
   } 
   
   public enableNewTagInput() : void {
@@ -125,6 +126,8 @@ export default class Main extends Vue {
      }
      this.isAddingNewTag = false;
      this.newTagData = '';
+
+     this.updateTags();
   }
 
   public editContent() : void {
@@ -133,9 +136,15 @@ export default class Main extends Vue {
 
 
   public parseTags() : void {
-    this.tag.split('-').forEach(tag => {
+
+    var tagLists = this.tag.split('-');
+    if (tagLists.length > 1){
+     tagLists.forEach(tag => {
       this.tagsHolder.push(tag)
     })
+    }
+
+
   }
 
   public updateNote(): void {
@@ -151,6 +160,21 @@ export default class Main extends Vue {
 
     this.db.notes.update(this.id, {content: this.contentParsed});
 
+  }
+
+  public updateTags() : void {
+    var tagString = '';
+
+    //combine all tags into a string with a spilter -
+    this.tagsHolder.forEach(tag => {
+      tagString += tag + '-'
+    })
+
+    //remove the extra - at the end 
+    tagString = tagString.substring(0,tagString.length-1);
+    
+    //update the database 
+    this.db.notes.update(this.id, {tag: tagString});
 
   }
 
