@@ -9,56 +9,6 @@
           </el-scrollbar>
  
       </div>
-
-      <el-dialog v-model="newNotePromptVisible" center>
-        <el-form :model="form" label-position="left" label-width="120px">
- 
-            <el-form-item label="Activity time" hidden>
-              <el-date-picker
-                      v-model="noteOnEdit.date"
-                      type="datetime"
-                      placeholder="Select date and time"
-                      :shortcuts="shortcuts"
-                      size="large"
-                      disabled="true"
-                      
-                    >
-              </el-date-picker>
-          </el-form-item>
-          <el-form-item label="What to note" :label-width="formLabelWidth">
-            <el-input type="textarea" v-model="noteOnEdit.content" autocomplete="off"></el-input>
-          </el-form-item>
-
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <!-- <el-button @click="newNotePromptVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="newNotePromptVisible = false"
-              >Confirm</el-button
-            > -->
-            <el-icon style="width: 2em; height: 2em; margin-right: 5px;" @click="testRes"><circle-check-filled /></el-icon>
-            <el-popover placement="bottom" :width="400" trigger="click">
-            <template #reference>
-                <el-icon style="width: 2em; height: 2em; margin-right: 5px;"><price-tag /></el-icon>
-            </template>
-              <el-tag type="info" v-for="tag in tagsHolderOnCreate" :key="tag" effect="plain" @close="removeTag(tag)" closable>{{tag}}</el-tag>  
-              <el-input class="add-new-tag-tag" v-if="isAddingNewTag" v-model="newTagData" size="mini"  @keyup.enter="confirmInputHandler" @blur="confirmInputHandler"></el-input>
-              <el-button v-else class="add-new-tag-btn" size="small" @click="enableNewTagInput">+</el-button>    
-          </el-popover>
-          
-          <el-popover placement="bottom" :width="400" trigger="click">
-            <template #reference>
-                <el-icon style="width: 2em; height: 2em; margin-right: 5px;"><notebook /></el-icon>
-            </template>   
-          </el-popover>
-
-      
-          <el-icon style="width: 2em; height: 2em; margin-right: 5px;"><timer/></el-icon>
-  
-          </span>
-        </template>
-      </el-dialog>
-
       <!-- <div class="note-timeline-area"></div> -->
   </div>
 </div> 
@@ -93,7 +43,8 @@ export default class MainPage extends Vue {
   listOfNotes: Array<NoteStruct> = [];
   tagsFinder? : any;
 
-  tagsHolderOnCreate : string[] = [];
+ 
+  
 
   isAddingNewTag = false;
   newTagData = '';
@@ -133,8 +84,6 @@ export default class MainPage extends Vue {
   mounted(){
 
      bus.on('add-note-event',(data) => {
-      this.tagsHolderOnCreate = []; 
-      // this.newNotePromptVisible = true;
       this.addNote();
 
      }) 
@@ -149,11 +98,16 @@ export default class MainPage extends Vue {
   public addNote() : void {
        var time = new Date();
        var newEntry = new NoteStruct("New note added, click the edit button below to start editing","", "", time.getTime(),0)
-       this.listOfNotes.push(newEntry);
+       
        
        //add note contents and date to the note storage 
        this.db.notes.add({content: newEntry.content,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, isdone:newEntry.isdone},).then(() => {
-          //success
+         //and and the latest note to the user interface by retriving the last added note from the database.
+         this.db.notes.orderBy("id").reverse().limit(1).toArray().then((newEntry) => {
+           this.listOfNotes.push(new NoteStruct(
+            newEntry[0].content,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].isdone,newEntry[0].id
+          ))
+         })
        }).catch(e => {
            console.log(e);
        });    
@@ -161,12 +115,7 @@ export default class MainPage extends Vue {
   }
 
 
-  public addTag(id:number,tag:string) : void {
-      //bula
-  }
-
   public fetchData(db: Database) : void{
-
 
      var noteData = db.notes.toArray().then(notes => {
         notes.forEach(note => {
@@ -179,26 +128,6 @@ export default class MainPage extends Vue {
     
   }
 
-  
-  public removeTag(selectedTag : string) : void {
-    this.tagsHolderOnCreate.splice(this.tagsHolderOnCreate.indexOf(selectedTag),1)
-  } 
-  
-  public enableNewTagInput() : void {
-    this.isAddingNewTag = true;
-    // this.$nextTick(() => {
-    //   this.$refs.addNewTag.$refs.input.focus()
-    // })
-  }
-
-  public confirmInputHandler() : void {
-     var newTagDataValidator = this.newTagData;
-     if(newTagDataValidator){
-       this.tagsHolderOnCreate.push(newTagDataValidator)
-     }
-     this.isAddingNewTag = false;
-     this.newTagData = '';
-  }
 
 }
 </script>

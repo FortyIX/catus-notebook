@@ -17,14 +17,19 @@
             </template>
             <el-space wrap>
               <el-tag type="info" v-for="tag in tagsHolder" :key="tag" effect="plain" @close="removeTag(tag)" closable>{{tag}}</el-tag>  
-              <el-input class="add-new-tag-tag" v-if="isAddingNewTag" v-model="newTagData" size="mini"  @keyup.enter="confirmInputHandler" @blur="confirmInputHandler"></el-input>
+              <el-input class="add-new-tag-tag" v-if="isAddingNewTag" v-model="newTagData" size="mini"  @keyup.enter="confirmInputHandlerforTag" @blur="confirmInputHandlerforTag"></el-input>
               <el-button v-else class="add-new-tag-btn" size="small" @click="enableNewTagInput">+</el-button>
             </el-space> 
           </el-popover>
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
             <template #reference>
                 <el-icon  style="width: 2em; height: 2em; margin-right: 5px;"><notebook /></el-icon>
-            </template>   
+            </template>
+            <el-space wrap>
+              <el-tag type="info" v-for="notebook in notebooksHolder" :key="notebook" effect="plain" @close="removeNotebook(note)" closable>{{notebook}}</el-tag>  
+              <el-input class="add-new-tag-tag" v-if="isAddingNewNotebook" v-model="newNotebookData" size="mini"  @keyup.enter="confirmInputHandlerforNotebook" @blur="confirmInputHandlerforNotebook"></el-input>
+              <el-button v-else class="add-new-tag-btn" size="small" @click="enableNewNotebookInput">+</el-button>   
+            </el-space>
           </el-popover>
 
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
@@ -77,6 +82,7 @@ export default class Main extends Vue {
   //props 
   date! : number;
   tag!:string;
+  notebook! : string
   contents! : string
   id! : number;
   
@@ -84,6 +90,7 @@ export default class Main extends Vue {
   //prop wrapper (kind of)
   dateDisplay! : string;
   tagsHolder : string[] = [];
+  notebooksHolder : string[] = [];
   contentParsed! : string;
 
 
@@ -91,7 +98,10 @@ export default class Main extends Vue {
   editingContent = '';
 
   isAddingNewTag = false;
+  isAddingNewNotebook = false;
   newTagData = '';
+  newNotebookData = '';
+
   db! : Database;
 
 
@@ -107,6 +117,7 @@ export default class Main extends Vue {
 
     this.dateDisplay= dayjs(this.date).format('h:m A DD-MM-YYYY');
 
+    this.parseNotebooks()
     this.parseTags()
   }
 
@@ -114,12 +125,23 @@ export default class Main extends Vue {
     this.tagsHolder.splice(this.tagsHolder.indexOf(selectedTag),1);
     this.updateTags();
   } 
+
+
+  public removeNotebook(selectedNote : string) : void {
+    this.notebooksHolder.splice(this.notebooksHolder.indexOf(selectedNote),1);
+    this.updateNotebooks();
+  } 
+
   
   public enableNewTagInput() : void {
     this.isAddingNewTag = true;
   }
+  
+  public enableNewNotebookInput() : void {
+    this.isAddingNewNotebook = true;
+  }
 
-  public confirmInputHandler() : void {
+  public confirmInputHandlerforTag() : void {
      var newTagDataValidator = this.newTagData;
      if(newTagDataValidator){
        this.tagsHolder.push(newTagDataValidator)
@@ -130,20 +152,49 @@ export default class Main extends Vue {
      this.updateTags();
   }
 
+  public confirmInputHandlerforNotebook() : void {
+     var newNotebookDataValidator = this.newNotebookData;
+     if(newNotebookDataValidator){
+       this.notebooksHolder.push(newNotebookDataValidator)
+     }
+     this.isAddingNewNotebook = false;
+     this.newNotebookData = '';
+
+     this.updateNotebooks();
+  }
+
+
+
   public editContent() : void {
     this.isEditingContent = !this.isEditingContent;
   }
 
 
   public parseTags() : void {
+    console.log(this.tag)
 
     var tagLists = this.tag.split('-');
-    if (tagLists.length > 1){
+    if (tagLists.length > 0 ){
      tagLists.forEach(tag => {
-      this.tagsHolder.push(tag)
+      if(tag.length > 0){
+        this.tagsHolder.push(tag);
+      }
     })
     }
 
+
+  }
+
+  public parseNotebooks() : void {
+
+    var notebookLists = this.notebook.split('-');
+    if (notebookLists.length > 0){
+     notebookLists.forEach(notebook => {
+      if(notebook.length > 0){ 
+        this.notebooksHolder.push(notebook);
+      }
+    });
+    }
 
   }
 
@@ -158,8 +209,23 @@ export default class Main extends Vue {
     //hide the edit form 
     this.isEditingContent = false;
 
-    this.db.notes.update(this.id, {content: this.contentParsed});
+    this.db.notes.update(this.id, {content: this.contentParsed}).catch(e => {console.log(e)});
 
+  }
+
+  public updateNotebooks() : void {
+    var notebookString = '';
+
+    //combine all notebooks into a string with a spilter -
+    this.notebooksHolder.forEach(notebook => {
+      notebookString += notebook + '-'
+    })
+
+    //remove the extra - at the end 
+    notebookString = notebookString.substring(0,notebookString.length-1);
+    
+    //update the database 
+    this.db.notes.update(this.id, {notebook: notebookString});
   }
 
   public updateTags() : void {
@@ -174,6 +240,7 @@ export default class Main extends Vue {
     tagString = tagString.substring(0,tagString.length-1);
     
     //update the database 
+    console.log(this.id)
     this.db.notes.update(this.id, {tag: tagString});
 
   }
