@@ -41,8 +41,18 @@
             <template #reference>
                 <el-icon style="width: 2em; height: 2em; margin-right: 5px;"><price-tag /></el-icon>
             </template>
-            <el-tag type="success">Tag 2</el-tag> <el-tag type="success">Tag 2</el-tag>     
+              <el-tag type="info" v-for="tag in tagsHolderOnCreate" :key="tag" effect="plain" @close="removeTag(tag)" closable>{{tag}}</el-tag>  
+              <el-input class="add-new-tag-tag" v-if="isAddingNewTag" v-model="newTagData" size="mini"  @keyup.enter="confirmInputHandler" @blur="confirmInputHandler"></el-input>
+              <el-button v-else class="add-new-tag-btn" size="small" @click="enableNewTagInput">+</el-button>    
           </el-popover>
+          
+          <el-popover placement="bottom" :width="400" trigger="click">
+            <template #reference>
+                <el-icon style="width: 2em; height: 2em; margin-right: 5px;"><notebook /></el-icon>
+            </template>   
+          </el-popover>
+
+      
           <el-icon style="width: 2em; height: 2em; margin-right: 5px;"><timer/></el-icon>
   
           </span>
@@ -60,7 +70,7 @@ import { Options, Vue } from 'vue-class-component';
 import {Database} from '../database';
 import bus from '../bus'
 import Note from './Note.vue';
-import { CircleCheckFilled,CaretBottom,PriceTag,Timer} from '@element-plus/icons'
+import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook} from '@element-plus/icons'
 
 
 @Options({
@@ -69,7 +79,8 @@ import { CircleCheckFilled,CaretBottom,PriceTag,Timer} from '@element-plus/icons
       CircleCheckFilled,
       CaretBottom,
       PriceTag,
-      Timer
+      Timer,
+      Notebook
     }
 })
 
@@ -81,6 +92,11 @@ export default class MainPage extends Vue {
   newNotePromptVisible = false;
   listOfNotes: Array<NoteStruct> = [];
   tagsFinder? : any;
+
+  tagsHolderOnCreate : string[] = [];
+
+  isAddingNewTag = false;
+  newTagData = '';
 
 
   db! : Database;
@@ -117,8 +133,9 @@ export default class MainPage extends Vue {
   mounted(){
 
      bus.on('add-note-event',(data) => {
-      this.newNotePromptVisible = true;
-      //this.addNote();
+      this.tagsHolderOnCreate = []; 
+      // this.newNotePromptVisible = true;
+
      }) 
 
      this.db = new Database();
@@ -128,19 +145,19 @@ export default class MainPage extends Vue {
 
   }
 
-  public addNote() : void {
-       var time = new Date();
-       var newEntry = new NoteStruct("This is a test message for testing the performance of the note","first day-second day-third class", "default notebook-my notebook", time.getTime(),1)
-       this.listOfNotes.push(newEntry);
+  // public addNote() : void {
+  //      var time = new Date();
+  //      var newEntry = new NoteStruct("<html>This is a test <h1>message</h1> for testing the performance of the note</html>","first day-second day-third class", "default notebook-my notebook", time.getTime(),1)
+  //      this.listOfNotes.push(newEntry);
        
-       //add note contents and date to the note storage 
-       this.db.notes.add({content: newEntry.content,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, isdone:newEntry.isdone},).then(() => {
-          //success
-       }).catch(e => {
-           console.log(e);
-       });    
+  //      //add note contents and date to the note storage 
+  //      this.db.notes.add({content: newEntry.content,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, isdone:newEntry.isdone},).then(() => {
+  //         //success
+  //      }).catch(e => {
+  //          console.log(e);
+  //      });    
 
-  }
+  // }
 
 
   public addTag(id:number,tag:string) : void {
@@ -159,6 +176,27 @@ export default class MainPage extends Vue {
         )
      });
     
+  }
+
+  
+  public removeTag(selectedTag : string) : void {
+    this.tagsHolderOnCreate.splice(this.tagsHolderOnCreate.indexOf(selectedTag),1)
+  } 
+  
+  public enableNewTagInput() : void {
+    this.isAddingNewTag = true;
+    // this.$nextTick(() => {
+    //   this.$refs.addNewTag.$refs.input.focus()
+    // })
+  }
+
+  public confirmInputHandler() : void {
+     var newTagDataValidator = this.newTagData;
+     if(newTagDataValidator){
+       this.tagsHolderOnCreate.push(newTagDataValidator)
+     }
+     this.isAddingNewTag = false;
+     this.newTagData = '';
   }
 
 }
@@ -214,6 +252,11 @@ export default class MainPage extends Vue {
 .note-taker{
   position: relative;
   bottom: 650px;
+}
+
+.add-new-tag-tag{
+  width:70px;
+  vertical-align: bottom;
 }
 
 
