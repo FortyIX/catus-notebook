@@ -8,8 +8,11 @@
     <div class="card-header note-opt">
                       
         <span style="font-size:13px;"> 
-          
-          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="archive" ><circle-check-filled /></el-icon>
+  
+
+
+          <el-icon v-if="archived" style="width: 2em; height: 2em;" @click="redoArchive" > <refresh-right/> </el-icon>
+          <el-icon v-if="!isEditingContent&&!archived"  style="width: 2em; height: 2em; margin-right: 5px;" @click="archive" ><circle-check-filled /></el-icon>
           <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="updateNote" ><circle-check-filled /></el-icon>
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
             <template #reference>
@@ -65,7 +68,7 @@
       
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook,Edit} from '@element-plus/icons';
+import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight} from '@element-plus/icons';
 
 import {Database} from '../database';
 import bus from '../bus';
@@ -88,7 +91,8 @@ import anime from "animejs/lib/anime.es.js";
       PriceTag,
       Timer,
       Notebook,
-      Edit
+      Edit,
+      RefreshRight
     }
 })
 
@@ -99,9 +103,10 @@ export default class Main extends Vue {
   //props 
   date! : number;
   tag!:string;
-  notebook! : string
-  contents! : string
+  notebook! : string;
+  contents! : string;
   id! : number;
+  isdone!:number
   
 
   //prop wrapper (kind of)
@@ -109,6 +114,7 @@ export default class Main extends Vue {
   tagsHolder : string[] = [];
   notebooksHolder : string[] = [];
   contentParsed! : string;
+  archived = false;
 
 
   isEditingContent = false;
@@ -169,6 +175,10 @@ export default class Main extends Vue {
  
     this.contentParsed = this.contents;
     this.editingContent = this.contentParsed;
+
+    if(this.isdone == 1){
+      this.archived = true;
+    }
   }
   mounted() {
     //connect to the database 
@@ -322,7 +332,7 @@ export default class Main extends Vue {
   public archive() : void { 
     this.db.notes.update(this.id, {isdone: 1}).then(() => {
       
-      this.archiveAnime(String(this.id));
+      this.disappearAnime(String(this.id));
       setTimeout(()=>{bus.emit('reload_notes_with_removed_note', this.id);  },500)
       
     });
@@ -330,7 +340,7 @@ export default class Main extends Vue {
   }
 
     
-  public archiveAnime(id:string) : void {
+  public disappearAnime(id:string) : void {
 
       var tobeArchivedNoteId = document.getElementById(id);
 
@@ -347,8 +357,10 @@ export default class Main extends Vue {
 
 
   public redoArchive() : void {
-    this.db.notes.update(this.id, {isdone: 0});
-    bus.emit('reload_notes');
+    this.db.notes.update(this.id, {isdone: 0}).then(() => {
+      this.disappearAnime(String(this.id));
+    });
+    
   }
 
 }
