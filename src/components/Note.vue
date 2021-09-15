@@ -194,6 +194,11 @@ export default class Main extends Vue {
 
     this.fetchNotebookList();
 
+    bus.on('remove-notebook-on-note',(notebook) => {
+      console.log("toberemoved:" + notebook)
+      this.removeNotebook(String(notebook));
+    })
+
 
   }
 
@@ -217,11 +222,10 @@ export default class Main extends Vue {
 
 
   public removeNotebook(selectedNotebook : string) : void {
-    this.notebooksHolder.splice(this.notebooksHolder.indexOf(selectedNotebook),1);
-    
-    this.updateNotebooks();
-
-
+    if(this.notebooksHolder.indexOf(selectedNotebook) > -1 ){
+          this.notebooksHolder.splice(this.notebooksHolder.indexOf(selectedNotebook),1);
+          this.updateNotebooks();
+    }
   } 
 
   

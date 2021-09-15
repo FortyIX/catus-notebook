@@ -157,10 +157,12 @@ export default class Frame extends Vue {
         
         var targetIndex = 0;
         var counter = 0;
+        var toBeRemovedNotebookName = '';
 
         this.existingNotebooks.forEach(notebookItem => {
             if(notebookItem.id == notebookid){
                 targetIndex = counter;
+                toBeRemovedNotebookName = notebookItem.name;
             }
             else{
                 counter += 1;
@@ -170,6 +172,7 @@ export default class Frame extends Vue {
         this.existingNotebooks.splice(targetIndex,1)
         this.existingNotebooks = [];
         this.fetchNotebookList();
+        this.removeNotebookOnEachNote(toBeRemovedNotebookName);
 
   }
   
@@ -185,6 +188,10 @@ export default class Frame extends Vue {
         duration:300
       })
 
+  }
+
+  public removeNotebookOnEachNote(notebook:string){
+      bus.emit("remove-notebook-on-note",(notebook));
   }
 
 
