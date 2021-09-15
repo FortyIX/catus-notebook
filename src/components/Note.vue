@@ -202,8 +202,8 @@ export default class Main extends Vue {
     })
 
     bus.on('update_autocomplete',() => {
-        this.existingNotebooks = [];
-        this.$nextTick(() => {this.fetchNotebookList();})
+        this.$nextTick(() => {this.existingNotebooks = [];});
+        this.$nextTick(() => {this.fetchNotebookList();});
     })
 
 
@@ -302,12 +302,13 @@ export default class Main extends Vue {
     }
 
   }
-
+  
+  //
   public fetchNotebookList() : void {
       this.db.notebooks.toArray().then(notebooks => {
           notebooks.forEach(notebook => {
               var newNotebookObject = {value: notebook.notebook}
-              this.existingNotebooks.push(newNotebookObject);
+              this.$nextTick(() => {this.existingNotebooks.push(newNotebookObject)});
           })
       })
   } 

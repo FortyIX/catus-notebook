@@ -23,9 +23,6 @@
                     <el-menu-item index="1-4"><i class="el-icon-price-tag"></i><span>Tags</span></el-menu-item>
                     </el-menu-item-group>
                     <el-sub-menu index="1-4">
-                    <template #title>item four</template>
-                    <el-menu-item index="1-4-1">item one</el-menu-item>
-                    </el-sub-menu>
                 </el-sub-menu>
                 <el-menu-item index="2">
                     <el-icon :size="20"><calendar /></el-icon>
@@ -49,9 +46,12 @@
         <el-dialog title="Your notebook" v-model="isNotebookIndexVisiable">
                 <el-scrollbar height="340px" width="330px">
                     <el-card :id="notebook.id" class="notebook-card" style="margin-bottom:10px;" v-for="notebook in existingNotebooks" :key="notebook.name">
-                         <span style="margin-right:50px;">{{notebook.name}}</span>  <el-divider direction="vertical"></el-divider>   
+                         <span style="margin-right:50px;">{{notebook.name}}</span> 
+                        <div class="control-region" style="float:right; margin-bottom:20px;"> 
+                         <el-divider direction="vertical"></el-divider>   
                          <el-button size="mini" style="margin-left:30px;" icon="el-icon-search" circle></el-button>
                          <el-button size="mini"  icon="el-icon-delete" @click="removeNotebook(notebook.id)" circle></el-button>
+                        </div>
                     </el-card>
                         
                 </el-scrollbar>
@@ -102,7 +102,7 @@ export default class Frame extends Vue {
       this.fetchNotebookList();
     
       bus.on('update_notebook_list',()=> {
-        this.existingNotebooks = [];
+        this.$nextTick(() => {this.existingNotebooks = [];});
         this.$nextTick(() => {this.fetchNotebookList();})
         
       })  
@@ -146,7 +146,7 @@ export default class Frame extends Vue {
               this.disappearAnime(String(notebookid));
               setTimeout(()=>{
                   this.removeNotebokLocal(notebookid);
-              },400)
+              },700)
           }).catch(e => {
               console.log(e);
           });
