@@ -84,6 +84,8 @@ export default class Frame extends Vue {
 
   mounted() {
       this.db = new Database();
+
+
   }
   
   public reloadNoteDisplayPage() : void {

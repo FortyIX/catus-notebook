@@ -3,9 +3,7 @@
   <div class="mainWindow">
       <div class="note-display-area">
           <el-scrollbar height="600px" width="800px" class="note-container">
-
-            <Note v-for="li in listOfNotes" :key="li.id" :contents="li.content" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id"/>  
-            
+            <Note  v-for="li in listOfNotes" :key="li.id" :contents="li.content" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id"/>  
           </el-scrollbar>
  
       </div>
@@ -20,7 +18,8 @@ import { Options, Vue } from 'vue-class-component';
 import {Database} from '../database';
 import bus from '../bus'
 import Note from './Note.vue';
-import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook} from '@element-plus/icons'
+
+import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook, NoSmoking} from '@element-plus/icons'
 
 
 @Options({
@@ -69,16 +68,38 @@ export default class MainPage extends Vue {
 
   mounted(){
 
-     bus.on('add-note-event',() => {
-      this.addNote();
-
-     }) 
-
      this.db = new Database();
-     this.fetchDataWithFilter(this.db,this.noteFilter);
+     this.fetchDataWithFilter(this.db,this.noteFilter);  
+
      
 
+    bus.on('add-note-event',() => {
+      this.addNote();
+     }) 
+
+    bus.on('reload_notes_with_removed_note', (id) => {
+
+        //remove that note struct
+        var tobeRemovedIndex = 0;
+        var counter = 0;
+        
+        this.listOfNotes.forEach(notestruct => {
+        if(notestruct.id?.toString() == String(id)){
+          tobeRemovedIndex = counter;
+        }
+        else{
+          counter += 1;
+        } 
+        })
+
+        console.log("removing index:" + tobeRemovedIndex)
+        this.listOfNotes.splice(tobeRemovedIndex,1);
+        
+
+      })
+
   }
+
 
   public addNote() : void {
        var time = new Date();

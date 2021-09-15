@@ -14,6 +14,7 @@
   "main": "background.js",
   "dependencies": {
     "@element-plus/icons": "^0.0.11",
+    "animejs": "^3.2.1",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.7",
     "dexie": "^3.0.3",

@@ -1,7 +1,7 @@
 <template>
-<el-card class="notes" shadow="always">
-                 
 
+<el-card :id="id" class="notes" shadow="always">
+                 
     <span v-if="!isEditingContent" class="notes-text"><p align="left" v-html="contentParsed"></p></span>
     <el-input v-else type="textarea" v-model="editingContent"></el-input>
     <br/>
@@ -57,16 +57,20 @@
     </span>
   </template>
 </el-dialog>
-    </el-card>
-    <br/>
+</el-card>
+
+<br/>
 </template>
 
       
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook,Edit} from '@element-plus/icons';
-import {Database} from '../database'
+
+import {Database} from '../database';
+import bus from '../bus';
 import dayjs from 'dayjs';
+import anime from "animejs/lib/anime.es.js";
 
 @Options({
 
@@ -174,6 +178,8 @@ export default class Main extends Vue {
 
     this.parseNotebooks()
     this.parseTags()
+
+
   }
 
   public openTimeSelector(): void { 
@@ -314,11 +320,35 @@ export default class Main extends Vue {
   }
 
   public archive() : void { 
-    this.db.notes.update(this.id, {isdone: 1});
+    this.db.notes.update(this.id, {isdone: 1}).then(() => {
+      
+      this.archiveAnime(String(this.id));
+      setTimeout(()=>{bus.emit('reload_notes_with_removed_note', this.id);  },500)
+      
+    });
+    
   }
+
+    
+  public archiveAnime(id:string) : void {
+
+      var tobeArchivedNoteId = document.getElementById(id);
+
+
+      anime({
+        targets: tobeArchivedNoteId,
+        opacity:[1,0],
+        easing:'linear',
+        duration:300
+      })
+
+  }
+
+
 
   public redoArchive() : void {
     this.db.notes.update(this.id, {isdone: 0});
+    bus.emit('reload_notes');
   }
 
 }
