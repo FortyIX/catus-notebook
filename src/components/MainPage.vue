@@ -92,11 +92,17 @@ export default class MainPage extends Vue {
         } 
         })
 
-        console.log("removing index:" + tobeRemovedIndex)
         this.listOfNotes.splice(tobeRemovedIndex,1);
-        
+        this.listOfNotes = [];
+        this.fetchUnarchivedNotes(this.db);
 
-      })
+      });
+
+    bus.on('reload_notes_with_undo_note', (id)=> {
+        this.listOfNotes = [];
+        this.fetchDataWithFilter(this.db,"archive?bula");
+
+    })  
 
   }
 
@@ -121,9 +127,9 @@ export default class MainPage extends Vue {
   }
 
 
-  public fetchData(db: Database) : void{
+  public fetchUnarchivedNotes(db: Database) : void{
 
-     var noteData = db.notes.toArray().then(notes => {
+     var noteData = db.notes.where('isdone').equals(0).toArray().then(notes => {
         notes.forEach(note => {
           this.listOfNotes.push(new NoteStruct(
             note.content,note.tag, note.notebook,note.date,note.isdone,note.id
@@ -152,13 +158,13 @@ export default class MainPage extends Vue {
           break;
       
         default:
-          this.fetchData(db);
+          this.fetchUnarchivedNotes(db);
           break;
 
       }
     }
     else{
-      this.fetchData(db);
+      this.fetchUnarchivedNotes(db);
     }
   }
 

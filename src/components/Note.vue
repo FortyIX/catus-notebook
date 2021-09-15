@@ -29,8 +29,8 @@
                 <el-icon  style="width: 2em; height: 2em; margin-right: 5px;"><notebook /></el-icon>
             </template>
             <el-space wrap>
-              <el-tag type="info" v-for="notebook in notebooksHolder" :key="notebook" effect="plain" @close="removeNotebook(note)" closable>{{notebook}}</el-tag>  
-              <el-input class="add-new-tag-tag" v-if="isAddingNewNotebook" v-model="newNotebookData" size="mini"  @keyup.enter="confirmInputHandlerforNotebook" @blur="confirmInputHandlerforNotebook"></el-input>
+              <el-tag type="info" v-for="notebook in notebooksHolder" :key="notebook" effect="plain" @close="removeNotebook(notebook)" closable>{{notebook}}</el-tag>  
+              <el-autocomplete class="add-new-tag-tag"   v-if="isAddingNewNotebook" :fetch-suggestions="notebooksHint" v-model="newNotebookData" @select="handleAutoSelectNotebook" size="mini"  @keyup.enter="confirmInputHandlerforNotebook"></el-autocomplete>
               <el-button v-else class="add-new-tag-btn" size="small" @click="enableNewNotebookInput">+</el-button>   
             </el-space>
           </el-popover>
@@ -126,7 +126,10 @@ export default class Main extends Vue {
   newNotebookData = '';
 
   dateTimeSelected = new Date();
-  isSelectingTime = false
+  isSelectingTime = false;
+
+  existingNotebooks:any = [];
+  existingTag:any = [];
 
   db! : Database;
 
@@ -186,8 +189,10 @@ export default class Main extends Vue {
 
     this.dateTimeSelected = new Date(this.date);
 
-    this.parseNotebooks()
-    this.parseTags()
+    this.parseNotebooks();
+    this.parseTags();
+
+    this.fetchNotebookList();
 
 
   }
@@ -211,9 +216,12 @@ export default class Main extends Vue {
   } 
 
 
-  public removeNotebook(selectedNote : string) : void {
-    this.notebooksHolder.splice(this.notebooksHolder.indexOf(selectedNote),1);
+  public removeNotebook(selectedNotebook : string) : void {
+    this.notebooksHolder.splice(this.notebooksHolder.indexOf(selectedNotebook),1);
+    
     this.updateNotebooks();
+
+
   } 
 
   
@@ -239,6 +247,7 @@ export default class Main extends Vue {
   public confirmInputHandlerforNotebook() : void {
      var newNotebookDataValidator = this.newNotebookData;
      if(newNotebookDataValidator){
+       this.updateNotebookIndex(newNotebookDataValidator)
        this.notebooksHolder.push(newNotebookDataValidator)
      }
      this.isAddingNewNotebook = false;
@@ -246,7 +255,16 @@ export default class Main extends Vue {
 
      this.updateNotebooks();
   }
-
+  
+  //
+  public updateNotebookIndex(newNotebook:string) : void {
+    this.db.notebooks.where('notebook').equals(newNotebook).toArray().then((existingData) => {
+       if(existingData.length == 0){
+         this.db.notebooks.add({'notebook': newNotebook});
+         bus.emit('update_notebook_list');
+       } 
+    })
+  }
 
 
   public editContent() : void {
@@ -266,8 +284,30 @@ export default class Main extends Vue {
     })
     }
 
-
   }
+
+  public fetchNotebookList() : void {
+      this.db.notebooks.toArray().then(notebooks => {
+          notebooks.forEach(notebook => {
+              var newNotebookObject = {value: notebook.notebook}
+              this.existingNotebooks.push(newNotebookObject);
+          })
+      })
+  } 
+
+  //
+  public notebooksHint(query:string,cb:any) : void {
+      var listNotebook = this.existingNotebooks;
+      var tmp = query;
+      cb(listNotebook);
+  }
+  //
+  public handleAutoSelectNotebook(notebook:any) : void {
+    this.newNotebookData = notebook.value;
+    this.confirmInputHandlerforNotebook(); 
+  }
+
+
 
   public parseNotebooks() : void {
 
@@ -312,6 +352,8 @@ export default class Main extends Vue {
     this.db.notes.update(this.id, {notebook: notebookString});
   }
 
+
+
   public updateTags() : void {
     var tagString = '';
 
@@ -333,7 +375,7 @@ export default class Main extends Vue {
     this.db.notes.update(this.id, {isdone: 1}).then(() => {
       
       this.disappearAnime(String(this.id));
-      setTimeout(()=>{bus.emit('reload_notes_with_removed_note', this.id);  },500)
+      setTimeout(()=>{bus.emit('reload_notes_with_removed_note', this.id);  },700);
       
     });
     
@@ -359,6 +401,7 @@ export default class Main extends Vue {
   public redoArchive() : void {
     this.db.notes.update(this.id, {isdone: 0}).then(() => {
       this.disappearAnime(String(this.id));
+      setTimeout(()=>{bus.emit('reload_notes_with_undo_note', this.id);  },700);
     });
     
   }
@@ -397,7 +440,7 @@ export default class Main extends Vue {
 }
 
 .add-new-tag-tag{
-  width:70px;
+  width:30px;
   vertical-align: bottom;
 }
 

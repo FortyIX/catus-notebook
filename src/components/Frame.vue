@@ -18,7 +18,7 @@
                     <el-menu-item index="1-2" @click="showArchivedNotes"><i class="el-icon-folder-checked"></i><span>Archive</span></el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group title="Your categories">
-                    <el-menu-item index="1-3"><i class="el-icon-reading"></i><span>Notebooks</span> 
+                    <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><i class="el-icon-reading"></i><span>Notebooks</span> 
                     </el-menu-item>
                     <el-menu-item index="1-4"><i class="el-icon-price-tag"></i><span>Tags</span></el-menu-item>
                     </el-menu-item-group>
@@ -45,7 +45,17 @@
                         <el-icon style="width: 1em; height: 1em;" :size="15"><edit/></el-icon>
                 </el-button>
 
-                </el-menu>
+        </el-menu>
+        <el-dialog title="Your notebook" v-model="isNotebookIndexVisiable">
+                <el-scrollbar height="340px" width="330px">
+                    <el-card :id="notebook.id" class="notebook-card" style="margin-bottom:10px;" v-for="notebook in existingNotebooks" :key="notebook.name">
+                         <span style="margin-right:50px;">{{notebook.name}}</span>  <el-divider direction="vertical"></el-divider>   
+                         <el-button size="mini" style="margin-left:30px;" icon="el-icon-search" circle></el-button>
+                         <el-button size="mini"  icon="el-icon-delete" @click="removeNotebook(notebook.id)" circle></el-button>
+                    </el-card>
+                        
+                </el-scrollbar>
+        </el-dialog>
 
             
       </div>
@@ -58,8 +68,10 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import {Database} from '../database';
+import { NotebookItem }  from '../NotebookItem';
 import MainPage from './MainPage.vue';
-import bus from '../bus'
+import bus from '../bus';
+import anime from "animejs/lib/anime.es.js";
 
 //import element svg icons
 import { Calendar,Notebook,Setting,Finished,Edit} from '@element-plus/icons'
@@ -80,10 +92,19 @@ export default class Frame extends Vue {
   db! : Database;
   notefilter = "bulabula?bula"
   isNoteDisplayVisible = true;
+  isNotebookIndexVisiable = false;
+
+  existingNotebooks:NotebookItem[] = [];
 
 
   mounted() {
       this.db = new Database();
+      this.fetchNotebookList();
+
+      bus.on('update_notebook_list',()=> {
+          this.existingNotebooks = [];
+          this.fetchNotebookList();
+      })
 
 
   }
@@ -106,7 +127,67 @@ export default class Frame extends Vue {
   public showAllNotes () : void {
       this.notefilter = "note?*";
       this.reloadNoteDisplayPage();   
-  }  
+  }
+  
+  public fetchNotebookList() : void {
+      this.db.notebooks.toArray().then(notebooks => {
+          notebooks.forEach(notebook => {
+
+              this.existingNotebooks.push(new NotebookItem(
+                  notebook.notebook,notebook.id
+              ));
+          })
+      })
+  } 
+
+  public removeNotebook(notebookid : number) : void {
+      this.db.notebooks.get(notebookid).then(res => {
+          this.db.notebooks.delete(res!.id!).then(()=>{
+              this.disappearAnime(String(notebookid));
+              setTimeout(()=>{
+                  this.removeNotebokLocal(notebookid);
+              },400)
+          }).catch(e => {
+              console.log(e);
+          });
+      })
+  }
+
+  public removeNotebokLocal(notebookid:number) : void {
+        
+        var targetIndex = 0;
+        var counter = 0;
+
+        this.existingNotebooks.forEach(notebookItem => {
+            if(notebookItem.id == notebookid){
+                targetIndex = counter;
+            }
+            else{
+                counter += 1;
+            } 
+        })
+
+        this.existingNotebooks.splice(targetIndex,1)
+        this.existingNotebooks = [];
+        this.fetchNotebookList();
+
+  }
+  
+  public disappearAnime(id:string) : void {
+
+      var tobeDelNotebook = document.getElementById(id);
+
+
+      anime({
+        targets: tobeDelNotebook,
+        opacity:[1,0],
+        easing:'linear',
+        duration:300
+      })
+
+  }
+
+
 
 }
 </script>
@@ -144,5 +225,14 @@ export default class Frame extends Vue {
 .add-note-btn{
     position: relative;
     top:300px;
+}
+
+
+.notebook-selector{
+    margin-bottom: 10px;;
+}
+
+.notebook-card{
+    height: auto;
 }
 </style>
