@@ -22,7 +22,6 @@
                     </el-menu-item>
                     <el-menu-item index="1-4"><i class="el-icon-price-tag"></i><span>Tags</span></el-menu-item>
                     </el-menu-item-group>
-                    <el-sub-menu index="1-4">
                 </el-sub-menu>
                 <el-menu-item index="2">
                     <el-icon :size="20"><calendar /></el-icon>

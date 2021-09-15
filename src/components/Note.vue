@@ -308,7 +308,7 @@ export default class Main extends Vue {
       this.db.notebooks.toArray().then(notebooks => {
           notebooks.forEach(notebook => {
               var newNotebookObject = {value: notebook.notebook}
-              this.$nextTick(() => {this.existingNotebooks.push(newNotebookObject)});
+              this.existingNotebooks.push(newNotebookObject);
           })
       })
   } 

@@ -93,8 +93,8 @@ export default class MainPage extends Vue {
         })
 
         this.listOfNotes.splice(tobeRemovedIndex,1);
-        this.listOfNotes = [];
-        this.fetchUnarchivedNotes(this.db);
+        // this.listOfNotes = [];
+        // this.fetchUnarchivedNotes(this.db);
 
       });
 
