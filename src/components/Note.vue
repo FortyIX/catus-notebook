@@ -195,8 +195,15 @@ export default class Main extends Vue {
     this.fetchNotebookList();
 
     bus.on('remove-notebook-on-note',(notebook) => {
-      console.log("toberemoved:" + notebook)
+
       this.removeNotebook(String(notebook));
+      this.existingNotebooks = [];
+      this.fetchNotebookList();
+    })
+
+    bus.on('update_autocomplete',() => {
+        this.existingNotebooks = [];
+        this.$nextTick(() => {this.fetchNotebookList();})
     })
 
 
@@ -265,7 +272,13 @@ export default class Main extends Vue {
     this.db.notebooks.where('notebook').equals(newNotebook).toArray().then((existingData) => {
        if(existingData.length == 0){
          this.db.notebooks.add({'notebook': newNotebook});
-         bus.emit('update_notebook_list');
+          try{
+              bus.emit('update_autocomplete');
+              bus.emit('update_notebook_list');
+          }
+          catch(e){
+            console.log(e)
+          }
        } 
     })
   }

@@ -100,13 +100,12 @@ export default class Frame extends Vue {
   mounted() {
       this.db = new Database();
       this.fetchNotebookList();
-
+    
       bus.on('update_notebook_list',()=> {
-          this.existingNotebooks = [];
-          this.fetchNotebookList();
-      })
-
-
+        this.existingNotebooks = [];
+        this.$nextTick(() => {this.fetchNotebookList();})
+        
+      })  
   }
   
   public reloadNoteDisplayPage() : void {
@@ -132,11 +131,12 @@ export default class Frame extends Vue {
   public fetchNotebookList() : void {
       this.db.notebooks.toArray().then(notebooks => {
           notebooks.forEach(notebook => {
-
-              this.existingNotebooks.push(new NotebookItem(
+            this.existingNotebooks.push(new NotebookItem(
                   notebook.notebook,notebook.id
               ));
           })
+      }).catch(e => {
+          console.log(e)
       })
   } 
 
