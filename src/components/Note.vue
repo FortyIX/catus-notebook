@@ -9,7 +9,7 @@
                       
         <span style="font-size:13px;"> 
           
-          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" ><circle-check-filled /></el-icon>
+          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="archive" ><circle-check-filled /></el-icon>
           <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="updateNote" ><circle-check-filled /></el-icon>
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
             <template #reference>
@@ -32,18 +32,31 @@
             </el-space>
           </el-popover>
 
-          <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
-            <template #reference>
-                <el-icon  style="width: 2em; height: 2em; margin-right: 5px;"><timer/></el-icon>
-            </template>
-                {{dateDisplay}}
-          </el-popover>
+          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="openTimeSelector"><timer/></el-icon>
+
           <el-icon v-if="!isEditingContent" style="width: 1em; height: 1em;" :size="15" @click="editContent"><edit/></el-icon>
 
         </span> 
-      
     </div>
+    <el-dialog title="Reminder" v-model="isSelectingTime">
 
+        <el-date-picker
+          v-model="dateTimeSelected"
+          type="datetime"
+          placeholder="Select date and time"
+          :shortcuts="shortcuts"
+        >
+    </el-date-picker>
+
+  <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="isSelectingTime = false">Cancel</el-button>
+      <el-button type="primary" @click="confirmTimeSelection"
+        >Confirm</el-button
+      >
+    </span>
+  </template>
+</el-dialog>
     </el-card>
     <br/>
 </template>
@@ -102,7 +115,49 @@ export default class Main extends Vue {
   newTagData = '';
   newNotebookData = '';
 
+  dateTimeSelected = new Date();
+  isSelectingTime = false
+
   db! : Database;
+
+  shortcuts = [
+          {
+            text: 'Today',
+            value: new Date(),
+          },
+          {
+            text: 'Yesterday',
+            value: () => {
+              const date = new Date()
+              date.setTime(date.getTime() - 3600 * 1000 * 24)
+              return date
+            },
+          },
+          {
+            text: 'A week ago',
+            value: () => {
+              const date = new Date()
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+              return date
+            },
+          },
+          {
+            text: 'An Hour ago',
+            value: () => {
+              const date = new Date()
+              date.setTime(date.getTime() - 3600 * 1000 * 1)
+              return date
+            },
+          },
+          {
+            text: 'An Hour later',
+            value: () => {
+              const date = new Date()
+              date.setTime(date.getTime() + 3600 * 1000 * 1)
+              return date
+            },
+          },
+    ];
 
 
 
@@ -115,10 +170,23 @@ export default class Main extends Vue {
     //connect to the database 
     this.db = new Database();  
 
-    this.dateDisplay= dayjs(this.date).format('h:m A DD-MM-YYYY');
+    this.dateTimeSelected = new Date(this.date);
 
     this.parseNotebooks()
     this.parseTags()
+  }
+
+  public openTimeSelector(): void { 
+    this.isSelectingTime=true;
+  }
+
+  public confirmTimeSelection() : void{
+    this.isSelectingTime = false;
+    this.updateTime();
+  }
+
+  public updateTime() : void { 
+    this.db.notes.update(this.id, {date: this.dateTimeSelected.getTime()}).catch(e => {console.log(e)});
   }
 
   public removeTag(selectedTag : string) : void {
@@ -171,7 +239,7 @@ export default class Main extends Vue {
 
 
   public parseTags() : void {
-    console.log(this.tag)
+
 
     var tagLists = this.tag.split('-');
     if (tagLists.length > 0 ){
@@ -240,9 +308,17 @@ export default class Main extends Vue {
     tagString = tagString.substring(0,tagString.length-1);
     
     //update the database 
-    console.log(this.id)
+
     this.db.notes.update(this.id, {tag: tagString});
 
+  }
+
+  public archive() : void { 
+    this.db.notes.update(this.id, {isdone: 1});
+  }
+
+  public redoArchive() : void {
+    this.db.notes.update(this.id, {isdone: 0});
   }
 
 }

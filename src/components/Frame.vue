@@ -5,10 +5,8 @@
 
         <el-menu
                 class="side-nav-bar"
-                collapse="false"
+                :collapse="true"
                 default-active="1"
-                @open="handleOpen"
-                @close="handleClose"
                 >
                 <el-sub-menu index="1">
                     <template #title>
@@ -16,8 +14,8 @@
                     <span>Browse</span>
                     </template>
                     <el-menu-item-group title="Your writings">
-                    <el-menu-item index="1-1"><i class="el-icon-document"></i><span>Notes</span></el-menu-item>
-                    <el-menu-item index="1-2"><i class="el-icon-folder-checked"></i><span>Achived</span></el-menu-item>
+                    <el-menu-item index="1-1" @click="showAllNotes"><i class="el-icon-document"></i><span>Notes</span></el-menu-item>
+                    <el-menu-item index="1-2" @click="showArchivedNotes"><i class="el-icon-folder-checked"></i><span>Archive</span></el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group title="Your categories">
                     <el-menu-item index="1-3"><i class="el-icon-reading"></i><span>Notebooks</span> 
@@ -52,7 +50,7 @@
             
       </div>
       <div class="main-display">
-           <MainPage/> 
+           <MainPage :noteFilter="notefilter" v-if="isNoteDisplayVisible"/> 
       </div>
   </div>
 </template>
@@ -80,34 +78,33 @@ import { Calendar,Notebook,Setting,Finished,Edit} from '@element-plus/icons'
 export default class Frame extends Vue {
   
   db! : Database;
+  notefilter = "bulabula?bula"
+  isNoteDisplayVisible = true;
 
 
   mounted() {
       this.db = new Database();
   }
+  
+  public reloadNoteDisplayPage() : void {
 
+     this.isNoteDisplayVisible = false;
+     this.$nextTick(() => (this.isNoteDisplayVisible = true))
+  
+  }
 
   public addNote() : void {
-      
-      var time = new Date();
-      console.log("added")
-
-      bus.emit("add-note-event", ["hello, my name is jerry zhang and i am writing this post as a test."])
-
-    //   this.db.notes.add({content: "This is a test message", tag:"first class",notebook:"my daily life", date: time.getTime(), isdone:1},).then(() => {
-    //       alert("sucess")
-    //   }).catch(e => {
-    //       console.log(e)
-    //   });
-
-    // var tmp = this.db.notes.where('tag').equals('first class').toArray().then((data) =>{
-    //     alert(data[0].content)
-    // });
-   
-
-    
-    
+      bus.emit("add-note-event")    
   }
+
+  public showArchivedNotes() : void {
+      this.notefilter = "archive?*";
+      this.reloadNoteDisplayPage();
+  }
+  public showAllNotes () : void {
+      this.notefilter = "note?*";
+      this.reloadNoteDisplayPage();   
+  }  
 
 }
 </script>

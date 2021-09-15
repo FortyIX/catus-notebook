@@ -24,6 +24,10 @@ import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook} from '@element-p
 
 
 @Options({
+
+    props: {
+      noteFilter : String
+    },
     components:{
       Note,
       CircleCheckFilled,
@@ -38,6 +42,9 @@ import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook} from '@element-p
 
 
 export default class MainPage extends Vue {
+
+  //props
+  noteFilter! : string;
 
   newNotePromptVisible = false;
   listOfNotes: Array<NoteStruct> = [];
@@ -58,39 +65,17 @@ export default class MainPage extends Vue {
     date:1000000,
     isDone:0
   };
-  shortcuts = [
-          {
-            text: 'Today',
-            value: new Date(),
-          },
-          {
-            text: 'Yesterday',
-            value: () => {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              return date
-            },
-          },
-          {
-            text: 'A week ago',
-            value: () => {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              return date
-            },
-          },
-        ];
+
 
   mounted(){
 
-     bus.on('add-note-event',(data) => {
+     bus.on('add-note-event',() => {
       this.addNote();
 
      }) 
 
      this.db = new Database();
-    //  this.addTag(1,'first');
-     this.fetchData(this.db);
+     this.fetchDataWithFilter(this.db,this.noteFilter);
      
 
   }
@@ -125,7 +110,61 @@ export default class MainPage extends Vue {
         }
         )
      });
+  }
+  
+  public fetchDataWithFilter(db:Database, filter:string) : void {
     
+    var cmd: string;
+    var param : string;
+    
+    if(filter != undefined){
+      cmd = filter.split('?')[0];
+      param = filter.split('?')[1];
+    
+      switch(cmd){
+        case 'archive':
+          this._fetchArchived(db);
+          break;
+      
+        case 'tag':
+          this._fetchNotesWithTag(db,param);
+          break;
+      
+        default:
+          this.fetchData(db);
+          break;
+
+      }
+    }
+    else{
+      this.fetchData(db);
+    }
+  }
+
+
+
+  private _fetchArchived(db: Database) : void{
+
+     var noteData = db.notes.where('isdone').equals(1).toArray().then(notes => {
+        notes.forEach(note => {
+          this.listOfNotes.push(new NoteStruct(
+            note.content,note.tag, note.notebook,note.date,note.isdone,note.id
+          ));
+        }
+        )
+     });
+  }
+
+  private _fetchNotesWithTag(db: Database,tag:string) : void{
+
+     var noteData = db.notes.where('tags').equals(tag).toArray().then(notes => {
+        notes.forEach(note => {
+          this.listOfNotes.push(new NoteStruct(
+            note.content,note.tag, note.notebook,note.date,note.isdone,note.id
+          ));
+        }
+        )
+     });
   }
 
 
