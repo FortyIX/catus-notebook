@@ -1,7 +1,5 @@
- <p align="center">
- <img src="https://pic.imgdb.cn/item/613f83f744eaada739e3d53c.png" alt="Loading logo ..." width="200"/>
-</p>
-<h1 align="center">Catus Notebook </h1>
+![Loading logo](https://bitbucket.org/FortyIX/catus-notebook-app-v1/src/master/public/logo_transparent_256.png)
+# Catus Notebook
 An elegant and effective that is a 'notes as todos' note taking software 
 
 ## Project setup
