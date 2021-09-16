@@ -1,26 +1,26 @@
-![Loading logo](https://pic.imgdb.cn/item/61432eb62ab3f51d916ab341.png) 
 # Catus Notebook
 An elegant and effective that is a 'notes as todos' note taking software.
 
 
 ## Project setup
 
-```
-yarn install
-```
+- Firstly install all dependencies
 
-### Compiles and hot-reloads for development
+	```shell
+	yarn install
+	```
 
-```
-yarn electron:serve
-```
+- Compiles and hot-reloads for development
 
-### Compiles and minifies for production
+	```shell
+	yarn electron:serve
+	```
 
-```
-yarn electron:build
-```
+- Compiles and minifies for production
+
+	```shell
+	yarn electron:build
+	```
 
 
-### Customize configuration
 
