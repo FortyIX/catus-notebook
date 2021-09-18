@@ -269,7 +269,7 @@ export default class Main extends Vue {
   public confirmInputHandlerforTag() : void {
      var newTagDataValidator = this.newTagData;
      if(newTagDataValidator){
-       if(this.tagsHolder.indexOf(newTagDataValidator) != -1){
+       if(this.tagsHolder.indexOf(newTagDataValidator) == -1){
          this.updateTagIndex(newTagDataValidator);
          this.tagsHolder.push(newTagDataValidator);
        }
@@ -291,7 +291,7 @@ export default class Main extends Vue {
   public confirmInputHandlerforNotebook() : void {
      var newNotebookDataValidator = this.newNotebookData;
      if(newNotebookDataValidator){
-       if(this.notebooksHolder.indexOf(newNotebookDataValidator) != -1){
+       if(this.notebooksHolder.indexOf(newNotebookDataValidator) == -1){
           this.updateNotebookIndex(newNotebookDataValidator);
           this.notebooksHolder.push(newNotebookDataValidator);
        }
