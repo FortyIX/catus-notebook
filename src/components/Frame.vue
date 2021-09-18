@@ -6,6 +6,7 @@
         <el-menu
                 class="side-nav-bar"
                 :collapse="true"
+                background-color="blue"
                 default-active="1"
                 >
                 <el-sub-menu index="1">
@@ -201,23 +202,28 @@ export default class Frame extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainFrame{
-    height: 655px;
-    width: 100%;
+    height: 635px;
+    width: 910px;
     background: red;
-    position: relative;
+    position: absolute;
+    
 }
 
-
 .side-bar{
-    width:200px;
-    height:100%;
+    width:60px;
+    height:668px;
     float:left;
+    position: relative;
+    right: 10px;    
+    background:green;
 }
 
 .side-nav-bar{
     width: 60px;
-    height: inherit;
+    height: 685px;
     position: absolute;
+    bottom: 0px;
+    background:purple;
 }
 
 .main-display{
@@ -225,7 +231,7 @@ export default class Frame extends Vue {
     left:50px;
     width: 900px;
     height: 100%;
-    background: green;
+    background: cyan;
 }
 
 .add-note-btn{

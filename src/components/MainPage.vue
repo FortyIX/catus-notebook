@@ -201,16 +201,19 @@ export default class MainPage extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainWindow{
-    height: 655px;
+    height: 665px;
     width: 100%;
+    position: relative;
+    bottom: 6px;
     background: green;
 }
 
 .note-display-area{
-  position: relative;
-  height: 655px;
+  height: 679px;
   width: 102%;
-  background:white;
+  position: relative;
+  bottom: 6px;
+  background:cyan;
 }
 
 /* .note-timeline-area{
@@ -230,8 +233,8 @@ export default class MainPage extends Vue {
 
 .note-container{
   width: 100%;
-  position: relative;
-  bottom: 650px;
+  position: fixed;
+  margin-top: 10px;
 }
 
 .notes-text{
