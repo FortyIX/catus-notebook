@@ -2,7 +2,7 @@
 <div class="mainPage">
   <div class="mainWindow">
       <div class="note-display-area">
-          <el-scrollbar height="600px" width="800px" class="note-container">
+          <el-scrollbar height="650px" width="800px" class="note-container">
             <Note  v-for="li in listOfNotes" :key="li.id" :contents="li.content" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id"/>  
           </el-scrollbar>
  

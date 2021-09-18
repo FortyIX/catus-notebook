@@ -6,41 +6,45 @@
         <el-menu
                 class="side-nav-bar"
                 :collapse="true"
-                background-color="blue"
+                background-color="#002060"
+                text-color="white"
                 default-active="1"
                 >
                 <el-sub-menu index="1">
                     <template #title>
-                    <el-icon :size="20" ><notebook/></el-icon> 
+                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;"   :size="20"><notebook/></el-icon> 
                     <span>Browse</span>
                     </template>
+                    <el-menu-item-group title="Actions">
+                        <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>Add a new note</span></el-menu-item>
+                    
+                    </el-menu-item-group>
                     <el-menu-item-group title="Your writings">
-                    <el-menu-item index="1-1" @click="showAllNotes"><i class="el-icon-document"></i><span>Notes</span></el-menu-item>
-                    <el-menu-item index="1-2" @click="showArchivedNotes"><i class="el-icon-folder-checked"></i><span>Archive</span></el-menu-item>
+                        <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><document /></el-icon>
+      <span>Notes</span></el-menu-item>
+                        <el-menu-item index="1-2" @click="showArchivedNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><takeaway-box /></el-icon>
+      <span>Archive</span></el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group title="Your categories">
-                    <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><i class="el-icon-reading"></i><span>Notebooks</span> 
+                        <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><collection /></el-icon><span>Notebooks</span> 
                     </el-menu-item>
-                    <el-menu-item index="1-4"><i class="el-icon-price-tag"></i><span>Tags</span></el-menu-item>
+                    <el-menu-item index="1-4"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><price-tag /></el-icon><span>Tags</span></el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
                 <el-menu-item index="2">
-                    <el-icon :size="20"><calendar /></el-icon>
+                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><calendar /></el-icon> 
                     <span>Navigator Two</span>
                 </el-menu-item>
                 <el-menu-item index="3">
                     
-                    <i class="el-icon-document"></i>
+                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><more /></el-icon>
                     <span>Navigator Three</span>
                 </el-menu-item>
                 <el-menu-item index="4">
-                    <el-icon :size="20"><setting/></el-icon>
+                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><setting/></el-icon>
                     <span>Navigator Four</span>
                 </el-menu-item>
 
-                <el-button class="add-note-btn" circle @click="addNote">
-                        <el-icon style="width: 1em; height: 1em;" :size="15"><edit/></el-icon>
-                </el-button>
 
         </el-menu>
         <el-dialog title="Your notebook" v-model="isNotebookIndexVisiable">
@@ -74,7 +78,7 @@ import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
 
 //import element svg icons
-import { Calendar,Notebook,Setting,Finished,Edit} from '@element-plus/icons'
+import { Calendar,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Collection,Document,PriceTag} from '@element-plus/icons'
 
 @Options({
     components:{
@@ -83,6 +87,12 @@ import { Calendar,Notebook,Setting,Finished,Edit} from '@element-plus/icons'
         Setting,
         Finished,
         Edit,
+        More,
+        TakeawayBox,
+        Plus,
+        Collection,
+        Document,
+        PriceTag,
         MainPage,
         
     }
@@ -236,7 +246,6 @@ export default class Frame extends Vue {
 
 .add-note-btn{
     position: relative;
-    top:300px;
 }
 
 
