@@ -1,42 +1,50 @@
 <template>
 
+<!-- Each note -->
 <el-card :id="id" class="notes" shadow="always">
-                 
+    <!-- Main body               -->
     <span v-if="!isEditingContent" class="notes-text"><p align="left" v-html="contentParsed"></p></span>
     <el-input v-else type="textarea" v-model="editingContent"></el-input>
     <br/>
+
+    <!-- Control area -->
     <div class="card-header note-opt">
-                      
-        <span style="font-size:13px;"> 
-  
-
-
+      <span style="font-size:13px;"> 
+          <!-- Archive and undo archive buttons -->
           <el-icon v-if="archived" style="width: 2em; height: 2em;" @click="redoArchive" > <refresh-right/> </el-icon>
           <el-icon v-if="!isEditingContent&&!archived"  style="width: 2em; height: 2em; margin-right: 5px;" @click="archive" ><circle-check-filled /></el-icon>
+          
+          <!-- Finish editing note content button -->
           <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="updateNote" ><circle-check-filled /></el-icon>
+          
+          <!-- Tags  -->
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
             <template #reference>
                 <el-icon  style="width: 2em; height: 2em; margin-right: 5px;"><price-tag /></el-icon>
             </template>
             <el-space wrap>
               <el-tag type="info" v-for="tag in tagsHolder" :key="tag" effect="plain" @close="removeTag(tag)" closable>{{tag}}</el-tag>  
-              <el-input class="add-new-tag-tag" v-if="isAddingNewTag" v-model="newTagData" size="mini"  @keyup.enter="confirmInputHandlerforTag" @blur="confirmInputHandlerforTag"></el-input>
+              <el-autocomplete class="add-new-tag-tag" v-if="isAddingNewTag" v-model="newTagData" :fetch-suggestions="tagsHint" size="mini" @select="handleAutoSelectTags"  @keyup.enter="confirmInputHandlerforTag"></el-autocomplete>
               <el-button v-else class="add-new-tag-btn" size="small" @click="enableNewTagInput">+</el-button>
             </el-space> 
           </el-popover>
+
+          <!-- Notebook -->
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
             <template #reference>
                 <el-icon  style="width: 2em; height: 2em; margin-right: 5px;"><notebook /></el-icon>
             </template>
             <el-space wrap>
               <el-tag type="info" v-for="notebook in notebooksHolder" :key="notebook" effect="plain" @close="removeNotebook(notebook)" closable>{{notebook}}</el-tag>  
-              <el-autocomplete class="add-new-tag-tag"   v-if="isAddingNewNotebook" :fetch-suggestions="notebooksHint" v-model="newNotebookData" @select="handleAutoSelectNotebook" size="mini"  @keyup.enter="confirmInputHandlerforNotebook"></el-autocomplete>
+              <el-autocomplete class="add-new-tag-tag"  v-if="isAddingNewNotebook" :fetch-suggestions="notebooksHint" v-model="newNotebookData" @select="handleAutoSelectNotebook" size="mini"  @keyup.enter="confirmInputHandlerforNotebook"></el-autocomplete>
               <el-button v-else class="add-new-tag-btn" size="small" @click="enableNewNotebookInput">+</el-button>   
             </el-space>
           </el-popover>
 
+          <!-- Time selector   -->
           <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="openTimeSelector"><timer/></el-icon>
 
+          <!-- Edit button -->
           <el-icon v-if="!isEditingContent" style="width: 1em; height: 1em;" :size="15" @click="editContent"><edit/></el-icon>
 
         </span> 
@@ -129,7 +137,7 @@ export default class Main extends Vue {
   isSelectingTime = false;
 
   existingNotebooks:any = [];
-  existingTag:any = [];
+  existingTags:any = [];
 
   db! : Database;
 
@@ -193,6 +201,7 @@ export default class Main extends Vue {
     this.parseTags();
 
     this.fetchNotebookList();
+    this.fetchTagsList();
 
     bus.on('remove-notebook-on-note',(notebook) => {
 
@@ -201,9 +210,20 @@ export default class Main extends Vue {
       this.fetchNotebookList();
     })
 
-    bus.on('update_autocomplete',() => {
+    bus.on('remove-tag-on-note',(tag) => {
+      this.removeTag(String(tag));
+      this.existingTags = [];
+      this.fetchTagsList();
+    })   
+
+    bus.on('update_autocomplete_notebook',() => {
         this.$nextTick(() => {this.existingNotebooks = [];});
         this.$nextTick(() => {this.fetchNotebookList();});
+    })
+
+    bus.on('update_autocomplete_tag',() => {
+        this.$nextTick(() => {this.existingTags = [];});
+        this.$nextTick(() => {this.fetchTagsList();});
     })
 
 
@@ -247,7 +267,8 @@ export default class Main extends Vue {
   public confirmInputHandlerforTag() : void {
      var newTagDataValidator = this.newTagData;
      if(newTagDataValidator){
-       this.tagsHolder.push(newTagDataValidator)
+       this.updateTagIndex(newTagDataValidator);
+       this.tagsHolder.push(newTagDataValidator);
      }
      this.isAddingNewTag = false;
      this.newTagData = '';
@@ -258,8 +279,8 @@ export default class Main extends Vue {
   public confirmInputHandlerforNotebook() : void {
      var newNotebookDataValidator = this.newNotebookData;
      if(newNotebookDataValidator){
-       this.updateNotebookIndex(newNotebookDataValidator)
-       this.notebooksHolder.push(newNotebookDataValidator)
+       this.updateNotebookIndex(newNotebookDataValidator);
+       this.notebooksHolder.push(newNotebookDataValidator);
      }
      this.isAddingNewNotebook = false;
      this.newNotebookData = '';
@@ -269,11 +290,11 @@ export default class Main extends Vue {
   
   //
   public updateNotebookIndex(newNotebook:string) : void {
-    this.db.notebooks.where('notebook').equals(newNotebook).toArray().then((existingData) => {
+    this.db.notebooks.where('name').equals(newNotebook).toArray().then((existingData) => {
        if(existingData.length == 0){
-         this.db.notebooks.add({'notebook': newNotebook});
+         this.db.notebooks.add({'name': newNotebook});
           try{
-              bus.emit('update_autocomplete');
+              bus.emit('update_autocomplete_notebook');
               bus.emit('update_notebook_list');
           }
           catch(e){
@@ -286,6 +307,43 @@ export default class Main extends Vue {
 
   public editContent() : void {
     this.isEditingContent = !this.isEditingContent;
+  }
+
+  public updateTagIndex(newTag:string) : void {
+    this.db.tags.where('name').equals(newTag).toArray().then((existingData) => {
+       if(existingData.length == 0){
+         this.db.tags.add({'name': newTag});
+          try{
+              bus.emit('update_autocomplete_tag');
+              bus.emit('update_tag_list');
+          }
+          catch(e){
+            console.log(e)
+          }
+       } 
+    })
+  }
+
+
+  public fetchTagsList() : void {
+      this.db.tags.toArray().then(tags => {
+          tags.forEach(tag => {
+              var newTagbookObject = {value: tag.name}
+              this.existingTags.push(newTagbookObject);
+          })
+      })
+  } 
+
+  public tagsHint(query:string,cb:any) : void {
+      var listTags = this.existingTags;
+      var tmp = query;
+      cb(listTags);
+  }
+
+  //
+  public handleAutoSelectTags(tag:any) : void {
+    this.newNotebookData = tag.value;
+    this.confirmInputHandlerforTag(); 
   }
 
 
@@ -307,7 +365,7 @@ export default class Main extends Vue {
   public fetchNotebookList() : void {
       this.db.notebooks.toArray().then(notebooks => {
           notebooks.forEach(notebook => {
-              var newNotebookObject = {value: notebook.notebook}
+              var newNotebookObject = {value: notebook.name}
               this.existingNotebooks.push(newNotebookObject);
           })
       })
@@ -319,6 +377,7 @@ export default class Main extends Vue {
       var tmp = query;
       cb(listNotebook);
   }
+
   //
   public handleAutoSelectNotebook(notebook:any) : void {
     this.newNotebookData = notebook.value;
@@ -369,6 +428,8 @@ export default class Main extends Vue {
     //update the database 
     this.db.notes.update(this.id, {notebook: notebookString});
   }
+
+
 
 
 

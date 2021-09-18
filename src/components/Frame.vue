@@ -16,7 +16,7 @@
                     <span>Browse</span>
                     </template>
                     <el-menu-item-group title="Actions">
-                        <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>Add a new note</span></el-menu-item>
+                        <el-menu-item index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>Add a new note</span></el-menu-item>
                     
                     </el-menu-item-group>
                     <el-menu-item-group title="Your writings">
@@ -28,7 +28,7 @@
                     <el-menu-item-group title="Your categories">
                         <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><collection /></el-icon><span>Notebooks</span> 
                     </el-menu-item>
-                    <el-menu-item index="1-4"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><price-tag /></el-icon><span>Tags</span></el-menu-item>
+                    <el-menu-item index="1-4" @click="isTagIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><price-tag /></el-icon><span>Tags</span></el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
                 <el-menu-item index="2">
@@ -47,7 +47,7 @@
 
 
         </el-menu>
-        <el-dialog title="Your notebook" v-model="isNotebookIndexVisiable">
+        <el-dialog title="Notebook" v-model="isNotebookIndexVisiable">
                 <el-scrollbar height="340px" width="330px">
                     <el-card :id="notebook.id" class="notebook-card" style="margin-bottom:10px;" v-for="notebook in existingNotebooks" :key="notebook.name">
                          <span style="margin-right:50px;">{{notebook.name}}</span> 
@@ -58,6 +58,15 @@
                         </div>
                     </el-card>
                         
+                </el-scrollbar>
+        </el-dialog>
+        <el-dialog title="Tags" v-model="isTagIndexVisiable">
+                <el-scrollbar height="340px" width="330px">
+                    <el-tag type="info" style="margin-right:5px; margin-bottom:5px;" 
+                    :id="tag.id" v-for="tag in existingTags" :key="tag.name" effect="plain" 
+                    closable @close="removeTag(tag.id)">
+                        {{tag.name}}
+                    </el-tag>                        
                 </el-scrollbar>
         </el-dialog>
 
@@ -73,6 +82,7 @@
 import { Options, Vue } from 'vue-class-component';
 import {Database} from '../database';
 import { NotebookItem }  from '../NotebookItem';
+import { TagItem }  from '../TagItem';
 import MainPage from './MainPage.vue';
 import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
@@ -102,18 +112,27 @@ export default class Frame extends Vue {
   db! : Database;
   notefilter = "bulabula?bula"
   isNoteDisplayVisible = true;
+
   isNotebookIndexVisiable = false;
+  isTagIndexVisiable = false;
 
   existingNotebooks:NotebookItem[] = [];
+  existingTags:TagItem[] = [];
 
 
   mounted() {
       this.db = new Database();
       this.fetchNotebookList();
+      this.fetchTagList();
     
       bus.on('update_notebook_list',()=> {
         this.$nextTick(() => {this.existingNotebooks = [];});
-        this.$nextTick(() => {this.fetchNotebookList();})
+        this.$nextTick(() => {this.fetchNotebookList();})   
+      })  
+
+      bus.on('update_tag_list',()=> {
+        this.$nextTick(() => {this.existingTags = [];});
+        this.$nextTick(() => {this.fetchTagList();})
         
       })  
   }
@@ -142,7 +161,7 @@ export default class Frame extends Vue {
       this.db.notebooks.toArray().then(notebooks => {
           notebooks.forEach(notebook => {
             this.existingNotebooks.push(new NotebookItem(
-                  notebook.notebook,notebook.id
+                  notebook.name,notebook.id
               ));
           })
       }).catch(e => {
@@ -185,12 +204,58 @@ export default class Frame extends Vue {
         this.removeNotebookOnEachNote(toBeRemovedNotebookName);
 
   }
+
+  public fetchTagList() : void {
+      this.db.tags.toArray().then(tags => {
+          tags.forEach(tag => {
+            this.existingTags.push(new TagItem(
+                  tag.name,tag.id
+              ));
+          })
+      }).catch(e => {
+          console.log(e)
+      })
+  }  
+  
+  public removeTag(tagid : number) : void {
+      this.db.tags.get(tagid).then(res => {
+          this.db.tags.delete(res!.id!).then(()=>{
+              this.disappearAnime(String(tagid));
+              setTimeout(()=>{
+                  this.removeTagLocal(tagid);
+              },700)
+          }).catch(e => {
+              console.log(e);
+          });
+      })
+  }
+
+  public removeTagLocal(tagid:number) : void {
+        
+        var targetIndex = 0;
+        var counter = 0;
+        var toBeRemovedTagName = '';
+
+        this.existingTags.forEach(tagItem => {
+            if(tagItem.id == tagid){
+                targetIndex = counter;
+                toBeRemovedTagName  = tagItem.name;
+            }
+            else{
+                counter += 1;
+            } 
+        })
+
+        this.existingTags.splice(targetIndex,1)
+        this.existingTags = [];
+        this.fetchTagList();
+        this.removeTagOnEachNote(toBeRemovedTagName);
+
+  }
   
   public disappearAnime(id:string) : void {
 
       var tobeDelNotebook = document.getElementById(id);
-
-
       anime({
         targets: tobeDelNotebook,
         opacity:[1,0],
@@ -198,6 +263,10 @@ export default class Frame extends Vue {
         duration:300
       })
 
+  }
+
+  public removeTagOnEachNote(tag:string){
+      bus.emit("remove-tag-on-note",(tag));
   }
 
   public removeNotebookOnEachNote(notebook:string){

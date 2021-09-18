@@ -13,12 +13,12 @@ export interface INote{
 
 export interface INotebooks{
     id?:number;
-    notebook:string;
+    name:string;
 }
 
 export interface ITags{
     id?:number;
-    tag:string;
+    name:string;
 }
 
 export class Database extends Dexie {
@@ -33,8 +33,8 @@ export class Database extends Dexie {
         
         this.version(1).stores({
             notes: '++id,content,tag,notebook,date,isdone',
-            notebooks: '++id, notebook',
-            tags:'++id,tag',
+            notebooks: '++id, name',
+            tags:'++id,name',
         });
 
         this.notes = this.table("notes");
