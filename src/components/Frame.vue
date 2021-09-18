@@ -204,7 +204,7 @@ export default class Frame extends Vue {
 .mainFrame{
     height: 635px;
     width: 910px;
-    background: red;
+    background: white;
     position: absolute;
     
 }
@@ -215,7 +215,7 @@ export default class Frame extends Vue {
     float:left;
     position: relative;
     right: 10px;    
-    background:green;
+    background:white;
 }
 
 .side-nav-bar{
@@ -223,7 +223,7 @@ export default class Frame extends Vue {
     height: 685px;
     position: absolute;
     bottom: 0px;
-    background:purple;
+    background:white;
 }
 
 .main-display{

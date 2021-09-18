@@ -205,7 +205,7 @@ export default class MainPage extends Vue {
     width: 100%;
     position: relative;
     bottom: 6px;
-    background: green;
+    background: white;
 }
 
 .note-display-area{
@@ -213,7 +213,7 @@ export default class MainPage extends Vue {
   width: 102%;
   position: relative;
   bottom: 6px;
-  background:cyan;
+  background:white;
 }
 
 /* .note-timeline-area{
