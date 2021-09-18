@@ -102,7 +102,11 @@ export default class MainPage extends Vue {
         this.listOfNotes = [];
         this.fetchDataWithFilter(this.db,"archive?bula");
 
-    })  
+    });
+    
+    bus.on('filter-tag', (tagName) => { 
+      this.fetchDataWithFilter(this.db,"tag?"+tagName);
+    })
 
   }
 
@@ -140,7 +144,7 @@ export default class MainPage extends Vue {
   }
   
   public fetchDataWithFilter(db:Database, filter:string) : void {
-    
+    this.listOfNotes = [];
     var cmd: string;
     var param : string;
     
@@ -184,14 +188,16 @@ export default class MainPage extends Vue {
 
   private _fetchNotesWithTag(db: Database,tag:string) : void{
 
-     var noteData = db.notes.where('tags').equals(tag).toArray().then(notes => {
+     var noteData = db.notes.filter((note) => {
+       return note.tag.indexOf(tag) != -1 
+     }).toArray().then(notes => {
         notes.forEach(note => {
           this.listOfNotes.push(new NoteStruct(
             note.content,note.tag, note.notebook,note.date,note.isdone,note.id
           ));
         }
         )
-     });
+     })
   }
 
 

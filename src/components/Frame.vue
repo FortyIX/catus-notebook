@@ -66,7 +66,7 @@
                     <el-tag type="info" style="margin-right:5px; margin-bottom:5px;" 
                     :id="tag.id" v-for="tag in existingTags" :key="tag.name" effect="plain" 
                     closable @close="removeTag(tag.id)">
-                        {{tag.name}}
+                        <button @click= "filterTag(tag.name)"> {{tag.name}}</button>
                     </el-tag>                        
                 </el-scrollbar>
         </el-dialog>
@@ -272,6 +272,16 @@ export default class Frame extends Vue {
 
   public removeNotebookOnEachNote(notebook:string){
       bus.emit("remove-notebook-on-note",(notebook));
+  }
+
+  public filterTag(tag:string){
+      console.log("claled")
+      bus.emit("filter-tag",(tag));
+  }
+
+  public filterNotebook(notebook : string){
+      bus.emit("filter-notebook",(notebook));
+      this.isTagIndexVisiable = false;
   }
 
 
