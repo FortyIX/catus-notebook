@@ -8,6 +8,7 @@
                 :collapse="true"
                 background-color="#002060"
                 text-color="white"
+                active-text-color="white"
                 default-active="1"
                 >
                 <el-sub-menu index="1">

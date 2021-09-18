@@ -82,6 +82,8 @@ import {Database} from '../database';
 import bus from '../bus';
 import dayjs from 'dayjs';
 import anime from "animejs/lib/anime.es.js";
+import { ElSteps } from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 @Options({
 
@@ -267,9 +269,19 @@ export default class Main extends Vue {
   public confirmInputHandlerforTag() : void {
      var newTagDataValidator = this.newTagData;
      if(newTagDataValidator){
-       this.updateTagIndex(newTagDataValidator);
-       this.tagsHolder.push(newTagDataValidator);
+       if(this.tagsHolder.indexOf(newTagDataValidator) != -1){
+         this.updateTagIndex(newTagDataValidator);
+         this.tagsHolder.push(newTagDataValidator);
+       }
+       else{
+         //repeated
+       }
      }
+     else{
+       //error
+     }
+
+
      this.isAddingNewTag = false;
      this.newTagData = '';
 
@@ -279,8 +291,21 @@ export default class Main extends Vue {
   public confirmInputHandlerforNotebook() : void {
      var newNotebookDataValidator = this.newNotebookData;
      if(newNotebookDataValidator){
-       this.updateNotebookIndex(newNotebookDataValidator);
-       this.notebooksHolder.push(newNotebookDataValidator);
+       if(this.notebooksHolder.indexOf(newNotebookDataValidator) != -1){
+          this.updateNotebookIndex(newNotebookDataValidator);
+          this.notebooksHolder.push(newNotebookDataValidator);
+       }
+       else{
+         //repeated
+       }
+
+     }
+     else{
+      ElMessage({
+          showClose: true,
+          message: 'Oops, this is a error message.',
+          type: 'error',
+        })
      }
      this.isAddingNewNotebook = false;
      this.newNotebookData = '';
