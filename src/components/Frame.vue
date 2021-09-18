@@ -51,7 +51,7 @@
         <el-dialog title="Notebook" v-model="isNotebookIndexVisiable">
                 <el-scrollbar height="340px" width="330px">
                     <el-card :id="notebook.id" class="notebook-card" style="margin-bottom:10px;" v-for="notebook in existingNotebooks" :key="notebook.name">
-                         <span style="margin-right:50px;">{{notebook.name}}</span> 
+                         <span style="margin-right:50px; position:relative; top:5px;">{{notebook.name}}</span> 
                         <div class="control-region" style="float:right; margin-bottom:20px;"> 
                          <el-divider direction="vertical"></el-divider>   
                          <el-button size="mini" style="margin-left:30px;" icon="el-icon-search" circle></el-button>

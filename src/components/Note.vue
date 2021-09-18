@@ -274,7 +274,11 @@ export default class Main extends Vue {
          this.tagsHolder.push(newTagDataValidator);
        }
        else{
-         //repeated
+        ElMessage({
+          showClose: true,
+          message: 'Oops, you cannot set repeated tag for your note',
+          type: 'error',
+        })
        }
      }
      else{
@@ -296,7 +300,11 @@ export default class Main extends Vue {
           this.notebooksHolder.push(newNotebookDataValidator);
        }
        else{
-         //repeated
+        ElMessage({
+          showClose: true,
+          message: 'Oops, you cannot add your note to same notebook twice',
+          type: 'error',
+        })
        }
 
      }
