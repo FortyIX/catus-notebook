@@ -106,7 +106,11 @@ export default class MainPage extends Vue {
     
     bus.on('filter-tag', (tagName) => { 
       this.fetchDataWithFilter(this.db,"tag?"+tagName);
-    })
+    });
+
+    bus.on('filter-notebook', (notebookName) => { 
+      this.fetchDataWithFilter(this.db,"notebook?"+notebookName);
+    });
 
   }
 
@@ -160,7 +164,11 @@ export default class MainPage extends Vue {
         case 'tag':
           this._fetchNotesWithTag(db,param);
           break;
-      
+
+        case 'notebook':
+          this._fetchNotesWithNotebook(db,param);
+          break;
+
         default:
           this.fetchUnarchivedNotes(db);
           break;
@@ -190,6 +198,20 @@ export default class MainPage extends Vue {
 
      var noteData = db.notes.filter((note) => {
        return note.tag.indexOf(tag) != -1 
+     }).toArray().then(notes => {
+        notes.forEach(note => {
+          this.listOfNotes.push(new NoteStruct(
+            note.content,note.tag, note.notebook,note.date,note.isdone,note.id
+          ));
+        }
+        )
+     })
+  }
+
+  private _fetchNotesWithNotebook(db: Database,notebook:string) : void{
+
+     var noteData = db.notes.filter((note) => {
+       return note.notebook.indexOf(notebook) != -1 
      }).toArray().then(notes => {
         notes.forEach(note => {
           this.listOfNotes.push(new NoteStruct(

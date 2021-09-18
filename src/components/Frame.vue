@@ -54,7 +54,7 @@
                          <span style="margin-right:50px; position:relative; top:5px;">{{notebook.name}}</span> 
                         <div class="control-region" style="float:right; margin-bottom:20px;"> 
                          <el-divider direction="vertical"></el-divider>   
-                         <el-button size="mini" style="margin-left:30px;" icon="el-icon-search" circle></el-button>
+                         <el-button size="mini" style="margin-left:30px;" icon="el-icon-search" @click="filterNotebook(notebook.name)" circle></el-button>
                          <el-button size="mini"  icon="el-icon-delete" @click="removeNotebook(notebook.id)" circle></el-button>
                         </div>
                     </el-card>
@@ -275,13 +275,13 @@ export default class Frame extends Vue {
   }
 
   public filterTag(tag:string){
-      console.log("claled")
       bus.emit("filter-tag",(tag));
+      this.isTagIndexVisiable = false;
   }
 
   public filterNotebook(notebook : string){
       bus.emit("filter-notebook",(notebook));
-      this.isTagIndexVisiable = false;
+      this.isNotebookIndexVisiable = false;
   }
 
 
