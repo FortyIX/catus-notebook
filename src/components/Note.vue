@@ -3,8 +3,8 @@
 <!-- Each note -->
 <el-card :id="id" class="notes" shadow="always">
     <!-- Main body               -->
-    <span v-if="!isEditingContent" class="notes-text"><p align="left" v-html="contentParsed"></p></span>
-    <el-input v-else type="textarea" v-model="editingContent"></el-input>
+    <div v-if="!isEditingContent" class="notes-text"><p align="left" :innerHTML="contentParsed"></p></div>
+    <Editor v-else :loadedContent="contentParsed"></Editor>
     <br/>
 
     <!-- Control area -->
@@ -15,7 +15,7 @@
           <el-icon v-if="!isEditingContent&&!archived"  style="width: 2em; height: 2em; margin-right: 5px;" @click="archive" ><circle-check-filled /></el-icon>
           
           <!-- Finish editing note content button -->
-          <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="updateNote" ><circle-check-filled /></el-icon>
+          <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="getContentAndupdateNote(id)" ><circle-check-filled /></el-icon>
           
           <!-- Tags  -->
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
@@ -77,14 +77,15 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight} from '@element-plus/icons';
-
 import {Database} from '../database';
+
+
 import bus from '../bus';
 import dayjs from 'dayjs';
 import anime from "animejs/lib/anime.es.js";
 import { ElSteps } from 'element-plus';
 import { ElMessage } from 'element-plus';
-
+import Editor from './Editor.vue';
 @Options({
 
     props:{
@@ -102,13 +103,14 @@ import { ElMessage } from 'element-plus';
       Timer,
       Notebook,
       Edit,
+      Editor,
       RefreshRight
     }
 })
 
 
 
-export default class Main extends Vue {
+export default class Note extends Vue {
 
   //props 
   date! : number;
@@ -183,6 +185,58 @@ export default class Main extends Vue {
     ];
 
 
+  renderedHTMLStylesheet = `
+        <style>    
+          table {
+            border-top: 1px solid #ccc;
+            border-left: 1px solid #ccc;
+          }
+          table td,
+          table th {
+            border-bottom: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            padding: 3px 5px;
+          }
+          table th {
+            border-bottom: 2px solid #ccc;
+            text-align: center;
+          }
+
+
+          blockquote {
+            display: block;
+            border-left: 8px solid #d0e5f2;
+            padding: 5px 10px;
+            margin: 10px 0;
+            line-height: 1.4;
+            font-size: 100%;
+            background-color: #f1f1f1;
+          }
+
+          code {
+            display: inline-block;
+            *display: inline;
+            *zoom: 1;
+            background-color: #f1f1f1;
+            border-radius: 3px;
+            padding: 3px 5px;
+            margin: 0 3px;
+          }
+          pre code {
+            display: block;
+          }
+
+
+          ul, ol {
+            margin: 10px 0 10px 20px;
+          }
+        </style>    
+        `;
+
+
+
+
+
 
   created(){
  
@@ -204,6 +258,7 @@ export default class Main extends Vue {
 
     this.fetchNotebookList();
     this.fetchTagsList();
+    
 
     bus.on('remove-notebook-on-note',(notebook) => {
 
@@ -226,6 +281,11 @@ export default class Main extends Vue {
     bus.on('update_autocomplete_tag',() => {
         this.$nextTick(() => {this.existingTags = [];});
         this.$nextTick(() => {this.fetchTagsList();});
+    })
+
+    bus.on('transfer_editing'+String(this.id), (html) => {
+     var htmlString: any = html;  
+     this.updateNote(htmlString)
     })
 
 
@@ -342,6 +402,12 @@ export default class Main extends Vue {
     this.isEditingContent = !this.isEditingContent;
   }
 
+  public getContentAndupdateNote(id:any) : void {
+    bus.emit('get_editing_content_signal',(id));
+  }
+
+
+
   public updateTagIndex(newTag:string) : void {
     this.db.tags.where('name').equals(newTag).toArray().then((existingData) => {
        if(existingData.length == 0){
@@ -432,13 +498,12 @@ export default class Main extends Vue {
 
   }
 
-  public updateNote(): void {
+  public updateNote(editorHTMLString : string): void {
 
-    //import the markdown parser
-    const marked = require('marked')
+    // //import the markdown parser
+    // const marked = require('marked')
 
-    //parse the plain text into markdown and update the UI
-    this.contentParsed = marked(this.editingContent);
+    this.contentParsed = editorHTMLString + this.renderedHTMLStylesheet;
 
     //hide the edit form 
     this.isEditingContent = false;
