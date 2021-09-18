@@ -16,20 +16,23 @@
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;"   :size="20"><notebook/></el-icon> 
                     <span>Browse</span>
                     </template>
-                    <el-menu-item-group title="Actions">
-                        <el-menu-item index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>Add a new note</span></el-menu-item>
+                    <el-menu-item-group>
+                        <p style="color:white;">{{$t('menu.actions')}}</p>
+                        <el-menu-item index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
                     
                     </el-menu-item-group>
-                    <el-menu-item-group title="Your writings">
+                    <el-menu-item-group>
+                        <p style="color:white;">{{$t('menu.yourWriting')}}</p>
                         <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><document /></el-icon>
-      <span>Notes</span></el-menu-item>
+      <span>{{$t('menu.note')}}</span></el-menu-item>
                         <el-menu-item index="1-2" @click="showArchivedNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><takeaway-box /></el-icon>
-      <span>Archive</span></el-menu-item>
+      <span>{{$t('menu.archive')}}</span></el-menu-item>
                     </el-menu-item-group>
-                    <el-menu-item-group title="Your categories">
-                        <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><collection /></el-icon><span>Notebooks</span> 
+                    <el-menu-item-group>
+                        <p style="color:white;">{{$t('menu.yourCate')}}</p>
+                        <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><collection /></el-icon><span>{{$t('menu.notebooks')}}</span> 
                     </el-menu-item>
-                    <el-menu-item index="1-4" @click="isTagIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><price-tag /></el-icon><span>Tags</span></el-menu-item>
+                    <el-menu-item index="1-4" @click="isTagIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><price-tag /></el-icon><span>{{$t('menu.tags')}}</span></el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
                 <el-menu-item index="2">
@@ -48,8 +51,9 @@
 
 
         </el-menu>
-        <el-dialog title="Notebook" v-model="isNotebookIndexVisiable">
-                <el-scrollbar height="340px" width="330px">
+        <el-dialog v-model="isNotebookIndexVisiable">
+                <h3>{{$t('menu.notebooks')}}</h3>
+                <el-scrollbar height="340px" width="330px" style="margin-top:10px;">
                     <el-card :id="notebook.id" class="notebook-card" style="margin-bottom:10px;" v-for="notebook in existingNotebooks" :key="notebook.name">
                          <span style="margin-right:50px; position:relative; top:5px;">{{notebook.name}}</span> 
                         <div class="control-region" style="float:right; margin-bottom:20px;"> 
@@ -61,7 +65,8 @@
                         
                 </el-scrollbar>
         </el-dialog>
-        <el-dialog title="Tags" v-model="isTagIndexVisiable">
+        <el-dialog v-model="isTagIndexVisiable">
+                <h3>{{$t('menu.tags')}}</h3>
                 <el-scrollbar height="340px" width="330px">
                     <el-tag type="info" style="margin-right:5px; margin-bottom:5px;" 
                     :id="tag.id" v-for="tag in existingTags" :key="tag.name" effect="plain" 
@@ -87,7 +92,7 @@ import { TagItem }  from '../TagItem';
 import MainPage from './MainPage.vue';
 import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
-
+import {useI18n} from "vue-i18n"
 //import element svg icons
 import { Calendar,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Collection,Document,PriceTag} from '@element-plus/icons'
 
@@ -120,8 +125,22 @@ export default class Frame extends Vue {
   existingNotebooks:NotebookItem[] = [];
   existingTags:TagItem[] = [];
 
+  locale!: any
+  t!:any
+
+  uiText!: any
+
 
   mounted() {
+      
+      const {locale,t} = useI18n();
+       this.locale = locale;
+       this.t = t; 
+
+       this.uiText = {
+      notebooks : this.t('menu.notebooks')
+      }
+
       this.db = new Database();
       this.fetchNotebookList();
       this.fetchTagList();
@@ -337,3 +356,7 @@ export default class Frame extends Vue {
     height: auto;
 }
 </style>
+
+function $t(arg0: string) {
+  throw new Error('Function not implemented.');
+}

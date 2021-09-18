@@ -49,15 +49,14 @@
 
         </span> 
     </div>
-    <el-dialog title="Reminder" v-model="isSelectingTime">
-
+    <el-dialog v-model="isSelectingTime">
         <el-date-picker
-          v-model="dateTimeSelected"
-          type="datetime"
-          placeholder="Select date and time"
-          :shortcuts="shortcuts"
-        >
-    </el-date-picker>
+              v-model="dateTimeSelected"
+              type="datetime"
+              placeholder="Select date and time"
+              :shortcuts="shortcuts"
+            >
+        </el-date-picker>
 
   <template #footer>
     <span class="dialog-footer">
@@ -86,6 +85,8 @@ import anime from "animejs/lib/anime.es.js";
 import { ElSteps } from 'element-plus';
 import { ElMessage } from 'element-plus';
 import Editor from './Editor.vue';
+
+
 @Options({
 
     props:{
