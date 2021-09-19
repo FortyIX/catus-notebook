@@ -81,7 +81,7 @@
       </div>
       <div class="main-display">
            <div id="main-page"><MainPage :noteFilter="notefilter"/></div>
-           <div id="calander-page"  hidden><CanladerPage/></div> 
+           <div id="calander-page"  hidden><CalendarPage/></div> 
       </div>
   </div>
 </template>
@@ -95,7 +95,7 @@ import MainPage from './MainPage.vue';
 import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
 import {useI18n} from "vue-i18n"
-import CanladerPage from './CalanderView.vue';
+import CalendarPage from './CalendarView.vue';
 
 //import element svg icons
 import { Calendar,Delete,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Collection,Document,PriceTag,ArrowLeft} from '@element-plus/icons'
@@ -117,7 +117,7 @@ import { Calendar,Delete,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Co
         Document,
         PriceTag,
         MainPage,
-        CanladerPage,        
+        CalendarPage,        
     }
 })
 export default class Frame extends Vue {
@@ -364,7 +364,6 @@ export default class Frame extends Vue {
     left:50px;
     width: 900px;
     height: 100%;
-    background: cyan;
 }
 
 .add-note-btn{

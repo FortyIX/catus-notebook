@@ -1,6 +1,9 @@
 <template>
 <div class="mainPage">
   <div class="mainWindow">
+    <div class="calendar-view">
+    <Calendar />
+    </div>
   </div>    
 </div> 
 </template>
@@ -11,14 +14,19 @@ import { Options, Vue } from 'vue-class-component';
 import {Database} from '../database';
 import bus from '../bus'
 import { ElMessage } from 'element-plus';
-
+import Calendar from './Calendar.vue';
 import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook, NoSmoking} from '@element-plus/icons'
 
+@Options({
+    components:{
+       Calendar      
+    }
+})
 
 
 
-export default class CanladerPage extends Vue {
 
+export default class CalendarPage extends Vue {
 
 }
 </script>
@@ -28,9 +36,13 @@ export default class CanladerPage extends Vue {
 .mainWindow{
     height: 665px;
     width: 100%;
-    position: relative;
     bottom: 6px;
-    background: white;
+}
+
+.calendar-view{
+  float: right;
+  position: absolute;
+  /* bottom: 665px; */
 }
 
 
