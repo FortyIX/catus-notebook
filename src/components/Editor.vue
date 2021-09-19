@@ -11,13 +11,15 @@ import E from "wangeditor";
   @Options({
 
     props: {
-      loadedContent : String
+      loadedContent : String,
+      assignedNote : Number,
     }
 
   })
 export default class Editor extends Vue {
   loadedContent!:string;
   htmlContent!:string;
+  assignedNote! : number;
   
   mounted(){
     
@@ -38,8 +40,10 @@ export default class Editor extends Vue {
     editorArea.txt.html(this.loadedContent);
   }
 
-  public sendBackHtml(noteID:string) : void {
-      bus.emit('transfer_editing'+noteID,(this.htmlContent));
+  public sendBackHtml(noteID : number) : void {
+     if(noteID == this.assignedNote){
+        bus.emit('transfer_editing'+String(this.assignedNote),(this.htmlContent));
+     }
   }
 
 

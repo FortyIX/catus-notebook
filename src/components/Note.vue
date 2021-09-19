@@ -4,7 +4,7 @@
 <el-card :id="id" class="notes" shadow="always">
     <!-- Main body               -->
     <div v-if="!isEditingContent" class="notes-text"><p align="left" :innerHTML="contentParsed"></p></div>
-    <Editor v-else :loadedContent="contentParsed"></Editor>
+    <Editor v-else :loadedContent="contentParsed" :assignedNote="id"></Editor>
     <br/>
 
     <!-- Control area -->
