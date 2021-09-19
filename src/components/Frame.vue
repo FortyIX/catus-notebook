@@ -7,7 +7,7 @@
                 class="side-nav-bar"
                 :collapse="true"
                 text-color="grey"
-                active-text-color="white"
+                active-text-color="grey"
                 default-active="1"
                 >
                 <el-sub-menu index="1">
