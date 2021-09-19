@@ -119,7 +119,7 @@ export default class MainPage extends Vue {
 
     });
 
-    bus.on('reload_all_notex', () => {
+    bus.on('reload_all_notes', () => {
       this.fetchDataWithFilter(this.db,"bulabula");
     })
     
@@ -164,8 +164,6 @@ export default class MainPage extends Vue {
 
 
   public fetchUnarchivedNotes(db: Database) : void{
-
-
 
      var noteData = db.notes.where('isdone').equals(0).toArray().then(notes => {
         notes.forEach(note => {
