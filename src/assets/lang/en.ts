@@ -3,6 +3,7 @@ module.exports = {
         actions: "Actions",
         addNewNote : "Add a new note",
         yourWriting : "Your writings",
+        delete:"Delete all",
         note : "Note",
         archive : "Archive",
         yourCate : "Your categories",

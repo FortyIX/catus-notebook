@@ -130,6 +130,10 @@ export default class MainPage extends Vue {
       this.fetchDataWithFilter(this.db,"notebook?"+notebookName);
     });
 
+    bus.on('remove-all-archived-notes', () => {
+      this.removeAllArchivedNotes();
+    })
+
   }
 
 

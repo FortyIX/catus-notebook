@@ -3,6 +3,7 @@ module.exports = {
         actions: "操作",
         addNewNote : "新建笔记",
         yourWriting : "您的笔记",
+        delete:"删除全部",
         note : "笔记",
         archive : "已归档笔记",
         yourCate : "您的分类",

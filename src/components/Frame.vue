@@ -19,7 +19,7 @@
                     <el-menu-item-group>
                         <p style="color:white; margin-left: 25px; ">{{$t('menu.actions')}}</p>
                         <el-menu-item v-if="isNotArchive" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
-                        <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><delete /></el-icon><span>{{$t('menu.addNewNote')}}</span></el-menu-item>
+                        <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group>
                         <p style="color:white; margin-left: 25px;">{{$t('menu.yourWriting')}}</p>
@@ -168,9 +168,11 @@ export default class Frame extends Vue {
   }
 
   public showArchivedNotes() : void {
+      this.isNotArchive = false;
       bus.emit('reload_notes_with_undo_note');
   }
   public showAllNotes () : void {
+      this.isNotArchive = true;
       bus.emit('reload_all_notex');
   }
   
@@ -283,6 +285,7 @@ export default class Frame extends Vue {
   }
 
   public removeTagOnEachNote(tag:string){
+      
       bus.emit("remove-tag-on-note",(tag));
   }
 
