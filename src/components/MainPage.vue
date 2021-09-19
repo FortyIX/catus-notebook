@@ -25,6 +25,7 @@ import { Options, Vue } from 'vue-class-component';
 import {Database} from '../database';
 import bus from '../bus'
 import Note from './Note.vue';
+import { ElMessage } from 'element-plus';
 
 import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook, NoSmoking} from '@element-plus/icons'
 
@@ -82,8 +83,10 @@ export default class MainPage extends Vue {
      this.fetchDataWithFilter(this.db,this.noteFilter);  
 
     bus.on('add-note-event',() => {
+      console.log("add one")
       this.addNote();
-     }) 
+     });
+    
 
     bus.on('reload_notes_with_removed_note', (id) => {
 
@@ -114,6 +117,10 @@ export default class MainPage extends Vue {
         this.fetchDataWithFilter(this.db,"archive?bula");
 
     });
+
+    bus.on('reload_all_notex', () => {
+      this.fetchDataWithFilter(this.db,"bulabula");
+    })
     
     bus.on('filter-tag', (tagName) => { 
       this.fetchDataWithFilter(this.db,"tag?"+tagName);
@@ -250,6 +257,18 @@ export default class MainPage extends Vue {
         this.isEmpty = false;
       }
      })
+  }
+
+  public removeAllArchivedNotes() : void {
+    console.log("run")
+    this.db.notes.where('isdone').equals(1).delete().then(()=> {
+      this.fetchDataWithFilter(this.db,"archive?bula");
+      ElMessage({
+          showClose: true,
+          message: 'All your archived notes have been deleteds',
+          type: 'success',
+        })
+    })
   }
 
 

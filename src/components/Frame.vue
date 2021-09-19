@@ -19,7 +19,7 @@
                     <el-menu-item-group>
                         <p style="color:white; margin-left: 25px; ">{{$t('menu.actions')}}</p>
                         <el-menu-item v-if="isNotArchive" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
-                    
+                        <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><delete /></el-icon><span>{{$t('menu.addNewNote')}}</span></el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group>
                         <p style="color:white; margin-left: 25px;">{{$t('menu.yourWriting')}}</p>
@@ -79,7 +79,7 @@
             
       </div>
       <div class="main-display">
-           <MainPage :noteFilter="notefilter" v-if="isNoteDisplayVisible"/> 
+           <MainPage :noteFilter="notefilter"/> 
       </div>
   </div>
 </template>
@@ -94,7 +94,7 @@ import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
 import {useI18n} from "vue-i18n"
 //import element svg icons
-import { Calendar,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Collection,Document,PriceTag} from '@element-plus/icons'
+import { Calendar,Delete,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Collection,Document,PriceTag} from '@element-plus/icons'
 
 @Options({
     components:{
@@ -103,6 +103,7 @@ import { Calendar,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Collectio
         Setting,
         Finished,
         Edit,
+        Delete,
         More,
         TakeawayBox,
         Plus,
@@ -117,7 +118,6 @@ export default class Frame extends Vue {
   
   db! : Database;
   notefilter = "bulabula?bula"
-  isNoteDisplayVisible = true;
 
   isNotebookIndexVisiable = false;
   isTagIndexVisiable = false;
@@ -132,13 +132,14 @@ export default class Frame extends Vue {
   uiText!: any
 
 
+
   mounted() {
       
       const {locale,t} = useI18n();
        this.locale = locale;
        this.t = t; 
 
-       this.uiText = {
+      this.uiText = {
       notebooks : this.t('menu.notebooks')
       }
 
@@ -157,27 +158,20 @@ export default class Frame extends Vue {
         
       })  
   }
-  
-  public reloadNoteDisplayPage() : void {
-
-     this.isNoteDisplayVisible = false;
-     this.$nextTick(() => (this.isNoteDisplayVisible = true))
-  
-  }
 
   public addNote() : void {
-      bus.emit("add-note-event")    
+      bus.emit("add-note-event");    
+  }
+
+  public removeAllArchivedNote() : void {
+    bus.emit("remove-all-archived-notes");
   }
 
   public showArchivedNotes() : void {
-      this.isNotArchive = false;
-      this.notefilter = "archive?*";
-      this.reloadNoteDisplayPage();
+      bus.emit('reload_notes_with_undo_note');
   }
   public showAllNotes () : void {
-      this.isNotArchive = true;
-      this.notefilter = "note?*";
-      this.reloadNoteDisplayPage();   
+      bus.emit('reload_all_notex');
   }
   
   public fetchNotebookList() : void {
