@@ -18,7 +18,7 @@
                     </template>
                     <el-menu-item-group>
                         <p style="color:white; margin-left: 25px; ">{{$t('menu.actions')}}</p>
-                        <el-menu-item index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
+                        <el-menu-item v-if="isNotArchive" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
                     
                     </el-menu-item-group>
                     <el-menu-item-group>
@@ -121,6 +121,7 @@ export default class Frame extends Vue {
 
   isNotebookIndexVisiable = false;
   isTagIndexVisiable = false;
+  isNotArchive = true;
 
   existingNotebooks:NotebookItem[] = [];
   existingTags:TagItem[] = [];
@@ -169,10 +170,12 @@ export default class Frame extends Vue {
   }
 
   public showArchivedNotes() : void {
+      this.isNotArchive = false;
       this.notefilter = "archive?*";
       this.reloadNoteDisplayPage();
   }
   public showAllNotes () : void {
+      this.isNotArchive = true;
       this.notefilter = "note?*";
       this.reloadNoteDisplayPage();   
   }
