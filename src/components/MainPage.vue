@@ -3,9 +3,9 @@
   <div class="mainWindow">
       <div class="note-display-area">
           <div class="welcome"> 
-            <div v-if="isEmpty">  
-              <img src="../assets/logo_white.png" style="opacity:0.7;" height="180" width="180">
-              <p style="color:grey;">{{$t('welcomePage.message1')}} <el-icon style="width: 10px; height: 10px; margin-right: 10px; color:grey; position:relative; top:5px;"   :size="20"><notebook/></el-icon> {{$t('welcomePage.message2')}}</p>
+            <div v-if="isEmpty" class="welcome-content">  
+              <img src="../assets/logo_transparent.png" style="opacity:0.5;" height="180" width="180">
+              <p style="color:grey; opacity:0.5;">{{$t('welcomePage.message1')}} <el-icon style="width: 10px; height: 10px; margin-right: 10px; color:grey; position:relative; top:5px;"   :size="20"><expand/></el-icon> {{$t('welcomePage.message2')}}</p>
             </div>
           </div>
           
@@ -27,7 +27,7 @@ import bus from '../bus'
 import Note from './Note.vue';
 import { ElMessage } from 'element-plus';
 
-import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook, NoSmoking} from '@element-plus/icons'
+import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook, Expand} from '@element-plus/icons'
 
 
 @Options({
@@ -40,6 +40,7 @@ import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook, NoSmoking} from 
       CircleCheckFilled,
       CaretBottom,
       PriceTag,
+      Expand,
       Timer,
       Notebook
     }
@@ -340,15 +341,28 @@ export default class MainPage extends Vue {
 
 .welcome{
   position: relative;
-  top:130px;
-  right:30px; ;
+  top:150px;
+  left:210px; ;
+  height: 300px;
+  width: 500px;
+  background:white;
+  /* #001B50; */
+  opacity:1;
+  border-radius: 20px;
+}
+
+.welcome-content{
+  position: absolute;
+  left:90px;
+  top:40px;
 }
 
 .archive-empty{
   position: relative;
   top:180px;
-
 }
+
+
 
 
 

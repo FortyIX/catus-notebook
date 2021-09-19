@@ -6,22 +6,28 @@
         <el-menu
                 class="side-nav-bar"
                 :collapse="true"
-                background-color="#002060"
+                background-color="#001B50"
                 text-color="white"
                 active-text-color="white"
                 default-active="1"
                 >
                 <el-sub-menu index="1">
                     <template #title>
-                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;"   :size="20"><notebook/></el-icon> 
+                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><expand /></el-icon> 
                     <span>Browse</span>
                     </template>
                     <el-menu-item-group>
                         <p style="color:white; margin-left: 25px; ">{{$t('menu.actions')}}</p>
-                        <el-menu-item v-if="isNotArchive&&!isCalanderPage" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
+                        <el-menu-item v-if="isNotArchive&&!isCalanderPage" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><circle-plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
                         <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
                         <el-menu-item v-if="isCalanderPage" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
                     </el-menu-item-group>
+                </el-sub-menu>
+                <el-sub-menu index="2">
+                    <template #title>
+                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><notebook /></el-icon> 
+                    <span>Browse</span>
+                    </template>
                     <el-menu-item-group>
                         <p style="color:white; margin-left: 25px;">{{$t('menu.yourWriting')}}</p>
                         <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><document /></el-icon>
@@ -36,16 +42,16 @@
                     <el-menu-item index="1-4" @click="isTagIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><price-tag /></el-icon><span>{{$t('menu.tags')}}</span></el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
-                <el-menu-item index="2" @click="switchToCalander">
+                <el-menu-item index="3" @click="switchToCalander">
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><calendar /></el-icon> 
                     <span>Navigator Two</span>
                 </el-menu-item>
-                <el-menu-item index="3">
+                <el-menu-item index="4">
                     
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><more /></el-icon>
                     <span>Navigator Three</span>
                 </el-menu-item>
-                <el-menu-item index="4">
+                <el-menu-item index="5">
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><setting/></el-icon>
                     <span>Navigator Four</span>
                 </el-menu-item>
@@ -98,7 +104,7 @@ import {useI18n} from "vue-i18n"
 import CalendarPage from './CalendarView.vue';
 
 //import element svg icons
-import { Calendar,Delete,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Collection,Document,PriceTag,ArrowLeft} from '@element-plus/icons'
+import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,CirclePlus,Document,Collection,PriceTag,ArrowLeft} from '@element-plus/icons'
 
 
 @Options({
@@ -107,14 +113,14 @@ import { Calendar,Delete,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Co
         Notebook,
         Setting,
         Finished,
-        Edit,
+        Expand,
         Delete,
+        Document,
         More,
         TakeawayBox,
-        Plus,
+        CirclePlus,
         Collection,
         ArrowLeft,
-        Document,
         PriceTag,
         MainPage,
         CalendarPage,        
