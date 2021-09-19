@@ -322,6 +322,7 @@ export default class Frame extends Vue {
 
   public switchToCalander() : void { 
       this.isCalanderPage = true;
+      bus.emit('load_full_calendar');
       document.getElementById('main-page')!.hidden = true;
       document.getElementById('calander-page')!.hidden = false;
   }

@@ -1,32 +1,46 @@
 <template>
-<div class="mainPage">
-  <div class="mainWindow">
-    <div class="calendar-view">
-    <Calendar />
+    <div class="mainWindow">
+    <FullCalendar :key="nRender" ref="fullCalendar" :options="calendarOptions" />
     </div>
-  </div>    
-</div> 
 </template>
 
 <script lang="ts">
+import'@fullcalendar/core/vdom';
+import FullCalendar from '@fullcalendar/vue3';
+import dayGridPlugin from '@fullcalendar/daygrid';
+
+import bus from '../bus';
 import {NoteStruct} from '../NoteStruct';
 import { Options, Vue } from 'vue-class-component';
 import {Database} from '../database';
-import bus from '../bus'
-import { ElMessage } from 'element-plus';
-import Calendar from './Calendar.vue';
-import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook, NoSmoking} from '@element-plus/icons'
+
 
 @Options({
     components:{
-       Calendar      
+       FullCalendar, 
+       dayGridPlugin     
     }
 })
 
 
-
-
 export default class CalendarPage extends Vue {
+  nRender = 0;
+  isCalendar = false;
+  calendarOptions = {
+        plugins: [ dayGridPlugin],
+        initialView: 'dayGridMonth',
+        weekends: false // initial value
+  }
+
+  mounted() {
+    bus.on('load_full_calendar',() => {
+      this.reRenderCalender();  
+    })
+  }
+
+  public reRenderCalender(){
+    this.nRender += 1;
+  }
 
 }
 </script>
@@ -34,9 +48,9 @@ export default class CalendarPage extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainWindow{
-    height: 665px;
-    width: 100%;
-    bottom: 6px;
+    height: 550px;
+    width: 850px;
+
 }
 
 .calendar-view{
