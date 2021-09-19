@@ -701,7 +701,7 @@ export default class Note extends Vue {
   public disappearAnime(id:string) : void {
 
       var tobeArchivedNoteId = document.getElementById(id);
-]
+
       anime({
         targets: tobeArchivedNoteId,
         opacity:[1,0],
