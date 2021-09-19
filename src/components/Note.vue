@@ -9,7 +9,7 @@
 
     <!-- Control area -->
     <div class="card-header note-opt">
-      <span style="font-size:13px;"> 
+        <el-space :size="10">
           <!-- Archive and undo archive buttons -->
           <el-icon v-if="archived" style="width: 2em; height: 2em;" @click="redoArchive" > <refresh-right/> </el-icon>
           <el-icon v-if="!isEditingContent&&!archived"  style="width: 2em; height: 2em; margin-right: 5px;" @click="archive" ><circle-check-filled /></el-icon>
@@ -42,12 +42,15 @@
           </el-popover>
 
           <!-- Time selector   -->
-          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="openTimeSelector"><timer/></el-icon>
+          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em;" @click="openTimeSelector"><timer/></el-icon>
 
           <!-- Edit button -->
-          <el-icon v-if="!isEditingContent" style="width: 1em; height: 1em;" :size="15" @click="editContent"><edit/></el-icon>
+          <el-icon v-if="!isEditingContent" style="width: 2em; height:2em;" :size="15" @click="editContent"><edit/></el-icon>
 
-        </span> 
+          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em;" :size="15" @click="removeContent"><delete /></el-icon>
+        
+        </el-space>
+
     </div>
     <el-dialog v-model="isSelectingTime">
         <el-date-picker
@@ -75,7 +78,7 @@
       
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight} from '@element-plus/icons';
+import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight,Delete} from '@element-plus/icons';
 import {Database} from '../database';
 
 
@@ -102,6 +105,7 @@ import Editor from './Editor.vue';
       CaretBottom,
       PriceTag,
       Timer,
+      Delete,
       Notebook,
       Edit,
       Editor,
@@ -529,9 +533,6 @@ export default class Note extends Vue {
   }
 
 
-
-
-
   public updateTags() : void {
     var tagString = '';
 
@@ -582,6 +583,13 @@ export default class Note extends Vue {
       setTimeout(()=>{bus.emit('reload_notes_with_undo_note', this.id);  },700);
     });
     
+  }
+
+  public removeContent() : void {
+    this.db.notes.delete(this.id).then(() => {
+      this.disappearAnime(String(this.id));
+      setTimeout(()=>{bus.emit('reload_notes_with_removed_note', this.id);  },700);
+    });
   }
 
 }
