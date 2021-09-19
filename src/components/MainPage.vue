@@ -2,10 +2,13 @@
 <div class="mainPage">
   <div class="mainWindow">
       <div class="note-display-area">
-          <div v-if="isEmpty" class="welcome"> 
-          <img src="../assets/logo_white.png" style="opacity:0.7;" height="180" width="180">
-          <p style="color:grey;">{{$t('welcomePage.message1')}} <el-icon style="width: 10px; height: 10px; margin-right: 10px; color:grey; position:relative; top:5px;"   :size="20"><notebook/></el-icon> {{$t('welcomePage.message2')}}</p>
+          <div class="welcome"> 
+            <div v-if="isEmpty">  
+              <img src="../assets/logo_white.png" style="opacity:0.7;" height="180" width="180">
+              <p style="color:grey;">{{$t('welcomePage.message1')}} <el-icon style="width: 10px; height: 10px; margin-right: 10px; color:grey; position:relative; top:5px;"   :size="20"><notebook/></el-icon> {{$t('welcomePage.message2')}}</p>
+            </div>
           </div>
+          
           <el-scrollbar height="650px" width="800px" class="note-container">
             <Note  v-for="li in listOfNotes" :key="li.id" :contents="li.content" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id"/>  
           </el-scrollbar>
@@ -50,6 +53,7 @@ export default class MainPage extends Vue {
   noteFilter! : string;
 
   isEmpty = true;
+  isArchiveEmpty = false;
   listOfNotes: Array<NoteStruct> = [];
   tagsFinder? : any;
   
@@ -210,9 +214,7 @@ export default class MainPage extends Vue {
           ));
         }
         );
-      if(this.listOfNotes.length > 0){
         this.isEmpty = false;
-      }
      });
   }
 
@@ -317,6 +319,12 @@ export default class MainPage extends Vue {
   position: relative;
   top:130px;
   right:30px; ;
+}
+
+.archive-empty{
+  position: relative;
+  top:180px;
+
 }
 
 

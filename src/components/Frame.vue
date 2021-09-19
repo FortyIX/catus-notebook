@@ -17,19 +17,19 @@
                     <span>Browse</span>
                     </template>
                     <el-menu-item-group>
-                        <p style="color:white;">{{$t('menu.actions')}}</p>
+                        <p style="color:white; margin-left: 25px; ">{{$t('menu.actions')}}</p>
                         <el-menu-item index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
                     
                     </el-menu-item-group>
                     <el-menu-item-group>
-                        <p style="color:white;">{{$t('menu.yourWriting')}}</p>
+                        <p style="color:white; margin-left: 25px;">{{$t('menu.yourWriting')}}</p>
                         <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><document /></el-icon>
       <span>{{$t('menu.note')}}</span></el-menu-item>
                         <el-menu-item index="1-2" @click="showArchivedNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><takeaway-box /></el-icon>
       <span>{{$t('menu.archive')}}</span></el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group>
-                        <p style="color:white;">{{$t('menu.yourCate')}}</p>
+                        <p style="color:white; margin-left: 25px;">{{$t('menu.yourCate')}}</p>
                         <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><collection /></el-icon><span>{{$t('menu.notebooks')}}</span> 
                     </el-menu-item>
                     <el-menu-item index="1-4" @click="isTagIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><price-tag /></el-icon><span>{{$t('menu.tags')}}</span></el-menu-item>
