@@ -8,7 +8,8 @@ module.exports = {
         archive : "Archive",
         yourCate : "Your categories",
         notebooks : "Notebooks",
-        tags: "Tags"
+        tags: "Tags",
+        back:"Back to notes"
     },
 
     operationBar : {

@@ -8,7 +8,8 @@ module.exports = {
         archive : "已归档笔记",
         yourCate : "您的分类",
         notebooks : "笔记本",
-        tags: "标签"
+        tags: "标签",
+        back:"返回首页",
     },
 
     operationBar : {

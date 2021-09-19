@@ -18,8 +18,9 @@
                     </template>
                     <el-menu-item-group>
                         <p style="color:white; margin-left: 25px; ">{{$t('menu.actions')}}</p>
-                        <el-menu-item v-if="isNotArchive" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
+                        <el-menu-item v-if="isNotArchive&&!isCalanderPage" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
                         <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
+                        <el-menu-item v-if="isCalanderPage" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group>
                         <p style="color:white; margin-left: 25px;">{{$t('menu.yourWriting')}}</p>
@@ -35,7 +36,7 @@
                     <el-menu-item index="1-4" @click="isTagIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><price-tag /></el-icon><span>{{$t('menu.tags')}}</span></el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
-                <el-menu-item index="2">
+                <el-menu-item index="2" @click="switchToCalander">
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><calendar /></el-icon> 
                     <span>Navigator Two</span>
                 </el-menu-item>
@@ -79,7 +80,8 @@
             
       </div>
       <div class="main-display">
-           <MainPage :noteFilter="notefilter"/> 
+           <div id="main-page"><MainPage :noteFilter="notefilter"/></div>
+           <div id="calander-page"  hidden><CanladerPage/></div> 
       </div>
   </div>
 </template>
@@ -93,8 +95,11 @@ import MainPage from './MainPage.vue';
 import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
 import {useI18n} from "vue-i18n"
+import CanladerPage from './CalanderView.vue';
+
 //import element svg icons
-import { Calendar,Delete,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Collection,Document,PriceTag} from '@element-plus/icons'
+import { Calendar,Delete,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Collection,Document,PriceTag,ArrowLeft} from '@element-plus/icons'
+
 
 @Options({
     components:{
@@ -108,10 +113,11 @@ import { Calendar,Delete,Notebook,Setting,Finished,Edit,More,TakeawayBox,Plus,Co
         TakeawayBox,
         Plus,
         Collection,
+        ArrowLeft,
         Document,
         PriceTag,
         MainPage,
-        
+        CanladerPage,        
     }
 })
 export default class Frame extends Vue {
@@ -122,6 +128,7 @@ export default class Frame extends Vue {
   isNotebookIndexVisiable = false;
   isTagIndexVisiable = false;
   isNotArchive = true;
+  isCalanderPage = false;
 
   existingNotebooks:NotebookItem[] = [];
   existingTags:TagItem[] = [];
@@ -168,10 +175,12 @@ export default class Frame extends Vue {
   }
 
   public showArchivedNotes() : void {
+      this.switchToMain();
       this.isNotArchive = false;
       bus.emit('reload_notes_with_undo_note');
   }
   public showAllNotes () : void {
+      this.switchToMain();
       this.isNotArchive = true;
       bus.emit('reload_all_notex');
   }
@@ -301,6 +310,21 @@ export default class Frame extends Vue {
   public filterNotebook(notebook : string){
       bus.emit("filter-notebook",(notebook));
       this.isNotebookIndexVisiable = false;
+  }
+
+
+// CODES FOR CALANDERS
+
+  public switchToCalander() : void { 
+      this.isCalanderPage = true;
+      document.getElementById('main-page')!.hidden = true;
+      document.getElementById('calander-page')!.hidden = false;
+  }
+
+  public switchToMain() : void { 
+      this.isCalanderPage = false;
+      document.getElementById('main-page')!.hidden = false;
+      document.getElementById('calander-page')!.hidden = true;
   }
 
 
