@@ -2,6 +2,10 @@
 <div class="mainPage">
   <div class="mainWindow">
       <div class="note-display-area">
+          <div v-if="isEmpty" class="welcome"> 
+          <img src="../assets/logo_white.png" style="opacity:0.7;" height="180" width="180">
+          <p style="color:grey;">Press the <el-icon style="width: 10px; height: 10px; margin-right: 10px; color:grey; position:relative; top:5px;"   :size="20"><notebook/></el-icon> on the side bar to start</p>
+          </div>
           <el-scrollbar height="650px" width="800px" class="note-container">
             <Note  v-for="li in listOfNotes" :key="li.id" :contents="li.content" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id"/>  
           </el-scrollbar>
@@ -45,10 +49,10 @@ export default class MainPage extends Vue {
   //props
   noteFilter! : string;
 
-  newNotePromptVisible = false;
+  isEmpty = true;
   listOfNotes: Array<NoteStruct> = [];
   tagsFinder? : any;
-
+  
  
   
 
@@ -68,10 +72,10 @@ export default class MainPage extends Vue {
 
   mounted(){
 
+
+
      this.db = new Database();
      this.fetchDataWithFilter(this.db,this.noteFilter);  
-
-     
 
     bus.on('add-note-event',() => {
       this.addNote();
@@ -95,6 +99,9 @@ export default class MainPage extends Vue {
         this.listOfNotes.splice(tobeRemovedIndex,1);
         // this.listOfNotes = [];
         // this.fetchUnarchivedNotes(this.db);
+        if(this.listOfNotes.length == 0){
+          this.isEmpty = true;
+        }         
 
       });
 
@@ -116,6 +123,11 @@ export default class MainPage extends Vue {
 
 
   public addNote() : void {
+
+       if(this.isEmpty){
+         this.isEmpty = false;
+       } 
+
        var time = new Date();
        var newEntry = new NoteStruct("New note added, click the edit button below to start editing","", "", time.getTime(),0)
        
@@ -137,17 +149,24 @@ export default class MainPage extends Vue {
 
   public fetchUnarchivedNotes(db: Database) : void{
 
+
+
      var noteData = db.notes.where('isdone').equals(0).toArray().then(notes => {
         notes.forEach(note => {
           this.listOfNotes.push(new NoteStruct(
             note.content,note.tag, note.notebook,note.date,note.isdone,note.id
           ));
         }
-        )
+        );
+      if(this.listOfNotes.length > 0){
+        this.isEmpty = false;
+      }        
      });
   }
   
   public fetchDataWithFilter(db:Database, filter:string) : void {
+
+    
     this.listOfNotes = [];
     var cmd: string;
     var param : string;
@@ -190,7 +209,10 @@ export default class MainPage extends Vue {
             note.content,note.tag, note.notebook,note.date,note.isdone,note.id
           ));
         }
-        )
+        );
+      if(this.listOfNotes.length > 0){
+        this.isEmpty = false;
+      }
      });
   }
 
@@ -204,7 +226,10 @@ export default class MainPage extends Vue {
             note.content,note.tag, note.notebook,note.date,note.isdone,note.id
           ));
         }
-        )
+        );
+      if(this.listOfNotes.length > 0){
+        this.isEmpty = false;
+      }        
      })
   }
 
@@ -218,7 +243,10 @@ export default class MainPage extends Vue {
             note.content,note.tag, note.notebook,note.date,note.isdone,note.id
           ));
         }
-        )
+        );
+      if(this.listOfNotes.length > 0){
+        this.isEmpty = false;
+      }
      })
   }
 
@@ -283,6 +311,12 @@ export default class MainPage extends Vue {
 .add-new-tag-tag{
   width:70px;
   vertical-align: bottom;
+}
+
+.welcome{
+  position: relative;
+  top:130px;
+  right:30px; ;
 }
 
 
