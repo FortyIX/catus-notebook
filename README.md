@@ -1,5 +1,5 @@
 # Catus Notebook
-An elegant and effective that is a 'notes as todos' note taking software.
+An elegant and effective tool that is a 'notes as todos' note taking software.
 
 
 ## Project setup
