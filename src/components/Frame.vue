@@ -6,40 +6,39 @@
         <el-menu
                 class="side-nav-bar"
                 :collapse="true"
-                background-color="#001B50"
-                text-color="white"
-                active-text-color="white"
+                text-color="#001B50"
+                active-text-color="#001B50"
                 default-active="1"
                 >
                 <el-sub-menu index="1">
                     <template #title>
-                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><expand /></el-icon> 
+                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#fff;" :size="20"><expand /></el-icon> 
                     <span>Browse</span>
                     </template>
                     <el-menu-item-group>
-                        <p style="color:white; margin-left: 25px; ">{{$t('menu.actions')}}</p>
-                        <el-menu-item v-if="isNotArchive&&!isCalanderPage" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><circle-plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
-                        <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
-                        <el-menu-item v-if="isCalanderPage" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
+                        <p style="color:#001B50; margin-left: 25px;">{{$t('menu.actions')}}</p>
+                        <el-menu-item v-if="isNotArchive&&!isCalanderPage" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:##001B50;" :size="20"><circle-plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
+                        <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:##001B50;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
+                        <el-menu-item v-if="isCalanderPage" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:##001B50;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
                 <el-sub-menu index="2">
                     <template #title>
-                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><notebook /></el-icon> 
+                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#fff;" :size="20"><notebook /></el-icon> 
                     <span>Browse</span>
                     </template>
                     <el-menu-item-group>
-                        <p style="color:white; margin-left: 25px;">{{$t('menu.yourWriting')}}</p>
-                        <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><document /></el-icon>
+                        <p style="color:grey; margin-left: 25px;">{{$t('menu.yourWriting')}}</p>
+                        <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#001B50;" :size="20"><document /></el-icon>
       <span>{{$t('menu.note')}}</span></el-menu-item>
-                        <el-menu-item index="1-2" @click="showArchivedNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><takeaway-box /></el-icon>
+                        <el-menu-item index="1-2" @click="showArchivedNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#001B50;" :size="20"><takeaway-box /></el-icon>
       <span>{{$t('menu.archive')}}</span></el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item-group>
-                        <p style="color:white; margin-left: 25px;">{{$t('menu.yourCate')}}</p>
-                        <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><collection /></el-icon><span>{{$t('menu.notebooks')}}</span> 
+                        <p style="color:grey; margin-left: 25px; ">{{$t('menu.yourCate')}}</p>
+                        <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#001B50;" :size="20"><collection /></el-icon><span>{{$t('menu.notebooks')}}</span> 
                     </el-menu-item>
-                    <el-menu-item index="1-4" @click="isTagIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#ffffff;" :size="20"><price-tag /></el-icon><span>{{$t('menu.tags')}}</span></el-menu-item>
+                    <el-menu-item index="1-4" @click="isTagIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:#001B50;" :size="20"><price-tag /></el-icon><span>{{$t('menu.tags')}}</span></el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
                 <el-menu-item index="3" @click="switchToCalander">
@@ -338,8 +337,28 @@ export default class Frame extends Vue {
 }
 </script>
 
+<style>
+/* Override the original menu style */
+.el-menu{
+    --el-menu-item-font-size: var(--el-font-size-base);
+    --el-menu-item-font-color: var(--el-text-color-primary);
+    --el-menu-item-hover-fill: transparent;
+    --el-menu-background-color: var(--el-color-white);
+    --el-menu-border-color: #e6e6e6;
+    border-right: solid 1px var(--el-menu-border-color);
+    list-style: none;
+    position: relative;
+    margin: 0;
+    padding-left: 0;
+    background-color: var(--el-menu-background-color);
+    box-sizing: border-box
+}
+</style>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+/* style for the main frame */
 .mainFrame{
     height: 635px;
     width: 910px;
@@ -348,6 +367,7 @@ export default class Frame extends Vue {
     
 }
 
+/* styles for the side navi bar */
 .side-bar{
     width:60px;
     height:668px;
@@ -362,7 +382,7 @@ export default class Frame extends Vue {
     height: 685px;
     position: absolute;
     bottom: 0px;
-    background:white;
+    background:#001B50;
 }
 
 .main-display{
@@ -377,15 +397,10 @@ export default class Frame extends Vue {
 }
 
 
-.notebook-selector{
-    margin-bottom: 10px;;
-}
-
+/* notebook index style */
 .notebook-card{
     height: auto;
 }
 </style>
 
-function $t(arg0: string) {
-  throw new Error('Function not implemented.');
-}
+
