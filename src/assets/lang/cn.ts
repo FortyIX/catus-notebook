@@ -14,4 +14,9 @@ module.exports = {
       reminder : "提醒"  
     },
 
+    welcomePage: {
+      message1:"点击左侧导航栏上的",
+      message2:"按钮来开始使用"
+    }
+
 }

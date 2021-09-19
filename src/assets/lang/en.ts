@@ -13,5 +13,9 @@ module.exports = {
     operationBar : {
       reminder : "Reminder"  
     },
+    welcomePage: {
+      message1:"Press the",
+      message2:"button on the side menu to start"
+    }
 
 }

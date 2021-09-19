@@ -4,7 +4,7 @@
       <div class="note-display-area">
           <div v-if="isEmpty" class="welcome"> 
           <img src="../assets/logo_white.png" style="opacity:0.7;" height="180" width="180">
-          <p style="color:grey;">Press the <el-icon style="width: 10px; height: 10px; margin-right: 10px; color:grey; position:relative; top:5px;"   :size="20"><notebook/></el-icon> on the side bar to start</p>
+          <p style="color:grey;">{{$t('welcomePage.message1')}} <el-icon style="width: 10px; height: 10px; margin-right: 10px; color:grey; position:relative; top:5px;"   :size="20"><notebook/></el-icon> {{$t('welcomePage.message2')}}</p>
           </div>
           <el-scrollbar height="650px" width="800px" class="note-container">
             <Note  v-for="li in listOfNotes" :key="li.id" :contents="li.content" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id"/>  
