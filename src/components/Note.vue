@@ -12,10 +12,10 @@
         <el-space :size="10">
           <!-- Archive and undo archive buttons -->
           <el-icon v-if="archived" style="width: 2em; height: 2em; color:grey;" @click="redoArchive" > <refresh-right/> </el-icon>
-          <el-icon v-if="!isEditingContent&&!archived"  style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="archive" ><circle-check-filled /></el-icon>
+          <el-icon v-if="!isEditingContent&&!archived"  style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="archive" ><circle-check/></el-icon>
           
           <!-- Finish editing note content button -->
-          <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="getContentAndupdateNote(id)" ><circle-check-filled /></el-icon>
+          <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="getContentAndupdateNote(id)" ><circle-check /></el-icon>
           
           <!-- Tags  -->
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
@@ -78,7 +78,7 @@
       
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight,Delete} from '@element-plus/icons';
+import { CircleCheck,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight,Delete} from '@element-plus/icons';
 import {Database} from '../database';
 
 
@@ -101,7 +101,7 @@ import Editor from './Editor.vue';
         id: Number
     },
     components:{
-      CircleCheckFilled,
+      CircleCheck,
       CaretBottom,
       PriceTag,
       Timer,
