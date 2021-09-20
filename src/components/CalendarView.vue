@@ -33,6 +33,7 @@ export default class CalendarPage extends Vue {
         weekends: true, // initial value,
         dayMaxEventRows: true,
         events: [{
+          title:'',
           start: ''
         }]
   }
@@ -56,11 +57,15 @@ export default class CalendarPage extends Vue {
     this.calendarOptions.events = [];
     db.notes.toArray().then(notes => {
       notes.forEach(note => {
-
-        var time = new Date(note.date);
-        this.calendarOptions.events.push({
-          start : this.parseTime(time)
-        })
+        
+        var rawTime = note.date;
+        if(rawTime != -1){
+          var time = new Date(rawTime);
+          this.calendarOptions.events.push({
+            title : note.reminderMsg,
+            start : this.parseTime(time)
+          })
+        }
       });
 
       this.reRenderCalender();

@@ -6,6 +6,7 @@ export interface INote{
     id? : number;
     content : string;
     date : number;
+    reminderMsg : string;
     tag:string;
     notebook:string;
     isdone : number;
@@ -32,7 +33,7 @@ export class Database extends Dexie {
         super('db_note');
         
         this.version(1).stores({
-            notes: '++id,content,tag,notebook,date,isdone',
+            notes: '++id,content,tag,notebook,date,reminderMsg,isdone',
             notebooks: '++id, name',
             tags:'++id,name',
         });

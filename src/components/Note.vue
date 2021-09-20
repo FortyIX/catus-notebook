@@ -52,19 +52,31 @@
         </el-space>
 
     </div>
-    <el-dialog v-model="isSelectingTime">
-        <el-date-picker
-              v-model="dateTimeSelected"
-              type="datetime"
-              placeholder="Select date and time"
-              :shortcuts="shortcuts"
-            >
-        </el-date-picker>
+    <el-dialog v-model="isSelectingTime" title="Reminder">
+       <el-form v-if="isReminder" :label-position="left">
+        <el-form-item label="Time" :label-width="labelWidth">
+          <el-date-picker
+                v-model="dateTimeSelected"
+                type="datetime"
+                placeholder="Select date and time"
+                :shortcuts="shortcuts"
+                style="width: 70%;"
+              >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="Message" :label-width="labelWidth">
+          <el-input v-model="reminderMsgShown" autocomplete="off" style="width: 70%;"></el-input>
+        </el-form-item>
+       </el-form>
+      <el-button v-else type="primary" @click="isReminder = true" plain
+        >Set reminder</el-button
+      >
 
   <template #footer>
     <span class="dialog-footer">
-      <el-button @click="isSelectingTime = false">Cancel</el-button>
-      <el-button type="primary" @click="confirmTimeSelection"
+      <el-button v-if="isReminder" @click="isSelectingTime = false" plain>Cancel</el-button>
+      <el-button v-else @click="isSelectingTime = false" plain>Close</el-button>
+      <el-button v-if="isReminder" type="primary" @click="confirmReminderInfo" plain
         >Confirm</el-button
       >
     </span>
@@ -97,6 +109,7 @@ import Editor from './Editor.vue';
         tag : String,
         notebook : String,
         date:Number,
+        reminderMsg:String,
         isdone:Number,
         id: Number
     },
@@ -119,6 +132,7 @@ export default class Note extends Vue {
 
   //props 
   date! : number;
+  reminderMsg! : string;
   tag!:string;
   notebook! : string;
   contents! : string;
@@ -133,6 +147,8 @@ export default class Note extends Vue {
   contentParsed! : string;
   archived = false;
 
+  labelWidth = '70px'
+
 
   isEditingContent = false;
   editingContent = '';
@@ -141,10 +157,11 @@ export default class Note extends Vue {
   isAddingNewNotebook = false;
   newTagData = '';
   newNotebookData = '';
-
-  dateTimeSelected = new Date();
+  
+  isReminder = false;
+  dateTimeSelected!: Date ;
   isSelectingTime = false;
-
+  reminderMsgShown = '';
   existingNotebooks:any = [];
   existingTags:any = [];
 
@@ -262,6 +279,9 @@ export default class Note extends Vue {
     //Set the scheduled time to now
     this.dateTimeSelected = new Date(this.date);
 
+    //set the reminder message 
+    this.reminderMsgShown = this.reminderMsg;
+
     // obtain notebooks and tags for this note 
     this.parseNotebooks();
     this.parseTags();
@@ -334,18 +354,20 @@ export default class Note extends Vue {
   }
 
   /**
-   * Confirming the scheduled time selection 
+   * Confirming the reminder information
    */
-  public confirmTimeSelection() : void{
+  public confirmReminderInfo() : void{
     this.isSelectingTime = false;
-    this.updateTime();
+    this.updateReminder();
   }
 
   /**
-   * Update the database with the latest altered scheduled time
+   * Update the database with the latest reminder information
    */
-  public updateTime() : void { 
-    this.db.notes.update(this.id, {date: this.dateTimeSelected.getTime()}).catch(e => {console.log(e)});
+  public updateReminder() : void { 
+    this.db.notes.update(this.id, {date: this.dateTimeSelected.getTime()}).then(() => {
+      this.db.notes.update(this.id, {reminderMsg : this.reminderMsgShown});
+    })
   }
 
   /**

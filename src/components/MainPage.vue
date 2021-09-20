@@ -144,16 +144,16 @@ export default class MainPage extends Vue {
          this.isEmpty = false;
        } 
 
-       var time = new Date();
-       var newEntry = new NoteStruct("New note added, click the edit button below to start editing","", "", time.getTime(),0)
+       var time = -1;
+       var newEntry = new NoteStruct("New note added, click the edit button below to start editing","", "", time,"",0)
        
        
        //add note contents and date to the note storage 
-       this.db.notes.add({content: newEntry.content,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, isdone:newEntry.isdone},).then(() => {
+       this.db.notes.add({content: newEntry.content,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, reminderMsg:newEntry.reminderMsg,isdone:newEntry.isdone},).then(() => {
          //and and the latest note to the user interface by retriving the last added note from the database.
          this.db.notes.orderBy("id").reverse().limit(1).toArray().then((newEntry) => {
            this.listOfNotes.push(new NoteStruct(
-            newEntry[0].content,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].isdone,newEntry[0].id
+            newEntry[0].content,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].reminderMsg,newEntry[0].isdone,newEntry[0].id
           ))
          })
        }).catch(e => {
@@ -168,7 +168,7 @@ export default class MainPage extends Vue {
      var noteData = db.notes.where('isdone').equals(0).toArray().then(notes => {
         notes.forEach(note => {
           this.listOfNotes.push(new NoteStruct(
-            note.content,note.tag, note.notebook,note.date,note.isdone,note.id
+            note.content,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id
           ));
         }
         );
@@ -220,7 +220,7 @@ export default class MainPage extends Vue {
      var noteData = db.notes.where('isdone').equals(1).toArray().then(notes => {
         notes.forEach(note => {
           this.listOfNotes.push(new NoteStruct(
-            note.content,note.tag, note.notebook,note.date,note.isdone,note.id
+            note.content,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id
           ));
         }
         );
@@ -235,7 +235,7 @@ export default class MainPage extends Vue {
      }).toArray().then(notes => {
         notes.forEach(note => {
           this.listOfNotes.push(new NoteStruct(
-            note.content,note.tag, note.notebook,note.date,note.isdone,note.id
+            note.content,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id
           ));
         }
         );
@@ -252,7 +252,7 @@ export default class MainPage extends Vue {
      }).toArray().then(notes => {
         notes.forEach(note => {
           this.listOfNotes.push(new NoteStruct(
-            note.content,note.tag, note.notebook,note.date,note.isdone,note.id
+            note.content,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id
           ));
         }
         );
