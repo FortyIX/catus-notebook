@@ -15,7 +15,7 @@
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#fff;" :size="20"><expand /></el-icon> 
                     <span>Browse</span>
                     </template>
-                    <el-menu-item-group v-bind:title="uiText.notebooks">
+                    <el-menu-item-group v-bind:title="uiText.actions">
                         <el-menu-item v-if="isNotArchive&&!isCalanderPage" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><circle-plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
                         <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
                         <el-menu-item v-if="isCalanderPage" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
@@ -54,8 +54,7 @@
 
 
         </el-menu>
-        <el-dialog v-model="isNotebookIndexVisiable">
-                <h3>{{$t('menu.notebooks')}}</h3>
+        <el-dialog v-model="isNotebookIndexVisiable" v-bind:title="uiText.notebooks">
                 <el-scrollbar height="340px" width="330px" style="margin-top:10px;">
                     <el-card :id="notebook.id" class="notebook-card" style="margin-bottom:10px;" v-for="notebook in existingNotebooks" :key="notebook.name">
                          <span style="margin-right:50px; position:relative; top:5px;">{{notebook.name}}</span> 
@@ -68,8 +67,7 @@
                         
                 </el-scrollbar>
         </el-dialog>
-        <el-dialog v-model="isTagIndexVisiable">
-                <h3>{{$t('menu.tags')}}</h3>
+        <el-dialog v-model="isTagIndexVisiable" v-bind:title="uiText.tags">
                 <el-scrollbar height="340px" width="330px">
                     <el-tag type="info" style="margin-right:5px; margin-bottom:5px;" 
                     :id="tag.id" v-for="tag in existingTags" :key="tag.name" effect="plain" 
@@ -149,9 +147,11 @@ export default class Frame extends Vue {
        this.t = t; 
 
       this.uiText = {
-      notebooks : this.t('menu.actions'),
+      actions : this.t('menu.actions'),
       writing: this.t('menu.yourWriting'),
-      cate : this.t('menu.yourCate')
+      cate : this.t('menu.yourCate'),
+      notebooks:this.t('menu.notebooks'),    
+      tags:this.t('menu.tags')
       }
 
       this.db = new Database();
