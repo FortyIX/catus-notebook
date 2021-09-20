@@ -11,16 +11,16 @@
     <div class="card-header note-opt">
         <el-space :size="10">
           <!-- Archive and undo archive buttons -->
-          <el-icon v-if="archived" style="width: 2em; height: 2em;" @click="redoArchive" > <refresh-right/> </el-icon>
-          <el-icon v-if="!isEditingContent&&!archived"  style="width: 2em; height: 2em; margin-right: 5px;" @click="archive" ><circle-check-filled /></el-icon>
+          <el-icon v-if="archived" style="width: 2em; height: 2em; color:grey;" @click="redoArchive" > <refresh-right/> </el-icon>
+          <el-icon v-if="!isEditingContent&&!archived"  style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="archive" ><circle-check-filled /></el-icon>
           
           <!-- Finish editing note content button -->
-          <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px;" @click="getContentAndupdateNote(id)" ><circle-check-filled /></el-icon>
+          <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="getContentAndupdateNote(id)" ><circle-check-filled /></el-icon>
           
           <!-- Tags  -->
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
             <template #reference>
-                <el-icon  style="width: 2em; height: 2em; margin-right: 5px;"><price-tag /></el-icon>
+                <el-icon  style="width: 2em; height: 2em; margin-right: 5px; color:grey;"><price-tag /></el-icon>
             </template>
             <el-space wrap>
               <el-tag type="info" v-for="tag in tagsHolder" :key="tag" effect="plain" @close="removeTag(tag)" closable>{{tag}}</el-tag>  
@@ -32,7 +32,7 @@
           <!-- Notebook -->
           <el-popover v-if="!isEditingContent" placement="bottom" :width="400" trigger="click">
             <template #reference>
-                <el-icon  style="width: 2em; height: 2em; margin-right: 5px;"><notebook /></el-icon>
+                <el-icon  style="width: 2em; height: 2em; margin-right: 5px; color:grey;"><notebook /></el-icon>
             </template>
             <el-space wrap>
               <el-tag type="info" v-for="notebook in notebooksHolder" :key="notebook" effect="plain" @close="removeNotebook(notebook)" closable>{{notebook}}</el-tag>  
@@ -42,12 +42,12 @@
           </el-popover>
 
           <!-- Time selector   -->
-          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em;" @click="openTimeSelector"><timer/></el-icon>
+          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; color:grey;" @click="openTimeSelector"><timer/></el-icon>
 
           <!-- Edit button -->
-          <el-icon v-if="!isEditingContent" style="width: 2em; height:2em;" :size="15" @click="editContent"><edit/></el-icon>
+          <el-icon v-if="!isEditingContent" style="width: 2em; height:2em; color:grey;" :size="15" @click="editContent"><edit/></el-icon>
 
-          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em;" :size="15" @click="removeNote"><delete /></el-icon>
+          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; color:grey;" :size="15" @click="removeNote"><delete /></el-icon>
         
         </el-space>
 
