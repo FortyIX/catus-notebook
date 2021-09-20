@@ -980,6 +980,14 @@
     "@fullcalendar/common" "~5.9.0"
     tslib "^2.1.0"
 
+"@fullcalendar/interaction@^5.9.0":
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/interaction/-/interaction-5.9.0.tgz#7211f89074cc89b9234a9333fc8ec346bd4ff3f3"
+  integrity sha512-bBvcY3Mh2z4rP5AqB8dL76SljPEVCVawNmdQlcKShedhxvkkMR1zMcJ3sgabLBvXqooC9f+PbmEb5LlSGEse3A==
+  dependencies:
+    "@fullcalendar/common" "~5.9.0"
+    tslib "^2.1.0"
+
 "@fullcalendar/list@^5.9.0":
   version "5.9.0"
   resolved "https://registry.yarnpkg.com/@fullcalendar/list/-/list-5.9.0.tgz#edcfa1b59ac000069968318279cce12fde456779"

@@ -9,6 +9,7 @@ import'@fullcalendar/core/vdom';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list'; 
+import interactionPlugin from '@fullcalendar/interaction'; 
 
 import bus from '../bus';
 import {NoteStruct} from '../NoteStruct';
@@ -19,7 +20,8 @@ import {Database} from '../database';
 @Options({
     components:{
        FullCalendar, 
-       dayGridPlugin     
+       dayGridPlugin,
+       listPlugin     
     }
 })
 
@@ -29,8 +31,8 @@ export default class CalendarPage extends Vue {
   isCalendar = false;
   db! : Database;
   calendarOptions = {
-        plugins: [ dayGridPlugin],
-        initialView: 'dayGridMonth',
+        plugins: [ dayGridPlugin,listPlugin],
+        initialView: 'listDay',
         weekends: true, // initial value,
         dayMaxEventRows: true,
         events: [{
