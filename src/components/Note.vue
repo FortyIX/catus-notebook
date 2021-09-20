@@ -53,7 +53,7 @@
 
     </div>
     <el-dialog v-model="isSelectingTime" title="Reminder">
-       <el-form v-if="isReminder" :label-position="left">
+       <el-form v-if="isReminder">
         <el-form-item label="Time" :label-width="labelWidth">
           <el-date-picker
                 v-model="dateTimeSelected"
@@ -68,7 +68,7 @@
           <el-input v-model="reminderMsgShown" autocomplete="off" style="width: 70%;"></el-input>
         </el-form-item>
        </el-form>
-      <el-button v-else type="primary" @click="isReminder = true" plain
+      <el-button v-else type="primary" @click="showReminderSetting()" plain
         >Set reminder</el-button
       >
 
@@ -95,9 +95,7 @@ import {Database} from '../database';
 
 
 import bus from '../bus';
-import dayjs from 'dayjs';
 import anime from "animejs/lib/anime.es.js";
-import { ElSteps } from 'element-plus';
 import { ElMessage } from 'element-plus';
 import Editor from './Editor.vue';
 
@@ -159,7 +157,7 @@ export default class Note extends Vue {
   newNotebookData = '';
   
   isReminder = false;
-  dateTimeSelected!: Date ;
+  dateTimeSelected = new Date() ;
   isSelectingTime = false;
   reminderMsgShown = '';
   existingNotebooks:any = [];
@@ -344,6 +342,11 @@ export default class Note extends Vue {
         this.updateNote(htmlString)
     });
 
+  }
+
+  public showReminderSetting() : void{
+    this.isReminder = true;
+    this.dateTimeSelected = new Date();
   }
 
   /**
