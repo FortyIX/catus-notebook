@@ -8,6 +8,7 @@
 import'@fullcalendar/core/vdom';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import listPlugin from '@fullcalendar/list'; 
 
 import bus from '../bus';
 import {NoteStruct} from '../NoteStruct';
@@ -88,7 +89,7 @@ export default class CalendarPage extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainWindow{
-    height: 550px;
+    height: 70%;
     width: 850px;
 
 }

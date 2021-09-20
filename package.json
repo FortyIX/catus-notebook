@@ -16,6 +16,7 @@
     "@element-plus/icons": "^0.0.11",
     "@fullcalendar/core": "^5.9.0",
     "@fullcalendar/daygrid": "^5.9.0",
+    "@fullcalendar/list": "^5.9.0",
     "@fullcalendar/vue3": "^5.9.0",
     "animejs": "^3.2.1",
     "core-js": "^3.6.5",
