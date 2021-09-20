@@ -26,20 +26,55 @@ import {Database} from '../database';
 export default class CalendarPage extends Vue {
   nRender = 0;
   isCalendar = false;
+  db! : Database;
   calendarOptions = {
         plugins: [ dayGridPlugin],
         initialView: 'dayGridMonth',
-        weekends: false // initial value
+        weekends: true, // initial value,
+        dayMaxEventRows: true,
+        events: [{
+          start: ''
+        }]
   }
 
   mounted() {
+
+    this.db = new Database();
+    this.getNoteData(this.db);
+
     bus.on('load_full_calendar',() => {
-      this.reRenderCalender();  
+      this.getNoteData(this.db);      
     })
   }
 
   public reRenderCalender(){
     this.nRender += 1;
+  }
+
+  public getNoteData(db : Database){
+
+    this.calendarOptions.events = [];
+    db.notes.toArray().then(notes => {
+      notes.forEach(note => {
+
+        var time = new Date(note.date);
+        this.calendarOptions.events.push({
+          start : this.parseTime(time)
+        })
+      });
+
+      this.reRenderCalender();
+    })
+  }
+
+  public parseTime(time : Date) : string {
+    
+    return `${time.getFullYear()}-`+
+    `${String(time.getMonth() + 1).length == 1 ? '0' + String(time.getMonth() + 1) : String(time.getMonth() + 1)}-`+
+    `${time.getDate().toString().length == 1 ? '0' + time.getDate().toString() : time.getDate().toString()}T`+
+    `${time.getHours().toString().length == 1 ? '0' + time.getHours().toString() : time.getHours().toString()}:`+
+    `${time.getMinutes().toString().length == 1 ? '0' + time.getMinutes().toString() : time.getMinutes().toString()}:`+
+    `${time.getSeconds().toString().length == 1 ? '0' + time.getSeconds().toString() : time.getSeconds().toString()}`;
   }
 
 }

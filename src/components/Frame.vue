@@ -15,8 +15,7 @@
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#fff;" :size="20"><expand /></el-icon> 
                     <span>Browse</span>
                     </template>
-                    <el-menu-item-group>
-                        <p style="color:grey; margin-left: 25px;">{{$t('menu.actions')}}</p>
+                    <el-menu-item-group v-bind:title="uiText.notebooks">
                         <el-menu-item v-if="isNotArchive&&!isCalanderPage" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><circle-plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
                         <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
                         <el-menu-item v-if="isCalanderPage" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
@@ -27,15 +26,13 @@
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#fff;" :size="20"><notebook /></el-icon> 
                     <span>Browse</span>
                     </template>
-                    <el-menu-item-group>
-                        <p style="color:grey; margin-left: 25px;">{{$t('menu.yourWriting')}}</p>
+                    <el-menu-item-group v-bind:title="uiText.writing">
                         <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><document /></el-icon>
       <span>{{$t('menu.note')}}</span></el-menu-item>
                         <el-menu-item index="1-2" @click="showArchivedNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><takeaway-box /></el-icon>
       <span>{{$t('menu.archive')}}</span></el-menu-item>
                     </el-menu-item-group>
-                    <el-menu-item-group>
-                        <p style="color:grey; margin-left: 25px; ">{{$t('menu.yourCate')}}</p>
+                    <el-menu-item-group v-bind:title="uiText.cate">
                         <el-menu-item index="1-3" @click="isNotebookIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><collection /></el-icon><span>{{$t('menu.notebooks')}}</span> 
                     </el-menu-item>
                     <el-menu-item index="1-4" @click="isTagIndexVisiable=true"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><price-tag /></el-icon><span>{{$t('menu.tags')}}</span></el-menu-item>
@@ -141,7 +138,7 @@ export default class Frame extends Vue {
   locale!: any
   t!:any
 
-  uiText!: any
+  uiText= {}
 
 
 
@@ -152,7 +149,9 @@ export default class Frame extends Vue {
        this.t = t; 
 
       this.uiText = {
-      notebooks : this.t('menu.notebooks')
+      notebooks : this.t('menu.actions'),
+      writing: this.t('menu.yourWriting'),
+      cate : this.t('menu.yourCate')
       }
 
       this.db = new Database();
