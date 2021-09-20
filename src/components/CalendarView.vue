@@ -1,24 +1,29 @@
 <template>
     <div class="mainWindow">
-    <FullCalendar :key="nRender" ref="fullCalendar" :options="calendarOptions" />
+    <FullCalendar :key="nRender" ref="calendarView" :options="calendarOptions" />
     </div>
 </template>
 
 <script lang="ts">
 import'@fullcalendar/core/vdom';
-import FullCalendar from '@fullcalendar/vue3';
+import FullCalendar, { DateSelectArg } from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import listPlugin from '@fullcalendar/list'; 
+import interactionPlugin from '@fullcalendar/interaction'; 
 
 import bus from '../bus';
 import {NoteStruct} from '../NoteStruct';
 import { Options, Vue } from 'vue-class-component';
+import {ref} from "vue";
 import {Database} from '../database';
 
 
 @Options({
     components:{
        FullCalendar, 
-       dayGridPlugin     
+       dayGridPlugin,
+       listPlugin,
+       interactionPlugin     
     }
 })
 
@@ -28,15 +33,20 @@ export default class CalendarPage extends Vue {
   isCalendar = false;
   db! : Database;
   calendarOptions = {
-        plugins: [ dayGridPlugin],
+        plugins: [ dayGridPlugin,listPlugin,interactionPlugin],
+        selectable: true,
         initialView: 'dayGridMonth',
         weekends: true, // initial value,
         dayMaxEventRows: true,
         events: [{
           title:'',
           start: ''
-        }]
+        }],
+        dateClick:(info:any) =>{
+          this.handleClickedDateEvent(info);
+        }
   }
+
 
   mounted() {
 
@@ -82,14 +92,20 @@ export default class CalendarPage extends Vue {
     `${time.getSeconds().toString().length == 1 ? '0' + time.getSeconds().toString() : time.getSeconds().toString()}`;
   }
 
+  public handleClickedDateEvent(ClickedDate : any) : void {
+     var calAPi = ClickedDate.view.calendar;
+    //alert(ClickedDate.dateStr); 
+    calAPi.changeView('listDay',ClickedDate.dateStr)
+  }
+
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainWindow{
-    height: 550px;
-    width: 850px;
+    height: 70%;
+    width: 860px;
 
 }
 
