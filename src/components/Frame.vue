@@ -42,11 +42,11 @@
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><calendar /></el-icon> 
                     <span>Navigator Two</span>
                 </el-menu-item>
-                <el-menu-item index="4">
+                <!-- <el-menu-item index="4">
                     
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><more /></el-icon>
                     <span>Navigator Three</span>
-                </el-menu-item>
+                </el-menu-item> -->
                 <el-menu-item index="5">
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><setting/></el-icon>
                     <span>Navigator Four</span>
