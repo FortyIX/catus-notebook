@@ -24,9 +24,13 @@
 <script lang="ts">
 import { Vue } from 'vue-class-component';
 import { useI18n } from 'vue-i18n';
+import {Config} from '../databases/config';
 import bus from '../bus';
 
 export default class SettingPage extends Vue {
+
+localConfig! : Config;
+
 activeNames = "1";
 lang_selection = 'en'
 lang_options = [
@@ -47,11 +51,17 @@ uiText= {}
 
 
 mounted() {
-      
+    
+    this.localConfig = new Config();
+
     const {locale,t} = useI18n();
     this.locale = locale;
     this.t = t; 
     this.getLocalizedStrings();
+
+    bus.on('update_language_selector_in_setting', (lang:any) => {
+      this.lang_selection = lang;
+    })
 
 
 }
@@ -68,6 +78,14 @@ public handleLanguageChange() : void {
   this.getLocalizedStrings();
   bus.emit('update_language');
   bus.emit('update_language_calendar',(this.lang_selection));
+  this.saveLanguagePerference();
+}
+
+public saveLanguagePerference() : void {
+  this.localConfig.configs.where('name').equals('language').toArray().then(res => {
+    var lang_id = res[0].id;
+    this.localConfig.configs.update(lang_id!,{value:this.lang_selection});
+  })
 }
 
 }

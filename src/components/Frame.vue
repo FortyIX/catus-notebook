@@ -90,7 +90,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import {Database} from '../databases/database';
-
+import {Config} from '../databases/config';
 import { NotebookItem }  from '../dataStructs/NotebookItem';
 import { TagItem }  from '../dataStructs/TagItem';
 
@@ -130,6 +130,8 @@ import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,Circl
 export default class Frame extends Vue {
   
   db! : Database;
+  localConfig! : Config;
+
   notefilter = "bulabula?bula"
 
   isNotebookIndexVisiable = false;
@@ -149,12 +151,17 @@ export default class Frame extends Vue {
 
   mounted() {
       
-      const {locale,t} = useI18n();
-       this.locale = locale;
-       this.t = t; 
-       this.getLocalizedStrings();
-
+      
       this.db = new Database();
+      this.localConfig = new Config();  
+
+      this.loadSettings()  
+      
+      const {locale,t} = useI18n();
+      this.locale = locale;
+      this.t = t; 
+      this.getLocalizedStrings();
+
       this.fetchNotebookList();
       this.fetchTagList();
     
@@ -331,6 +338,23 @@ export default class Frame extends Vue {
       this.isNotebookIndexVisiable = false;
   }
 
+  public loadSettings() : void {
+     this.localConfig.configs.where('name').equals('entered').toArray().then((res) => {
+         if(res.length == 0){
+             this.localConfig.configs.add({name:'entered',value:'1'});
+             this.localConfig.configs.add({name:'language',value:'en'});
+         }
+         else{
+             this.localConfig.configs.where('name').equals('language').toArray().then(res => {
+                 var language = res[0].value;
+                 this.locale.value = language;
+                   bus.emit('update_language');
+                   bus.emit('update_language_calendar',(language));
+                   bus.emit('update_language_selector_in_setting',(language));
+             })
+         }
+     });
+  }
 
 // CODES FOR PAGE SWITCHING
 
@@ -355,6 +379,8 @@ export default class Frame extends Vue {
       document.getElementById('calander-page')!.hidden = true;
       document.getElementById('setting-page')!.hidden = false;
   }
+
+
 
 
 
