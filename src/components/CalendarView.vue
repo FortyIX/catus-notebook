@@ -63,6 +63,10 @@ export default class CalendarPage extends Vue {
         this.calendarOptions.locale = "zh-cn";
         this.reRenderCalender();
       }
+      else{
+        this.calendarOptions.locale = "en";
+        this.reRenderCalender();        
+      }
     })
   }
 
