@@ -64,7 +64,7 @@
                     </el-menu-item>
                 </el-menu-item-group>  
                 <el-menu-item-group v-bind:title="uiText.about">
-                    <el-menu-item @click="openLicense">
+                    <el-menu-item @click="isAboutShown = true">
                         <el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><lollipop/></el-icon><span>{{$t('menu.about')}}</span>
                     </el-menu-item>
                     
@@ -98,6 +98,20 @@
                         <button @click= "filterTag(tag.name)"> {{tag.name}}</button>
                     </el-tag>                        
                 </el-scrollbar>
+        </el-dialog>
+        <el-dialog
+            title="About"
+            v-model="isAboutShown"
+            width="30%"
+            :before-close="handleClose"
+            >
+            <img src="./../assets/logo_white.png" height="180" width="180" />
+            <p style="font-size:18px;">Catus Notebook Beta 0.1.0</p>
+            <el-space size="10">
+                <el-button plain>Website</el-button>
+                <el-button plain>Github</el-button>
+                <el-button plain>Help</el-button>
+            </el-space>
         </el-dialog>
 
             
@@ -174,7 +188,8 @@ export default class Frame extends Vue {
   t!:any
 
   uiText= {}
-
+  
+  isAboutShown = false;
  
 
   mounted() {
