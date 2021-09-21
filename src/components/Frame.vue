@@ -3,7 +3,7 @@
       <div class="window-control-bar">
           <div class="app-name"><p style="position:relative; top:7px;">Catus Notebook</p></div>
           <div class="drag-area"></div>
-          <div class="exit-btn"><el-icon class="exit-sign" style="height: 5px; margin-right: 5px; margin-bottom:20px; color:black;" :size="25"><close /></el-icon>
+          <div class="exit-btn" @click="shutDown"><el-icon class="exit-sign" style="height: 5px; margin-right: 5px; margin-bottom:20px; color:black;" :size="25"><close /></el-icon>
       </div>
       </div>
       <div class="side-bar">
@@ -103,7 +103,6 @@
             title="About"
             v-model="isAboutShown"
             width="30%"
-            :before-close="handleClose"
             >
             <img src="./../assets/logo_white.png" height="180" width="180" />
             <p style="font-size:18px;">Catus Notebook Beta 0.1.0</p>
@@ -130,6 +129,7 @@ import {Database} from '../databases/database';
 import {Config} from '../databases/config';
 import { NotebookItem }  from '../dataStructs/NotebookItem';
 import { TagItem }  from '../dataStructs/TagItem';
+
 
 import MainPage from './MainPage.vue';
 import CalendarPage from './CalendarView.vue';
@@ -429,6 +429,31 @@ export default class Frame extends Vue {
       document.getElementById('main-page')!.hidden = true;
       document.getElementById('calander-page')!.hidden = true;
       document.getElementById('setting-page')!.hidden = false;
+  }
+
+  public openLicense() : void {
+      const {BrowserWindow} = require('electron').remote;
+      
+      var win = new BrowserWindow({
+          title:"License",
+          height:500,
+          width:700,
+      });
+
+        var pathPrefix = process.resourcesPath;
+        const isDev = process.env.NODE_ENV !== 'production';
+        if(isDev){
+          pathPrefix = "file://../..";
+        }
+
+      win.loadFile(pathPrefix + '/license/index.html');
+  }
+
+  public shutDown() : void{
+    const {BrowserWindow} = require('electron').remote;  
+
+    var window = BrowserWindow.getFocusedWindow();
+    window!.close();
   }
 
 

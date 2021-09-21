@@ -91,7 +91,9 @@ async function createWindow() {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      enableRemoteModule: true,
+      webSecurity: false
     }
   })
 
@@ -127,6 +129,14 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+  
+  protocol.registerFileProtocol('lflp', (request, callback) => {
+    console.log(request.url)
+    const url = request.url.substr(7)
+    callback({ path: url })
+  })
+
+
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
