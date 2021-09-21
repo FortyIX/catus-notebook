@@ -52,9 +52,9 @@
         </el-space>
 
     </div>
-    <el-dialog v-model="isSelectingTime" title="Reminder">
+    <el-dialog v-model="isSelectingTime" v-bind:title="uiText.title">
        <el-form v-if="isReminder">
-        <el-form-item label="Time" :label-width="labelWidth">
+        <el-form-item v-bind:label="uiText.time" :label-width="labelWidth">
           <el-date-picker
                 v-model="dateTimeSelected"
                 type="datetime"
@@ -64,12 +64,12 @@
               >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="Message" :label-width="labelWidth">
+        <el-form-item v-bind:label="uiText.message" :label-width="labelWidth">
           <el-input v-model="reminderMsgShown" autocomplete="off" style="width: 70%;"></el-input>
         </el-form-item>
        </el-form>
       <el-button v-else type="primary" @click="showReminderSetting()" plain
-        >Set reminder</el-button
+        >{{$t('operationBar.reminder_addReminderBtn')}}</el-button
       >
 
   <template #footer>
@@ -91,13 +91,14 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { CircleCheck,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight,Delete} from '@element-plus/icons';
-import {Database} from '../database';
+import {Database} from '../databases/database';
 
 
 import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
 import { ElMessage } from 'element-plus';
 import Editor from './Editor.vue';
+import { useI18n } from 'vue-i18n';
 
 
 @Options({
@@ -253,9 +254,10 @@ export default class Note extends Vue {
         </style>    
         `;
 
+  locale!: any
+  t!:any
 
-
-
+  uiText= {}
 
 
   created(){
@@ -273,6 +275,13 @@ export default class Note extends Vue {
   mounted() {
     //connect to the database 
     this.db = new Database();  
+
+
+    const {locale,t} = useI18n();
+    this.locale = locale;
+    this.t = t; 
+    this.getLocalizedStrings();
+
 
     //Set the scheduled time to now
     this.dateTimeSelected = new Date(this.date);
@@ -342,12 +351,28 @@ export default class Note extends Vue {
         this.updateNote(htmlString)
     });
 
+    bus.on('update_language',() => {
+      this.getLocalizedStrings();
+    })
+
   }
+
+  public getLocalizedStrings() : void {
+    this.uiText = {
+        addReminerBtn : this.t('operationBar.reminder_addReminderBtn'),
+        title : this.t('operationBar.reminder_title'),
+        time :this.t('operationBar.reminder_time'),
+        message :this.t('operationBar.reminder_message'),
+    
+    }  
+  }
+
 
   public showReminderSetting() : void{
     this.isReminder = true;
     this.dateTimeSelected = new Date();
   }
+
 
   /**
    * Open the dialog for selecting scheduled time

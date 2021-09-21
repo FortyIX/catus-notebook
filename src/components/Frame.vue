@@ -16,9 +16,9 @@
                     <span>Browse</span>
                     </template>
                     <el-menu-item-group v-bind:title="uiText.actions">
-                        <el-menu-item v-if="isNotArchive&&!isCalanderPage" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><circle-plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
+                        <el-menu-item v-if="isNotArchive&&!isBackHomeBtnNeeded" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><circle-plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
                         <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
-                        <el-menu-item v-if="isCalanderPage" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
+                        <el-menu-item v-if="isBackHomeBtnNeeded" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
                     </el-menu-item-group>
                 </el-sub-menu>
                 <el-sub-menu index="2">
@@ -47,7 +47,7 @@
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><more /></el-icon>
                     <span>Navigator Three</span>
                 </el-menu-item> -->
-                <el-menu-item index="5">
+                <el-menu-item index="5" @click="switchToSetting">
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><setting/></el-icon>
                     <span>Navigator Four</span>
                 </el-menu-item>
@@ -81,21 +81,27 @@
       </div>
       <div class="main-display">
            <div id="main-page"><MainPage :noteFilter="notefilter"/></div>
-           <div id="calander-page"  hidden><CalendarPage/></div> 
+           <div id="calander-page"  hidden><CalendarPage/></div>
+           <div id="setting-page"  hidden><SettingPage/></div>  
       </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import {Database} from '../database';
-import { NotebookItem }  from '../NotebookItem';
-import { TagItem }  from '../TagItem';
+import {Database} from '../databases/database';
+
+import { NotebookItem }  from '../dataStructs/NotebookItem';
+import { TagItem }  from '../dataStructs/TagItem';
+
 import MainPage from './MainPage.vue';
+import CalendarPage from './CalendarView.vue';
+import SettingPage from './SettingPage.vue';
+
 import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
 import {useI18n} from "vue-i18n"
-import CalendarPage from './CalendarView.vue';
+
 
 //import element svg icons
 import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,CirclePlus,Document,Collection,PriceTag,ArrowLeft} from '@element-plus/icons'
@@ -117,7 +123,8 @@ import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,Circl
         ArrowLeft,
         PriceTag,
         MainPage,
-        CalendarPage,        
+        CalendarPage,
+        SettingPage        
     }
 })
 export default class Frame extends Vue {
@@ -128,7 +135,7 @@ export default class Frame extends Vue {
   isNotebookIndexVisiable = false;
   isTagIndexVisiable = false;
   isNotArchive = true;
-  isCalanderPage = false;
+  isBackHomeBtnNeeded = false;
 
   existingNotebooks:NotebookItem[] = [];
   existingTags:TagItem[] = [];
@@ -145,14 +152,7 @@ export default class Frame extends Vue {
       const {locale,t} = useI18n();
        this.locale = locale;
        this.t = t; 
-
-      this.uiText = {
-      actions : this.t('menu.actions'),
-      writing: this.t('menu.yourWriting'),
-      cate : this.t('menu.yourCate'),
-      notebooks:this.t('menu.notebooks'),    
-      tags:this.t('menu.tags')
-      }
+       this.getLocalizedStrings();
 
       this.db = new Database();
       this.fetchNotebookList();
@@ -161,14 +161,29 @@ export default class Frame extends Vue {
       bus.on('update_notebook_list',()=> {
         this.$nextTick(() => {this.existingNotebooks = [];});
         this.$nextTick(() => {this.fetchNotebookList();})   
-      })  
+      });  
 
       bus.on('update_tag_list',()=> {
         this.$nextTick(() => {this.existingTags = [];});
-        this.$nextTick(() => {this.fetchTagList();})
-        
-      })  
+        this.$nextTick(() => {this.fetchTagList();})   
+      });  
+      
+      bus.on('update_language',() => {
+          this.getLocalizedStrings();
+      })
+
   }
+
+  public getLocalizedStrings() : void {
+    this.uiText = {
+      actions : this.t('menu.actions'),
+      writing: this.t('menu.yourWriting'),
+      cate : this.t('menu.yourCate'),
+      notebooks:this.t('menu.notebooks'),    
+      tags:this.t('menu.tags')
+      }
+  }  
+
 
   public addNote() : void {
       bus.emit("add-note-event");    
@@ -317,19 +332,28 @@ export default class Frame extends Vue {
   }
 
 
-// CODES FOR CALANDERS
+// CODES FOR PAGE SWITCHING
 
   public switchToCalander() : void { 
-      this.isCalanderPage = true;
+      this.isBackHomeBtnNeeded = true;
       bus.emit('load_full_calendar');
       document.getElementById('main-page')!.hidden = true;
       document.getElementById('calander-page')!.hidden = false;
+      document.getElementById('setting-page')!.hidden = true;
   }
 
   public switchToMain() : void { 
-      this.isCalanderPage = false;
+      this.isBackHomeBtnNeeded = false;
       document.getElementById('main-page')!.hidden = false;
       document.getElementById('calander-page')!.hidden = true;
+      document.getElementById('setting-page')!.hidden = true;
+  }
+
+  public switchToSetting() : void { 
+      this.isBackHomeBtnNeeded = true;
+      document.getElementById('main-page')!.hidden = true;
+      document.getElementById('calander-page')!.hidden = true;
+      document.getElementById('setting-page')!.hidden = false;
   }
 
 

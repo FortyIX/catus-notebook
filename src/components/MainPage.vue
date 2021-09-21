@@ -20,9 +20,9 @@
 </template>
 
 <script lang="ts">
-import {NoteStruct} from '../NoteStruct';
+import {NoteStruct} from '../dataStructs/NoteStruct';
 import { Options, Vue } from 'vue-class-component';
-import {Database} from '../database';
+import {Database} from '../databases/database';
 import bus from '../bus'
 import Note from './Note.vue';
 import { ElMessage } from 'element-plus';

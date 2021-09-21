@@ -13,13 +13,23 @@ module.exports = {
     },
 
     operationBar : {
-      reminder : "提醒"  
+
+      reminder_addReminderBtn:"设置提醒",
+      reminder_title:"提醒",
+      reminder_time:"提醒时间",
+      reminder_message:"提醒内容"
+
     },
 
     welcomePage: {
       message1:"点击左侧导航栏上的",
       message2:"按钮来开始使用"
     },
+
+    settingPage: {
+      userinterface_title:"用户界面",
+      language: "语言"
+    }
 
 
 }

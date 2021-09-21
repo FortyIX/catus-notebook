@@ -12,10 +12,10 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction'; 
 
 import bus from '../bus';
-import {NoteStruct} from '../NoteStruct';
+import {NoteStruct} from '../dataStructs/NoteStruct';
 import { Options, Vue } from 'vue-class-component';
 import {ref} from "vue";
-import {Database} from '../database';
+import {Database} from '../databases/database';
 
 
 @Options({
@@ -34,6 +34,7 @@ export default class CalendarPage extends Vue {
   db! : Database;
   calendarOptions = {
         plugins: [ dayGridPlugin,listPlugin,interactionPlugin],
+        locale:'en',
         selectable: true,
         initialView: 'dayGridMonth',
         weekends: true, // initial value,
@@ -55,6 +56,13 @@ export default class CalendarPage extends Vue {
 
     bus.on('load_full_calendar',() => {
       this.getNoteData(this.db);      
+    });
+
+    bus.on('update_language_calendar', (lan) => {
+      if (lan == 'cn'){
+        this.calendarOptions.locale = "zh-cn";
+        this.reRenderCalender();
+      }
     })
   }
 
