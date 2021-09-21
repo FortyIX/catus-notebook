@@ -1,6 +1,11 @@
 <template>
   <div class="mainFrame">
-      <div class="window-control-bar"></div>
+      <div class="window-control-bar">
+          <div class="app-name"><p style="position:relative; top:7px;">Catus Notebook</p></div>
+          <div class="drag-area"></div>
+          <div class="exit-btn"><el-icon class="exit-sign" style="height: 5px; margin-right: 5px; margin-bottom:20px; color:black;" size="25"><close /></el-icon>
+      </div>
+      </div>
       <div class="side-bar">
 
         <el-menu
@@ -104,7 +109,7 @@ import {useI18n} from "vue-i18n"
 
 
 //import element svg icons
-import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,CirclePlus,Document,Collection,PriceTag,ArrowLeft} from '@element-plus/icons'
+import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,CirclePlus,Document,Collection,PriceTag,ArrowLeft,Close} from '@element-plus/icons'
 
 
 @Options({
@@ -117,6 +122,7 @@ import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,Circl
         Delete,
         Document,
         More,
+        Close,
         TakeawayBox,
         CirclePlus,
         Collection,
@@ -147,7 +153,7 @@ export default class Frame extends Vue {
 
   uiText= {}
 
-
+ 
 
   mounted() {
       
@@ -178,6 +184,12 @@ export default class Frame extends Vue {
       bus.on('update_language',() => {
           this.getLocalizedStrings();
       })
+
+    //   const {ipcRenderer} = require('electron');
+    //   ipcRenderer.on('test_pass', (e,a)=> {
+    //       console.log("test successul");
+    //       window.alert("hi");
+    //   })
 
   }
 
@@ -408,10 +420,64 @@ export default class Frame extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
+.window-control-bar{
+    height: 30px;
+    width:982px;
+    background: #e6e6e6;
+    position: relative;
+    right:10px;
+    bottom:25px;
+    z-index: 2;
+   -webkit-user-select: none;
+   
+}
+
+.drag-area{
+    height: 30px;
+    width: 600px;
+    color: blue;
+    position: absolute;
+    bottom: 2px;
+    left: 140px;
+    -webkit-app-region: drag; 
+}
+.exit-btn{
+    height: 30px;
+    width: 30px;
+    background: #e6e6e6;
+    position: relative;
+    bottom: 30px;
+    float: right;
+
+}
+
+.exit-btn:hover{
+    height: 30px;
+    width: 30px;
+    background: red;
+    position: relative;
+    bottom: 30px;
+    float: right;
+}
+
+.app-name{
+    height: 30px;
+    width: 140px;
+    background: #e6e6e6;
+    z-index: 2;
+}
+
+.exit-sign{
+    position: relative;
+    top:3px;
+    left:3px;
+}
+
+
 /* style for the main frame */
 .mainFrame{
-    height: 635px;
-    width: 910px;
+    height: 645px;
+    width: 890px;
     background: white;
     position: absolute;
     
@@ -420,7 +486,7 @@ export default class Frame extends Vue {
 /* styles for the side navi bar */
 .side-bar{
     width:60px;
-    height:668px;
+    height:670px;
     float:left;
     position: relative;
     right: 10px;    
@@ -429,9 +495,9 @@ export default class Frame extends Vue {
 
 .side-nav-bar{
     width: 60px;
-    height: 685px;
+    height: 695px;
     position: absolute;
-    bottom: 0px;
+    bottom: 1px;
     background:#001B50;
 }
 

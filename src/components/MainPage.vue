@@ -9,7 +9,7 @@
             </div>
           </div>
           
-          <el-scrollbar height="650px" width="800px" class="note-container">
+          <el-scrollbar height="660px" width="800px" class="note-container">
             <Note  v-for="li in listOfNotes" :key="li.id" :contents="li.content" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id"/>  
           </el-scrollbar>
  
@@ -290,9 +290,10 @@ export default class MainPage extends Vue {
 
 .note-display-area{
   height: 679px;
-  width: 102%;
+  width: 100%;
   position: relative;
   bottom: 6px;
+  left:10px;
   background:white;
 }
 

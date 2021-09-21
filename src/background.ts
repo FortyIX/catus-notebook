@@ -1,9 +1,78 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow,Menu} from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+import {Config} from './databases/config'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+var win : BrowserWindow; 
+
+// const template = [{
+//   label: '首页'
+// },
+// {
+//   label: '新闻资讯',
+//   submenu: [{
+//       label: '国内新闻',
+//       submenu: [{
+//           label: '北京新闻',
+//           click : () => {  win.webContents.send('test_pass');}
+//       }, {
+//           label: '河南新闻'
+//       }]
+//   }, {
+//       label: '国际新闻'
+//   }]
+// },
+// {
+//   label: '娱乐',
+//   submenu: [{
+//       label: '音乐'
+//   }, {
+//       label: '电影'
+//   }, {
+//       label: '综艺'
+//   }]
+// },
+// {
+//   label: '科技',
+//   submenu: [{
+//       label: 'Al'
+//   }, {
+//       label: '手机'
+//   }, {
+//       label: '互联网'
+//   }]
+// }
+// ]
+
+// const template2 = [{
+//   label: '首页'
+// },
+// {
+//   label: '新闻资讯',
+//   submenu: [{
+//       label: '国内新闻',
+//       submenu: [{
+//           label: '北京新闻',
+//           click : () => {  win.webContents.send('test_pass');}
+//       }, {
+//           label: '河南新闻'
+//       }]
+//   }, {
+//       label: '国际新闻'
+//   }]
+// }
+// ]
+
+
+
+
+// var list = Menu.buildFromTemplate(template)
+// Menu.setApplicationMenu(list)
+
+
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -12,19 +81,21 @@ protocol.registerSchemesAsPrivileged([
 
 async function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 980,
     height: 723,
     resizable:false,
+    frame:false,
     webPreferences: {
       
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: (process.env
-          .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
+      nodeIntegration: true,
+      contextIsolation: false
     }
   })
+
+
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
