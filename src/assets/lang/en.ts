@@ -20,7 +20,9 @@ module.exports = {
       reminder_addReminderBtn:"Set a reminder",
       reminder_title:"Reminder",
       reminder_time:"Time",
-      reminder_message:"Message"
+      reminder_message:"Message",
+      tag_title:"Tags",
+      notebook_title:"Notebooks"
 
     },
     welcomePage: {
