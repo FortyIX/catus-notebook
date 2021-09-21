@@ -10,6 +10,9 @@ module.exports = {
         notebooks : "笔记本",
         tags: "标签",
         back:"返回首页",
+        settings: "设置",
+        about: "关于",
+        licenses:"开源组件许可"
     },
 
     operationBar : {

@@ -3,7 +3,7 @@
       <div class="window-control-bar">
           <div class="app-name"><p style="position:relative; top:7px;">Catus Notebook</p></div>
           <div class="drag-area"></div>
-          <div class="exit-btn"><el-icon class="exit-sign" style="height: 5px; margin-right: 5px; margin-bottom:20px; color:black;" size="25"><close /></el-icon>
+          <div class="exit-btn"><el-icon class="exit-sign" style="height: 5px; margin-right: 5px; margin-bottom:20px; color:black;" :size="25"><close /></el-icon>
       </div>
       </div>
       <div class="side-bar">
@@ -32,7 +32,7 @@
                     <span>Browse</span>
                     </template>
                     <el-menu-item-group v-bind:title="uiText.writing">
-                        <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><document /></el-icon>
+                        <el-menu-item index="1-1" @click="showAllNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><reading /></el-icon>
       <span>{{$t('menu.note')}}</span></el-menu-item>
                         <el-menu-item index="1-2" @click="showArchivedNotes"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><takeaway-box /></el-icon>
       <span>{{$t('menu.archive')}}</span></el-menu-item>
@@ -52,10 +52,28 @@
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><more /></el-icon>
                     <span>Navigator Three</span>
                 </el-menu-item> -->
-                <el-menu-item index="5" @click="switchToSetting">
-                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#ffffff;" :size="20"><setting/></el-icon>
-                    <span>Navigator Four</span>
-                </el-menu-item>
+  
+                <el-sub-menu index="4">
+                    <template #title>
+                    <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#fff;" :size="20"><more/></el-icon> 
+                    <span>Browse</span>
+                    </template>
+                <el-menu-item-group v-bind:title="uiText.settings">
+                    <el-menu-item @click="switchToSetting">
+                        <el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><setting/></el-icon><span>{{$t('menu.settings')}}</span>
+                    </el-menu-item>
+                </el-menu-item-group>  
+                <el-menu-item-group v-bind:title="uiText.about">
+                    <el-menu-item @click="openLicense">
+                        <el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><lollipop/></el-icon><span>{{$t('menu.about')}}</span>
+                    </el-menu-item>
+                    
+                    <el-menu-item @click="openLicense">
+                       <el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><document-copy/></el-icon><span>{{$t('menu.licenses')}}</span>
+                    </el-menu-item>                        
+                    
+                </el-menu-item-group>  
+                </el-sub-menu>
 
 
         </el-menu>
@@ -109,7 +127,8 @@ import {useI18n} from "vue-i18n"
 
 
 //import element svg icons
-import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,CirclePlus,Document,Collection,PriceTag,ArrowLeft,Close} from '@element-plus/icons'
+import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,CirclePlus
+,Document,Collection,PriceTag,ArrowLeft,Close,Reading,DocumentCopy,Lollipop} from '@element-plus/icons'
 
 
 @Options({
@@ -121,7 +140,10 @@ import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,Circl
         Expand,
         Delete,
         Document,
+        DocumentCopy,
+        Reading,
         More,
+        Lollipop,
         Close,
         TakeawayBox,
         CirclePlus,
@@ -199,7 +221,9 @@ export default class Frame extends Vue {
       writing: this.t('menu.yourWriting'),
       cate : this.t('menu.yourCate'),
       notebooks:this.t('menu.notebooks'),    
-      tags:this.t('menu.tags')
+      tags:this.t('menu.tags'),
+      settings: this.t('menu.settings'),
+      about:this.t('menu.about')
       }
   }  
 

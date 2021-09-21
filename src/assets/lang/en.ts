@@ -9,7 +9,10 @@ module.exports = {
         yourCate : "Your categories",
         notebooks : "Notebooks",
         tags: "Tags",
-        back:"Back to notes"
+        back:"Back to notes",
+        settings: "Settings",
+        about: "About",
+        licenses:"Licenses"
     },
 
     operationBar : {
