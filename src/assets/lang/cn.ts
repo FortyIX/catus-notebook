@@ -20,7 +20,9 @@ module.exports = {
       reminder_addReminderBtn:"设置提醒",
       reminder_title:"提醒",
       reminder_time:"提醒时间",
-      reminder_message:"提醒内容"
+      reminder_message:"提醒内容",
+      tag_title:"标签",
+      notebook_title:"笔记本"
 
     },
 
