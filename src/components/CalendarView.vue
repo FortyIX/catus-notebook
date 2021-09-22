@@ -29,9 +29,13 @@ import {Database} from '../databases/database';
 
 
 export default class CalendarPage extends Vue {
+  //rendering variable 
   nRender = 0;
-  isCalendar = false;
+
+  //database connector 
   db! : Database;
+
+  //options for the calendar 
   calendarOptions = {
         plugins: [ dayGridPlugin,listPlugin,interactionPlugin],
         locale:'en',
@@ -50,14 +54,21 @@ export default class CalendarPage extends Vue {
 
 
   mounted() {
-
+    
+    //connect to the database and obtain all note
     this.db = new Database();
     this.getNoteData(this.db);
-
+    
+    /**
+     * Listener for the event that load the calendar 
+     */
     bus.on('load_full_calendar',() => {
       this.getNoteData(this.db);      
     });
 
+    /**
+     * Listener for the event that update the calendar language 
+     */
     bus.on('update_language_calendar', (lan) => {
       if (lan == 'cn'){
         this.calendarOptions.locale = "zh-cn";
@@ -70,19 +81,28 @@ export default class CalendarPage extends Vue {
     })
   }
 
+  /**
+   * rerender the calendar to update 
+   */
   public reRenderCalender(){
     this.nRender += 1;
   }
 
+  /**
+   * get the note data from the database 
+   * @param db The database connector 
+   */
   public getNoteData(db : Database){
 
     this.calendarOptions.events = [];
     db.notes.toArray().then(notes => {
       notes.forEach(note => {
-        
+        //fetch the date 
         var rawTime = note.date;
         if(rawTime != -1){
           var time = new Date(rawTime);
+
+          //add to the calendar as a new event 
           this.calendarOptions.events.push({
             title : note.reminderMsg,
             start : this.parseTime(time)
@@ -94,6 +114,10 @@ export default class CalendarPage extends Vue {
     })
   }
 
+  /**
+   * Helper function that convert the date format stored in database to the one accepted by the calendar 
+   * @param time The date to be converted 
+   */
   public parseTime(time : Date) : string {
     
     return `${time.getFullYear()}-`+
@@ -104,6 +128,10 @@ export default class CalendarPage extends Vue {
     `${time.getSeconds().toString().length == 1 ? '0' + time.getSeconds().toString() : time.getSeconds().toString()}`;
   }
 
+  /**
+   * Handler for each date click event
+   * @param ClickedDate the date clicked  
+   */
   public handleClickedDateEvent(ClickedDate : any) : void {
      var calAPi = ClickedDate.view.calendar;
     //alert(ClickedDate.dateStr); 

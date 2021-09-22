@@ -286,11 +286,9 @@ export default class Note extends Vue {
     this.getLocalizedStrings();
 
 
-    //Set the scheduled time to now
-    this.dateTimeSelected = new Date(this.date);
+    //set the reminder if there is on 
+    this.getReminderInfo();
 
-    //set the reminder message 
-    this.reminderMsgShown = this.reminderMsg;
 
     // obtain notebooks and tags for this note 
     this.parseNotebooks();
@@ -354,12 +352,18 @@ export default class Note extends Vue {
         this.updateNote(htmlString)
     });
 
+    /**
+     * Listener for event that update the UI language
+     */
     bus.on('update_language',() => {
       this.getLocalizedStrings();
     })
 
   }
 
+  /**
+   * get localized data for all labels 
+   */
   public getLocalizedStrings() : void {
     this.uiText = {
         addReminerBtn : this.t('operationBar.reminder_addReminderBtn'),
@@ -372,7 +376,31 @@ export default class Note extends Vue {
     }  
   }
 
+  /**
+   * Check if this note already has a reminder
+   */
+  public getReminderInfo() : void {
+    
+    if(this.date != -1 ){
+      this.isReminder = true;
+      
+      //load the reminder time 
+      this.dateTimeSelected = new Date(this.date);
+      
+      //set the reminder message 
+      this.reminderMsgShown = this.reminderMsg;
+    }
+    else{
 
+      //init the time with the current time 
+      this.dateTimeSelected = new Date();
+      
+    }
+  }
+
+ /**
+  * Enable the reminder setting
+  */
   public showReminderSetting() : void{
     this.isReminder = true;
     this.dateTimeSelected = new Date();

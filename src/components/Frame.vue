@@ -171,53 +171,74 @@ import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,Circl
 })
 export default class Frame extends Vue {
   
+  //database connectors for notes and settings 
   db! : Database;
   localConfig! : Config;
 
+  //init a random filter to fetch all notes 
   notefilter = "bulabula?bula"
-
+  
+  //switches to turn on notebook and tags 
   isNotebookIndexVisiable = false;
   isTagIndexVisiable = false;
+  
+  //switchs to update the menu buttons
   isNotArchive = true;
   isBackHomeBtnNeeded = false;
 
+  //storage for exisitng notebook and tags
   existingNotebooks:NotebookItem[] = [];
   existingTags:TagItem[] = [];
-
+  
+  
+  //language variables
   locale!: any
   t!:any
 
   uiText= {}
   
+  //switch to show the about page
   isAboutShown = false;
  
 
   mounted() {
       
-      
+      //connect to databases
       this.db = new Database();
       this.localConfig = new Config();  
-
+      
+      //load the setting 
       this.loadSettings()  
       
+      //set the languages
       const {locale,t} = useI18n();
       this.locale = locale;
       this.t = t; 
       this.getLocalizedStrings();
 
+      //get all noteboos and tags   
       this.fetchNotebookList();
       this.fetchTagList();
-    
+      
+      /**
+       * Listener for event that update the notebook index
+       */
       bus.on('update_notebook_list',()=> {
         this.$nextTick(() => {this.existingNotebooks = [];});
         this.$nextTick(() => {this.fetchNotebookList();})   
       });  
 
+      /**
+       * Listener for event that update the tag index
+       */
       bus.on('update_tag_list',()=> {
         this.$nextTick(() => {this.existingTags = [];});
         this.$nextTick(() => {this.fetchTagList();})   
       });  
-      
+
+      /**
+       * Listener for event that update the UI language 
+       */
       bus.on('update_language',() => {
           this.getLocalizedStrings();
       })
@@ -229,7 +250,10 @@ export default class Frame extends Vue {
     //   })
 
   }
-
+   
+  /**
+   * Get the localized strings for all labels 
+   */
   public getLocalizedStrings() : void {
     this.uiText = {
       actions : this.t('menu.actions'),
@@ -242,26 +266,39 @@ export default class Frame extends Vue {
       }
   }  
 
-
+  /**
+    * Signal to add a new note 
+    */
   public addNote() : void {
       bus.emit("add-note-event");    
   }
-
+  
+  /**
+   * signal to remove all archived note 
+   */
   public removeAllArchivedNote() : void {
     bus.emit("remove-all-archived-notes");
   }
-
+ /**
+  * Signal to show archived notes 
+  */
   public showArchivedNotes() : void {
       this.switchToMain();
       this.isNotArchive = false;
       bus.emit('reload_notes_with_undo_note');
   }
+  /**
+   * Signal to show all notes 
+   */
   public showAllNotes () : void {
       this.switchToMain();
       this.isNotArchive = true;
       bus.emit('reload_all_notes');
   }
   
+  /**
+   * fetch all notebooks available from the database 
+   */
   public fetchNotebookList() : void {
       this.db.notebooks.toArray().then(notebooks => {
           notebooks.forEach(notebook => {
@@ -274,6 +311,10 @@ export default class Frame extends Vue {
       })
   } 
 
+  /**
+   * Remove a specifc notebook 
+   * @param notebookid the id of the notebook to be deleted
+   */
   public removeNotebook(notebookid : number) : void {
       this.db.notebooks.get(notebookid).then(res => {
           this.db.notebooks.delete(res!.id!).then(()=>{
@@ -287,6 +328,10 @@ export default class Frame extends Vue {
       })
   }
 
+  /**
+   * Remove a specifc notebook locally (UI) 
+   * @param notebookid the id of the notebook to be deleted
+   */
   public removeNotebokLocal(notebookid:number) : void {
         
         var targetIndex = 0;
@@ -310,6 +355,9 @@ export default class Frame extends Vue {
 
   }
 
+  /**
+   * fetch all tags available from the database 
+   */
   public fetchTagList() : void {
       this.db.tags.toArray().then(tags => {
           tags.forEach(tag => {
@@ -322,6 +370,10 @@ export default class Frame extends Vue {
       })
   }  
   
+  /**
+   * Remove a specifc tag
+   * @param tag id the id of the notebook to be deleted
+   */
   public removeTag(tagid : number) : void {
       this.db.tags.get(tagid).then(res => {
           this.db.tags.delete(res!.id!).then(()=>{
@@ -335,6 +387,10 @@ export default class Frame extends Vue {
       })
   }
 
+  /**
+   * Remove a specifc tag locally (UI)
+   * @param tag id the id of the notebook to be deleted
+   */
   public removeTagLocal(tagid:number) : void {
         
         var targetIndex = 0;
@@ -357,7 +413,10 @@ export default class Frame extends Vue {
         this.removeTagOnEachNote(toBeRemovedTagName);
 
   }
-  
+
+  /**
+   * The deletion animation  
+   */ 
   public disappearAnime(id:string) : void {
 
       var tobeDelNotebook = document.getElementById(id);
@@ -370,25 +429,44 @@ export default class Frame extends Vue {
 
   }
 
+/**
+ * Remove a specif tag from all nots 
+ * @param tag the tag to be removed 
+ */
   public removeTagOnEachNote(tag:string){
       
       bus.emit("remove-tag-on-note",(tag));
   }
 
+ /**
+ * Remove a specif notebook from all nots 
+ * @param notebook the notebook to be removed 
+ */
   public removeNotebookOnEachNote(notebook:string){
       bus.emit("remove-notebook-on-note",(notebook));
   }
 
+ /**
+  * Signal to filter the note with tag 
+  * @param tag the tag to filter 
+  */
   public filterTag(tag:string){
       bus.emit("filter-tag",(tag));
       this.isTagIndexVisiable = false;
   }
 
-  public filterNotebook(notebook : string){
+ /**
+  * Signal to filter the note with notebook
+  * @param notebook  the notebook to filter 
+  */ 
+ public filterNotebook(notebook : string){
       bus.emit("filter-notebook",(notebook));
       this.isNotebookIndexVisiable = false;
   }
 
+  /**
+   * Load settings from the configuration database
+   */
   public loadSettings() : void {
      this.localConfig.configs.where('name').equals('entered').toArray().then((res) => {
          if(res.length == 0){
@@ -406,6 +484,7 @@ export default class Frame extends Vue {
          }
      });
   }
+
 
 // CODES FOR PAGE SWITCHING
 
@@ -431,6 +510,9 @@ export default class Frame extends Vue {
       document.getElementById('setting-page')!.hidden = false;
   }
 
+/**
+ * Open the license window 
+ */
   public openLicense() : void {
       const {BrowserWindow} = require('electron').remote;
       
@@ -449,6 +531,9 @@ export default class Frame extends Vue {
       win.loadFile(pathPrefix + '/license/index.html');
   }
 
+/**
+ * close the application 
+ */
   public shutDown() : void{
     const {BrowserWindow} = require('electron').remote;  
 

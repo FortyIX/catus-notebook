@@ -9,9 +9,6 @@ import bus from '../bus';
 import E from "wangeditor";
 import i18next from 'i18next';
 
-const { BtnMenu, DropListMenu, PanelMenu, DropList, Panel, Tooltip } = E;
-
-
   @Options({
 
     props: {
@@ -21,14 +18,27 @@ const { BtnMenu, DropListMenu, PanelMenu, DropList, Panel, Tooltip } = E;
 
   })
 export default class Editor extends Vue {
+  
+  //content of the notes 
   loadedContent!:string;
+
+  //html of the contnet 
   htmlContent!:string;
+
+  //the note which this editor works for 
   assignedNote! : number;
+
+  //editor instance 
   editorArea! : E;
+
+  //reRendering variable 
   nRender = 0;
   mounted(){
 
-
+    /**
+     * Listener for the event that request content of the editor 
+     * @param id the id of note who send the request
+     */
     bus.on('get_editing_content_signal',(id) => {
         
         var noteID:any = id;
@@ -47,7 +57,7 @@ export default class Editor extends Vue {
       
     // })
     
-
+    /// Configs for the editor
     var ele: any = this.$refs.editor;
     this.editorArea = new E(ele);
     this.editorArea.config.height = 500;
@@ -58,16 +68,20 @@ export default class Editor extends Vue {
         this.htmlContent = html;
     }
 
+    //Show the editor and loads the contents 
     this.editorArea.create();
     this.editorArea.txt.html(this.loadedContent);
   }
 
+  /**
+   * Transmit the html of the edited content back to the assigned note 
+   * @param the id of the assigned note
+   */
   public sendBackHtml(noteID : number) : void {
      if(noteID == this.assignedNote){
         bus.emit('transfer_editing'+String(this.assignedNote),(this.htmlContent));
      }
   }
-
 
 }
 
