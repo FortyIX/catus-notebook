@@ -105,7 +105,7 @@
             width="30%"
             >
             <img src="./../assets/logo_white.png" height="180" width="180" />
-            <p style="font-size:18px;">Catus Notebook Beta 0.2.0</p>
+            <p style="font-size:18px;">Catus Notebook Beta 0.2.1</p>
             <el-space size="10">
                 <el-button plain>Website</el-button>
                 <el-button plain>Github</el-button>
