@@ -4,7 +4,7 @@
       <div class="note-display-area">
           <div v-if="isEmpty" class="welcome"> 
             <div class="welcome-content">  
-              <img src="../assets/logo_transparent.png" style="opacity:0.5;" height="180" width="180">
+              <img src="../assets/logo_new_transparent.png" style="opacity:0.5;" height="180" width="180">
               <p style="color:grey; opacity:0.5;">{{$t('welcomePage.message1')}} <el-icon style="width: 10px; height: 10px; margin-right: 10px; color:grey; position:relative; top:5px;"   :size="20"><expand/></el-icon> {{$t('welcomePage.message2')}}</p>
             </div>
           </div>

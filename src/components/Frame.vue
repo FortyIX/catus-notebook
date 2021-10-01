@@ -1,7 +1,6 @@
 <template>
   <div class="mainFrame">
       <div class="window-control-bar">
-          <div class="app-name"><p style="position:relative; top:7px;">Catus Notebook</p></div>
           <div class="drag-area"></div>
           <div class="exit-btn" @click="shutDown"><el-icon class="exit-sign" style="height: 5px; margin-right: 5px; margin-bottom:20px; color:black;" :size="25"><close /></el-icon>
       </div>
@@ -104,7 +103,7 @@
             v-model="isAboutShown"
             width="30%"
             >
-            <img src="./../assets/logo_white.png" height="180" width="180" />
+            <img src="./../assets/logo_new_transparent.png" height="180" width="180" />
             <p style="font-size:18px;">Catus Notebook Beta 0.2.1</p>
             <el-space size="10">
                 <el-button plain>Website</el-button>
@@ -553,7 +552,7 @@ export default class Frame extends Vue {
 .el-menu{
     --el-menu-item-font-size: var(--el-font-size-base);
     --el-menu-item-font-color: var(--el-text-color-primary);
-    --el-menu-item-hover-fill: rgba(0, 25, 78, 0.178);
+    --el-menu-item-hover-fill: #C6E8EC;
     --el-menu-background-color: var(--el-color-white);
     --el-menu-border-color: white;
     border-right: solid 1px var(--el-menu-border-color);
@@ -571,10 +570,10 @@ export default class Frame extends Vue {
 
 .window-control-bar{
     height: 30px;
-    width:982px;
-    background: #e6e6e6;
+    width:922px;
+    background: white;
     position: relative;
-    right:10px;
+    left:50px;
     bottom:25px;
     z-index: 2;
    -webkit-user-select: none;
@@ -583,20 +582,21 @@ export default class Frame extends Vue {
 
 .drag-area{
     height: 30px;
-    width: 600px;
+    width: 780px;
     color: blue;
     position: absolute;
     bottom: 2px;
-    left: 140px;
+    left: 30px;
+    z-index: 100;
     -webkit-app-region: drag; 
 }
 .exit-btn{
     height: 30px;
     width: 30px;
-    background: #e6e6e6;
-    position: relative;
-    bottom: 30px;
-    float: right;
+    background: white;
+    position: absolute;
+    left:892px;
+    top:14px;
 
 }
 
@@ -604,17 +604,11 @@ export default class Frame extends Vue {
     height: 30px;
     width: 30px;
     background: red;
-    position: relative;
-    bottom: 30px;
-    float: right;
+    position: absolute;
+    left:892px;
 }
 
-.app-name{
-    height: 30px;
-    width: 140px;
-    background: #e6e6e6;
-    z-index: 2;
-}
+
 
 .exit-sign{
     position: relative;
@@ -644,10 +638,10 @@ export default class Frame extends Vue {
 
 .side-nav-bar{
     width: 60px;
-    height: 695px;
+    height: 725px;
     position: absolute;
-    bottom: 1px;
-    background:#001B50;
+    bottom: -15px;
+    background:#7FCBD3;
 }
 
 .main-display{
