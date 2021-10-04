@@ -1,5 +1,5 @@
 <template>
-
+<h1 style="position:relative; right:400px;">17 July</h1>
 <!-- Each note -->
 <el-card :id="id" class="notes" shadow="always">
     <!-- Main body               -->
