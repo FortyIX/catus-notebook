@@ -5,6 +5,7 @@ import Dexie, { IndexableType } from "dexie";
 export interface INote{
     id? : number;
     content : string;
+    submitDate:string;
     date : number;
     reminderMsg : string;
     tag:string;
@@ -33,7 +34,7 @@ export class Database extends Dexie {
         super('db_note');
         
         this.version(1).stores({
-            notes: '++id,content,tag,notebook,date,reminderMsg,isdone',
+            notes: '++id,content,submitDate,tag,notebook,date,reminderMsg,isdone',
             notebooks: '++id, name',
             tags:'++id,name',
         });

@@ -1,5 +1,4 @@
 <template>
-
 <!-- Each note -->
 <el-card :id="id" class="notes" shadow="always">
     <!-- Main body               -->
@@ -92,7 +91,7 @@
 import { Options, Vue } from 'vue-class-component';
 import { CircleCheck,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight,Delete} from '@element-plus/icons';
 import {Database} from '../databases/database';
-
+import {TimeFormatter} from '../utils/timeFormatter';
 
 import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
@@ -105,12 +104,14 @@ import { useI18n } from 'vue-i18n';
 
     props:{
         contents : String,
+        submitDate:String,
         tag : String,
         notebook : String,
         date:Number,
         reminderMsg:String,
         isdone:Number,
-        id: Number
+        id: Number,
+        isShowingAddedDate:Boolean,
     },
     components:{
       CircleCheck,
@@ -131,12 +132,14 @@ export default class Note extends Vue {
 
   //props 
   date! : number;
+  submitDate!:string;
   reminderMsg! : string;
   tag!:string;
   notebook! : string;
   contents! : string;
   id! : number;
-  isdone!:number
+  isdone!:number;
+  isShowingAddedDate!:boolean;
   
 
   //prop wrapper (kind of)
@@ -145,6 +148,8 @@ export default class Note extends Vue {
   notebooksHolder : string[] = [];
   contentParsed! : string;
   archived = false;
+
+  submitDateStr = '';
 
   labelWidth = '70px'
 
@@ -273,6 +278,8 @@ export default class Note extends Vue {
     if(this.isdone == 1){
       this.archived = true;
     }
+
+
   }
 
   mounted() {
@@ -782,7 +789,7 @@ export default class Note extends Vue {
    * @param id The id of this note 
    */    
   public disappearAnime(id:string) : void {
-
+      console.log(id + "called me")
       var tobeArchivedNoteId = document.getElementById(id);
 
       anime({
