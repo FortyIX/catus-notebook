@@ -12,7 +12,7 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction'; 
 
 import bus from '../bus';
-import {NoteStruct} from '../dataStructs/NoteStruct';
+import {CardStruct} from '../dataStructs/CardStruct';
 import { Options, Vue } from 'vue-class-component';
 import {ref} from "vue";
 import {Database} from '../databases/database';
