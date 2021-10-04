@@ -147,7 +147,7 @@ export default class MainPage extends Vue {
 
     //listener for reloading all notes
     bus.on('reload_all_notes', () => {
-      this.fetchDataWithFilter(this.db,"bulabula");
+      this.fetchDataWithFilter(this.db,"bulabula?bula");
     })
     
     //Listener for event that filter notes by tag
@@ -220,7 +220,7 @@ export default class MainPage extends Vue {
    * @param db The database connector 
    */
   public fetchUnarchivedNotes(db: Database) : void{
-
+    console.log('runs')
      var noteData = db.notes.where('isdone').equals(0).toArray().then(notes => {
         notes.forEach(note => {
           if(this.listOfDates.indexOf(note.submitDate) == -1){
@@ -257,6 +257,8 @@ export default class MainPage extends Vue {
     //reset the ui 
     this.listOfCards = [];
 
+    //reset the list of date
+    this.listOfDates = [];
 
     var cmd: string;
     var param : string;

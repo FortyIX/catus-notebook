@@ -104,7 +104,7 @@
             width="30%"
             >
             <img src="./../assets/logo_new_transparent.png" height="180" width="180" />
-            <p style="font-size:18px;">Catus Notebook Beta 0.3.0</p>
+            <p style="font-size:18px;">Catus Notebook Beta {{versionInfo}}</p>
             <el-space size="10">
                 <el-button plain>Website</el-button>
                 <el-button plain>Github</el-button>
@@ -138,6 +138,7 @@ import bus from '../bus';
 import anime from "animejs/lib/anime.es.js";
 import {useI18n} from "vue-i18n"
 
+import config from  './../../package.json';
 
 //import element svg icons
 import { Calendar,Delete,Notebook,Setting,Finished,Expand,More,TakeawayBox,CirclePlus
@@ -189,7 +190,9 @@ export default class Frame extends Vue {
   existingNotebooks:NotebookItem[] = [];
   existingTags:TagItem[] = [];
   
-  
+  versionInfo!:string;
+
+
   //language variables
   locale!: any
   t!:any
@@ -202,6 +205,8 @@ export default class Frame extends Vue {
 
   mounted() {
       
+      //get the version information
+      this.versionInfo = config.version;  
       //connect to databases
       this.db = new Database();
       this.localConfig = new Config();  
