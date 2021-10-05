@@ -8,8 +8,9 @@
 	<a href="https://github.com/FortyIX/catus-notebook/find/master"><img src="https://img.shields.io/github/languages/code-size/FortyIX/catus-notebook?logo=github"></a>
 	
 </p>
-The Catus Notebook combines the defination for both a note and a todo to enable you to easily create, edit and schedule your notes effectively and elegantly. It is developed as an Electron wrapped Vue.js application and is intended to work on multiple platforms ✨. <br/><br/>
-Thank you for your interests 👏 in contributing to this project which awaits your skills and creativity to make it better and enhace user experience 🌈. If you just want to use the software, please visit the software's website for a better introduction to the software and find the download link there, you could also find the download link in the  [Release](https://catus-notebook.vercel.app) page   
+The Catus Notebook combines the defination for both a note and a todo to enable you to easily create, edit and schedule your notes effectively⚡ and elegantly😎. It is developed as an Electron wrapped Vue.js application and is intended to work on multiple platforms. <br/><br/>
+Thank you for your interests🎉 in contributing to this project which awaits your skills 👨‍💻👩‍💻 and creativity✨ to make it better💍 and enhace user experience😆. When the code base enlarges, new issues and hidden issue that works fine with smaller scale code base may appear. Feel free to create new issues regarding any bugs, security and performance issues and so on with their respective flags. <br/><br/>
+If you just want to use the software, please visit the <a href="https://catus-notebook.vercel.app">software's website</a> for a better introduction to the software and find the download link there, you could also find the download link in the  <a href="https://github.com/FortyIX/catus-notebook/releases">release page</a>  
 <h2></h2>
 
 
