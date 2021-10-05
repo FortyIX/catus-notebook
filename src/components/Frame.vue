@@ -1,20 +1,20 @@
 <template>
   <div class="mainFrame">
+      <!-- Control bar -->
       <div class="window-control-bar">
           <div class="drag-area"></div>
           <div class="exit-btn" @click="shutDown"><el-icon class="exit-sign" style="height: 5px; margin-right: 5px; margin-bottom:20px; color:black;" :size="25"><close /></el-icon>
       </div>
       </div>
       <div class="side-bar">
-
+        <!-- side bar -->   
         <el-menu
                 class="side-nav-bar"
                 :collapse="true"
                 text-color="grey"
-                active-text-color="grey"
                 default-active="1"
-                >
-                <el-sub-menu index="1">
+        >
+            <el-sub-menu index="1">
                     <template #title>
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#fff;" :size="20"><expand /></el-icon> 
                     <span>Browse</span>
@@ -24,7 +24,7 @@
                         <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
                         <el-menu-item v-if="isBackHomeBtnNeeded" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
                     </el-menu-item-group>
-                </el-sub-menu>
+            </el-sub-menu>
                 <el-sub-menu index="2">
                     <template #title>
                     <el-icon style="width: 14px; height: 14px; margin-right: 0px; color:#fff;" :size="20"><notebook /></el-icon> 
@@ -69,11 +69,10 @@
                     
                     <el-menu-item @click="openLicense">
                        <el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><document-copy/></el-icon><span>{{$t('menu.licenses')}}</span>
-                    </el-menu-item>                        
-                    
+                    </el-menu-item>                                            
                 </el-menu-item-group>  
-                </el-sub-menu>
 
+                </el-sub-menu>
 
         </el-menu>
         <el-dialog v-model="isNotebookIndexVisiable" v-bind:title="uiText.notebooks">
@@ -201,6 +200,10 @@ export default class Frame extends Vue {
   
   //switch to show the about page
   isAboutShown = false;
+
+
+
+  sideBarColour = '#65c294';
  
 
   mounted() {
@@ -557,9 +560,9 @@ export default class Frame extends Vue {
 .el-menu{
     --el-menu-item-font-size: var(--el-font-size-base);
     --el-menu-item-font-color: var(--el-text-color-primary);
-    --el-menu-item-hover-fill: #C6E8EC;
+    --el-menu-item-hover-fill: #73b9a2;
     --el-menu-background-color: var(--el-color-white);
-    --el-menu-border-color: white;
+    --el-menu-border-color: #73b9a2;
     border-right: solid 1px var(--el-menu-border-color);
     list-style: none;
     position: relative;
@@ -646,7 +649,7 @@ export default class Frame extends Vue {
     height: 725px;
     position: absolute;
     bottom: -15px;
-    background:#7FCBD3;
+    background:#65c294;
 }
 
 .main-display{

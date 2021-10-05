@@ -9,7 +9,7 @@
             </div>
           </div>
           
-          <el-scrollbar height="680px" width="800px" class="note-container">
+          <el-scrollbar ref="scrollbar" height="680px" width="800px" class="note-container">
             <Card  v-for="li in listOfCards" :key="li.id" :contents="li.content" :submitDate="li.submitDate" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id" :cardType="li.cardType" :cardID="li.cardID"/>  
           </el-scrollbar>
  
@@ -22,6 +22,7 @@
 <script lang="ts">
 import {CardStruct} from '../dataStructs/CardStruct';
 import { Options, Vue } from 'vue-class-component';
+import {ref} from "vue"
 import {Database} from '../databases/database';
 import bus from '../bus'
 import Card from './Card.vue'
@@ -73,9 +74,13 @@ export default class MainPage extends Vue {
   isAddingNewTag = false;
   newTagData = '';
 
+
+  //bottom of scroll bar 
+  maxDepth = 0;
+  scrollPos = 0;
+
   //database connector 
   db! : Database;
-
 
 
   mounted(){
@@ -84,6 +89,9 @@ export default class MainPage extends Vue {
      this.db = new Database();
      this.fetchDataWithFilter(this.db,this.noteFilter);  
     
+    
+
+
     //Listener for the event that add a new note 
     bus.on('add-note-event',() => {
       this.addNote();

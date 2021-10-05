@@ -141,6 +141,24 @@ export default class CalendarPage extends Vue {
 }
 </script>
 
+<style>
+.fc .fc-button-primary:disabled {
+    color: #fff;
+    color: var(--fc-button-text-color, #fff);
+    background-color: #2C3E50;
+    background-color: #65c294;
+    border-color: #65c294;
+    border-color: #65c294;
+}
+.fc .fc-button-primary{
+    background-color: #2C3E50;
+    background-color: #65c294;
+    border-color: #65c294;
+    border-color: #65c294;
+}
+
+</style>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .mainWindow{
