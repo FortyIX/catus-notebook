@@ -208,6 +208,8 @@ export default class Frame extends Vue {
 
   mounted() {
       
+
+
       //get the version information
       this.versionInfo = config.version;  
       //connect to databases

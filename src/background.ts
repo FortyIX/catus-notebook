@@ -3,7 +3,7 @@
 import { app, protocol, BrowserWindow,Menu} from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
-import {Config} from './databases/config'
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 var win : BrowserWindow; 
@@ -22,16 +22,16 @@ async function createWindow() {
     resizable:false,
     frame:false,
     webPreferences: {
-      
-      nodeIntegration:true,
-      contextIsolation: false,
       enableRemoteModule:true,
-      webSecurity: true
+      webSecurity: true,
+      nodeIntegration: (process.env.ELECTRON_NODE_INTEGRATION as unknown) as boolean,
+      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     
     }
+    
   })
 
-
+ 
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
