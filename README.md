@@ -4,7 +4,7 @@
 <p align="center">
 	<a href="https://app.travis-ci.com/github/FortyIX/catus-notebook"><img src="https://app.travis-ci.com/FortyIX/catus-notebook.svg?branch=master"></a>
 </p>
-An elegant and effective tool that is a 'notes as todos' note taking software.
+
 
 
 ## Project setup
