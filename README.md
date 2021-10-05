@@ -3,8 +3,14 @@
 </p>
 <p align="center">
 	<a href="https://app.travis-ci.com/github/FortyIX/catus-notebook"><img src="https://app.travis-ci.com/FortyIX/catus-notebook.svg?branch=master"></a>
+	<a href="https://github.com/FortyIX/catus-notebook/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-MPL--2.0-red"></a>
+	<a href="https://github.com/FortyIX/catus-notebook/releases"><img src="https://img.shields.io/badge/Release-No release yet-informational"></a>
+	<a href="https://github.com/FortyIX/catus-notebook/find/master"><img src="https://img.shields.io/github/languages/code-size/FortyIX/catus-notebook?logo=github"></a>
+	
 </p>
-
+The Catus Notebook combines the defination for both a note and a todo to enable you to easily create, edit and schedule your notes effectively and elegantly. It is developed as an Electron wrapped Vue.js application and is intended to work on multiple platforms ✨. <br/>
+Thank you for your interests 👏 in contributing to this project which awaits your skills and creativity to make it better and enhace user experience 🌈 
+<h2></h2>
 
 
 ## Project setup
