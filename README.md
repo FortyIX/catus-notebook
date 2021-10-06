@@ -14,25 +14,35 @@ If you just want to use the software, please visit the <a href="https://catus-no
 <h2></h2>
 
 
-## Project setup
+## Project setup 
+1. Clone this repository
 
-- Firstly install all dependencies
+	```bash
+	git clone https://github.com/FortyIX/catus-notebook.git
+	```
 
-	```shell
+2. Enter the directory and install all dependencies
+
+	```bash
+	cd catus-notebook 
+	```
+	```bash
 	yarn install
 	```
+3. Run or build the project 
+ 	- Compiles and hot-reloads for development
 
-- Compiles and hot-reloads for development
+		```shell
+		yarn electron:serve
+		```
 
-	```shell
-	yarn electron:serve
-	```
+	- Compiles and minifies for production
 
-- Compiles and minifies for production
-
-	```shell
-	yarn electron:build
-	```
-
+		```shell
+		yarn electron:build
+		```
+## License 
+[Mozilla Public License
+Version 2.0](https://www.mozilla.org/en-US/MPL/2.0/)
 
 
