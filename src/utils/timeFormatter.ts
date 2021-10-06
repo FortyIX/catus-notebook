@@ -31,10 +31,10 @@ export class TimeFormatter {
     }
 
     private _parseTimeinEN() : string {
-        return String(parseInt(this.day) + 1) + ' ' + this.monthMapping[this.month];
+        return String(parseInt(this.day))+ ' ' + this.monthMapping[this.month];
     }
     private _parseTimeInCN(): string{
-        return String(parseInt(this.month) + 1) + '月'+String(parseInt(this.day) + 1) +'日';    
+        return String(parseInt(this.month) + 1) + '月'+String(parseInt(this.day)) +'日';    
     }
 
 }

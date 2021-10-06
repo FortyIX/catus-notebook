@@ -19,7 +19,7 @@ async function createWindow() {
   win = new BrowserWindow({
     width: 980,
     height: 723,
-    resizable:false,
+    resizable:true,
     frame:false,
     webPreferences: {
       enableRemoteModule:true,

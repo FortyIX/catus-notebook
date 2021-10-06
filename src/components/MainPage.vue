@@ -9,9 +9,9 @@
             </div>
           </div>
           
-          <el-scrollbar ref="scrollbar" height="680px" width="800px" class="note-container">
+          <div class="note-container">
             <Card  v-for="li in listOfCards" :key="li.id" :contents="li.content" :submitDate="li.submitDate" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id" :cardType="li.cardType" :cardID="li.cardID"/>  
-          </el-scrollbar>
+          </div>
  
       </div>
       <!-- <div class="note-timeline-area"></div> -->
@@ -75,23 +75,18 @@ export default class MainPage extends Vue {
   newTagData = '';
 
 
-  //bottom of scroll bar 
-  maxDepth = 0;
-  scrollPos = 0;
-
   //database connector 
   db! : Database;
-
-
+  
+  updated(){
+        document.getElementsByClassName('note-container')[0].scrollTo(0,this.listOfCards.length * 150); 
+  }
   mounted(){
 
      //connect to database and fetch unarchived notes
      this.db = new Database();
      this.fetchDataWithFilter(this.db,this.noteFilter);  
     
-    
-
-
     //Listener for the event that add a new note 
     bus.on('add-note-event',() => {
       this.addNote();
@@ -214,7 +209,7 @@ export default class MainPage extends Vue {
               newEntry[0].content,newEntry[0].submitDate,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].reminderMsg,newEntry[0].isdone,newEntry[0].id,true,'none'
             ))
           }
-          console.log(this.noteCountEachDay[submitDateStr])     
+          // document.getElementsByClassName('note-container')[0].scrollTo(0,this.listOfCards.length * 50);  
 
          })
        }).catch(e => {
@@ -461,10 +456,15 @@ export default class MainPage extends Vue {
 }
 
 .note-container{
-  width: 100%;
+  width: 94%;
+  height:660px;
   position: fixed;
   margin-top: 10px;
-  overflow: hidden;
+  overflow: scroll;
+}
+
+.note-container::-webkit-scrollbar {
+  display: none;
 }
 
 .notes-text{
