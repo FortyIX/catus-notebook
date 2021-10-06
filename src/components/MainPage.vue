@@ -10,7 +10,7 @@
           </div>
           
           <div class="note-container">
-            <Card  v-for="li in listOfCards" :key="li.id" :contents="li.content" :submitDate="li.submitDate" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id" :cardType="li.cardType" :cardID="li.cardID"/>  
+            <Card  v-for="li in listOfCards" :key="li.id" :contents="li.content" :submitDate="li.submitDate" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id" />  
           </div>
  
       </div>
@@ -119,18 +119,10 @@ export default class MainPage extends Vue {
         //   // console.log(this.listOfCards[tobeRemovedIndex - 1])
         //   console.log(this.noteCountEachDay)
         // }
-        this.noteCountEachDay[this.listOfCards[tobeRemovedIndex].submitDate] -= 1
-        if(this.noteCountEachDay[this.listOfCards[tobeRemovedIndex].submitDate] == 0){
-          this.listOfDates.splice(this.listOfDates.indexOf(this.listOfCards[tobeRemovedIndex].submitDate),1);
-          this.listOfCards.splice(tobeRemovedIndex-1,1);
-        }
-
-        //remove that note from the UI
+                //remove that note from the UI
         this.listOfCards.splice(tobeRemovedIndex,1);
 
-        if(Object.keys(this.listOfDates).length == 0){
-          this.fetchDataWithFilter(this.db,"bulabula");
-        }
+
 
         //check if there is note left
         if(this.listOfCards.length == 0){
@@ -174,43 +166,30 @@ export default class MainPage extends Vue {
    * Add a new note 
    */
   public addNote() : void {
-       
+      
+
        if(this.isEmpty){
          this.isEmpty = false;
        } 
 
        var time = -1;
-       var currTime = new Date();
+       var currTime = null
+       currTime = new Date();
+
        var submitDateStr = currTime.getUTCDate() + '-' + currTime.getMonth() + '-' + currTime.getFullYear();
+       
        var newEntry = new CardStruct("New note added, click the edit button below to start editing",submitDateStr,"", "", time,"",0)
     
        //add note contents and date to the note storage (update ui first)
-       this.db.notes.add({content: newEntry.content,submitDate:submitDateStr,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, reminderMsg:newEntry.reminderMsg,isdone:newEntry.isdone},).then(() => {
+       this.db.card.add({content: newEntry.content,submitDate:submitDateStr,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, reminderMsg:newEntry.reminderMsg,isdone:newEntry.isdone},).then(() => {
          //and and the latest note to the user interface by retriving the last added note from the database.
-         this.db.notes.orderBy("id").reverse().limit(1).toArray().then((newEntry) => {
-          if(this.listOfDates.indexOf(submitDateStr) == -1){
-            this.listOfDates.push(submitDateStr)
-            if(this.noteCountEachDay[submitDateStr] == undefined){
-              this.noteCountEachDay[submitDateStr] = 1;
-            }
-            else{
-              this.noteCountEachDay[submitDateStr] += 1;
-            }
-            this.listOfCards.push(new CardStruct(
-              newEntry[0].content,newEntry[0].submitDate,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].reminderMsg,newEntry[0].isdone,-99,false,newEntry[0].submitDate
-            ))
+         this.db.card.orderBy("id").reverse().limit(1).toArray().then((newEntry) => {
             this.listOfCards.push(new CardStruct(
               newEntry[0].content,newEntry[0].submitDate,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].reminderMsg,newEntry[0].isdone,newEntry[0].id,true,'none'
             ))
-          }
-          else{
-            this.noteCountEachDay[submitDateStr] += 1;
-            this.listOfCards.push(new CardStruct(
-              newEntry[0].content,newEntry[0].submitDate,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].reminderMsg,newEntry[0].isdone,newEntry[0].id,true,'none'
-            ))
-          }
-          // document.getElementsByClassName('note-container')[0].scrollTo(0,this.listOfCards.length * 50);  
 
+          // document.getElementsByClassName('note-container')[0].scrollTo(0,this.listOfCards.length * 50);  
+          console.log(this.listOfCards)
          })
        }).catch(e => {
            console.log(e);
@@ -224,24 +203,12 @@ export default class MainPage extends Vue {
    */
   public fetchUnarchivedNotes(db: Database) : void{
     console.log('runs')
-     var noteData = db.notes.where('isdone').equals(0).toArray().then(notes => {
+     var noteData = db.card.where('isdone').equals(0).toArray().then(notes => {
         notes.forEach(note => {
-          if(this.listOfDates.indexOf(note.submitDate) == -1){
-              this.listOfDates.push(note.submitDate); 
-              this.noteCountEachDay[note.submitDate] = 1;
-              this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,-99,false,note.submitDate
-              ))          
-              this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
-              ))
-          }
-          else{
-              this.noteCountEachDay[note.submitDate] += 1;
               this.listOfCards.push(new CardStruct(
                 note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
               ));
-          }
+          
         }
         );
       if(this.listOfCards.length > 0){
@@ -301,25 +268,12 @@ export default class MainPage extends Vue {
    */
   private _fetchArchived(db: Database) : void{
 
-     var noteData = db.notes.where('isdone').equals(1).toArray().then(notes => {
+     var noteData = db.card.where('isdone').equals(1).toArray().then(notes => {
         notes.forEach(note => {
-          if(this.listOfDates.indexOf(note.submitDate) == -1){
-              
-              this.listOfDates.push(note.submitDate); 
-               this.noteCountEachDay[note.submitDate] = 1;
-              this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,-99,false,note.submitDate
-              ))          
-              this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
-              ))
-          }
-          else{
-              this.noteCountEachDay[note.submitDate] += 1;
               this.listOfCards.push(new CardStruct(
                 note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
               ));
-          }
+
         }
         );
         this.isEmpty = false;
@@ -333,27 +287,14 @@ export default class MainPage extends Vue {
    */
   private _fetchNotesWithTag(db: Database,tag:string) : void{
 
-     var noteData = db.notes.filter((note) => {
+     var noteData = db.card.filter((note) => {
        return note.tag.indexOf(tag) != -1 
      }).toArray().then(notes => {
         notes.forEach(note => {
-          if(this.listOfDates.indexOf(note.submitDate) == -1){
-              
-              this.listOfDates.push(note.submitDate); 
-              this.noteCountEachDay[note.submitDate] = 1;
-              this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,-99,false,note.submitDate
-              ))          
-              this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
-              ))
-          }
-          else{
-              this.noteCountEachDay[note.submitDate] += 1;
               this.listOfCards.push(new CardStruct(
                 note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
               ));
-          }
+          
         }
         );
       if(this.listOfCards.length > 0){
@@ -369,27 +310,14 @@ export default class MainPage extends Vue {
    */
   private _fetchNotesWithNotebook(db: Database,notebook:string) : void{
 
-     var noteData = db.notes.filter((note) => {
+     var noteData = db.card.filter((note) => {
        return note.notebook.indexOf(notebook) != -1 
      }).toArray().then(notes => {
         notes.forEach(note => {
-          if(this.listOfDates.indexOf(note.submitDate) == -1){
-              
-              this.listOfDates.push(note.submitDate); 
-              this.noteCountEachDay[note.submitDate] = 1;
-              this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,-99,false,note.submitDate
-              ))          
-              this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
-              ))
-          }
-          else{
-              this.noteCountEachDay[note.submitDate] += 1;
               this.listOfCards.push(new CardStruct(
                 note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
               ));
-          }
+    
         }
         );
       if(this.listOfCards.length > 0){
@@ -406,7 +334,7 @@ export default class MainPage extends Vue {
    */
   public removeAllArchivedNotes() : void {
     console.log("run")
-    this.db.notes.where('isdone').equals(1).delete().then(()=> {
+    this.db.card.where('isdone').equals(1).delete().then(()=> {
       this.fetchDataWithFilter(this.db,"archive?bula");
       ElMessage({
           showClose: true,

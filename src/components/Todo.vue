@@ -21,7 +21,11 @@
         </el-space>
 
     </div>
+
+
+
 </el-card>
+
 <br/>
 </template>
 
@@ -60,7 +64,7 @@ import { useI18n } from 'vue-i18n';
 
 
 
-export default class Note extends Vue {
+export default class Todo extends Vue {
 
   //props 
   contents! : string;
@@ -284,7 +288,10 @@ export default class Note extends Vue {
 <style scoped>
 
 .notes{
-  width: 795px;
+  width: 390px;
+  margin-left: 5px;
+  margin-right:5px;
+
   right: 10px;
 }
 

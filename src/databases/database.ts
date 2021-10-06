@@ -13,6 +13,12 @@ export interface INote{
     isdone : number;
 }
 
+export interface IWidget{
+    id: string;
+    type: number;
+    content:string;
+}
+
 export interface INotebooks{
     id?:number;
     name:string;
@@ -26,22 +32,25 @@ export interface ITags{
 export class Database extends Dexie {
     
     //TODOS: need to be optimized
-    notes : Dexie.Table<INote,number>;
+    card : Dexie.Table<INote,number>;
     notebooks : Dexie.Table<INotebooks,number>;
     tags:Dexie.Table<ITags,number>;
+    widget : Dexie.Table<IWidget,string>;
     
     constructor() { 
         super('db_note');
         
         this.version(1).stores({
-            notes: '++id,content,submitDate,tag,notebook,date,reminderMsg,isdone',
+            card: '++id,content,submitDate,tag,notebook,date,reminderMsg,isdone',
             notebooks: '++id, name',
             tags:'++id,name',
+            widget:'id,type,content'
         });
 
-        this.notes = this.table("notes");
+        this.card = this.table("card");
         this.notebooks = this.table("notebooks");
-        this.tags = this.table('tags')
+        this.tags = this.table('tags');
+        this.widget = this.table('widget');
 
     }
 }

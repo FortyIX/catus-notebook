@@ -95,7 +95,7 @@ export default class CalendarPage extends Vue {
   public getNoteData(db : Database){
 
     this.calendarOptions.events = [];
-    db.notes.toArray().then(notes => {
+    db.card.toArray().then(notes => {
       notes.forEach(note => {
         //fetch the date 
         var rawTime = note.date;
