@@ -715,7 +715,6 @@ export default class Card extends Vue {
     
     this.widgetTypeDialogVisible = false
     var newID = this.listOfWidget.length + 1;
-    console.log(newID)
     var idString = this.id + '-' + String(newID);  
     var newEntry = new WidgetStruct(0,idString,'hello created a new note for you');
 
