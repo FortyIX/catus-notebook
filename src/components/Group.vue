@@ -1,9 +1,10 @@
 <template>
 <!-- Each note -->
-<el-card :id="id" class="notes" shadow="always">
+<el-card :id="id" class="card" shadow="always">
     <!-- Main body               -->
-    <div v-if="!isEditingContent" class="notes-text"><p align="left" :innerHTML="contentParsed"></p></div>
-    <Editor v-else :loadedContent="contentParsed" :assignedNote="id"></Editor>
+    <el-row>
+      <Widget v-for="widget in listOfWidget" :key="widget.id" :id="widget.id" :content="widget.content" :type="widget.type"/>
+    </el-row>
     <br/>
 
     <!-- Control area -->
@@ -11,10 +12,7 @@
         <el-space :size="10">
           <!-- Archive and undo archive buttons -->
           <el-icon v-if="archived" style="width: 2em; height: 2em; color:grey;" @click="redoArchive" > <refresh-right/> </el-icon>
-          <el-icon v-if="!isEditingContent&&!archived"  style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="archive" ><circle-check/></el-icon>
-          
-          <!-- Finish editing note content button -->
-          <el-icon v-if="isEditingContent" style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="getContentAndupdateNote(id)" ><circle-check /></el-icon>
+          <el-icon v-if="!archived"  style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="widgetTypeDialogVisible = true" ><circle-check/></el-icon>
           
           <!-- Tags  -->
 
@@ -25,12 +23,10 @@
           <el-icon  style="width: 2em; height: 2em; margin-right: 5px; color:grey;" @click="isSelectingNotebooks = true;"><notebook /></el-icon>
 
           <!-- Time selector   -->
-          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; color:grey;" @click="openTimeSelector"><timer/></el-icon>
+          <el-icon style="width: 2em; height: 2em; color:grey;" @click="openTimeSelector"><timer/></el-icon>
 
-          <!-- Edit button -->
-          <el-icon v-if="!isEditingContent" style="width: 2em; height:2em; color:grey;" :size="15" @click="editContent"><edit/></el-icon>
 
-          <el-icon v-if="!isEditingContent" style="width: 2em; height: 2em; color:grey;" :size="15" @click="removeNote"><delete /></el-icon>
+          <el-icon style="width: 2em; height: 2em; color:grey;" :size="15" @click="removeNote"><delete /></el-icon>
         
         </el-space>
 
@@ -80,10 +76,23 @@
     </el-space> 
 </el-dialog>
 
+  <el-dialog v-model="widgetTypeDialogVisible" title="Warning" width="30%" center>
+    <span
+      >What type of widget do you want to add</span
+    >
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="addNewNote">A note</el-button>
+        <el-button @click="addNewTodo">A Todo</el-button
+        >
+      </span>
+    </template>
+  </el-dialog>
 
 </el-card>
 
 <br/>
+
 </template>
 
       
@@ -98,7 +107,8 @@ import anime from "animejs/lib/anime.es.js";
 import { ElMessage } from 'element-plus';
 import Editor from './Editor.vue';
 import { useI18n } from 'vue-i18n';
-
+import Widget from './Widget.vue'
+import {WidgetStruct} from './../dataStructs/WidgetStruct';
 
 @Options({
 
@@ -111,6 +121,7 @@ import { useI18n } from 'vue-i18n';
         reminderMsg:String,
         isdone:Number,
         id: Number,
+        isShowingAddedDate:Boolean,
     },
     components:{
       CircleCheck,
@@ -121,13 +132,14 @@ import { useI18n } from 'vue-i18n';
       Notebook,
       Edit,
       Editor,
-      RefreshRight
+      RefreshRight,
+      Widget
     }
 })
 
 
 
-export default class Note extends Vue {
+export default class Group extends Vue {
 
   //props 
   date! : number;
@@ -150,14 +162,17 @@ export default class Note extends Vue {
 
   submitDateStr = '';
 
+  listOfWidget:Array<WidgetStruct> = [];
+
   labelWidth = '70px'
+
+
+  widgetTypeDialogVisible = false;  
+
 
   isSelectingNotebooks = false;
   isSelectingTags = false;
 
-
-  isEditingContent = false;
-  editingContent = '';
 
   isAddingNewTag = false;
   isAddingNewNotebook = false;
@@ -212,55 +227,7 @@ export default class Note extends Vue {
           },
     ];
 
-
-  renderedHTMLStylesheet = `
-        <style>    
-          table {
-            border-top: 1px solid #ccc;
-            border-left: 1px solid #ccc;
-          }
-          table td,
-          table th {
-            border-bottom: 1px solid #ccc;
-            border-right: 1px solid #ccc;
-            padding: 3px 5px;
-          }
-          table th {
-            border-bottom: 2px solid #ccc;
-            text-align: center;
-          }
-
-
-          blockquote {
-            display: block;
-            border-left: 8px solid #d0e5f2;
-            padding: 5px 10px;
-            margin: 10px 0;
-            line-height: 1.4;
-            font-size: 100%;
-            background-color: #f1f1f1;
-          }
-
-          code {
-            display: inline-block;
-            *display: inline;
-            *zoom: 1;
-            background-color: #f1f1f1;
-            border-radius: 3px;
-            padding: 3px 5px;
-            margin: 0 3px;
-          }
-          pre code {
-            display: block;
-          }
-
-
-          ul, ol {
-            margin: 10px 0 10px 20px;
-          }
-        </style>    
-        `;
-
+  
   locale!: any
   t!:any
 
@@ -269,9 +236,6 @@ export default class Note extends Vue {
 
   created(){
 
-    //Obtain the contents shown on the note
-    this.contentParsed = this.contents;
-    this.editingContent = this.contentParsed;
 
     //pre check the archive status
     if(this.isdone == 1){
@@ -291,6 +255,8 @@ export default class Note extends Vue {
     this.t = t; 
     this.getLocalizedStrings();
 
+    this._fetchAllWidget(this.db);
+
 
     //set the reminder if there is on 
     this.getReminderInfo();
@@ -304,6 +270,23 @@ export default class Note extends Vue {
     this.fetchNotebookList();
     this.fetchTagsList();
     
+
+  
+    
+    bus.on('remove_widget',(id) => {
+        var tobeRemovedWidgetIndex = 0;
+        var counter = 0;
+
+        this.listOfWidget.forEach(widget => {
+            if(widget.id == id){
+               tobeRemovedWidgetIndex = counter; 
+            }
+            else{
+                counter+=1;
+            }
+        })
+        this.listOfWidget.splice(tobeRemovedWidgetIndex,1);
+    })
 
     /*
      * Listener for event that removes all notebook on this note
@@ -349,14 +332,6 @@ export default class Note extends Vue {
         this.$nextTick(() => {this.fetchTagsList();});
     });
 
-    /*
-     * Listener for event that transmit edited content from editor and update content
-     */
-    bus.on('transfer_editing'+String(this.id), (html) => {
-      
-        var htmlString: any = html;  
-        this.updateNote(htmlString)
-    });
 
     /**
      * Listener for event that update the UI language
@@ -598,20 +573,7 @@ export default class Note extends Vue {
     })
   }
 
-  /**
-   * Trigger to turn on/off the editing status of the note
-   */
-  public editContent() : void {
-    this.isEditingContent = !this.isEditingContent;
-  }
 
-  /**
-   * Retrive the contents edited in editor and update the contents on note
-   * @param id the id of the note to request content
-   */
-  public getContentAndupdateNote(id:any) : void {
-    bus.emit('get_editing_content_signal',(id));
-  }
 
   /**
    * Feteh all exisitng tags
@@ -709,25 +671,7 @@ export default class Note extends Vue {
 
   }
 
-  /**
-   * Update the contents of the note and saves into the database
-   * @param editorHTMLString the html string to be rendered as the content of this note
-   */
-  public updateNote(editorHTMLString : string): void {
 
-    // //import the markdown parser
-    // const marked = require('marked')
-
-    //the content to be rendered on the note is the html + css code 
-    this.contentParsed = editorHTMLString + this.renderedHTMLStylesheet;
-
-    //hide the edit form 
-    this.isEditingContent = false;
-
-    //update the database with the latest content 
-    this.db.card.update(this.id, {content: this.contentParsed}).catch(e => {console.log(e)});
-
-  }
 
   /**
    * Update the notebook of this note
@@ -770,18 +714,71 @@ export default class Note extends Vue {
   /**
    * achive this note
    */
-  public archive() : void { 
-
-    //set the isdone status to 1 to marks it as archived
-    this.db.card.update(this.id, {isdone: 1}).then(() => {
-      
-      //show the fade out animation
-      this.disappearAnime(String(this.id));
-      setTimeout(()=>{bus.emit('reload_notes_with_removed_note', this.id);  },700);
-      
-    });
+  public addNewNote() : void { 
     
+    this.widgetTypeDialogVisible = false
+    var newID = this.listOfWidget.length + 1;
+    var idString = this.id + '-' + String(newID);  
+    var newEntry = new WidgetStruct(0,idString,'hello created a new note for you');
+
+
+       //add note contents and date to the note storage (update ui first)
+       this.db.widget.add({type:newEntry.type,id:newEntry.id,content:newEntry.content}).catch(e => {
+           console.log(e);
+       });    
+
+    this.listOfWidget.push(newEntry) 
+    console.log(this.listOfWidget)   
   }
+
+  /**
+   * achive this note
+   */
+  public addNewTodo() : void { 
+    
+    this.widgetTypeDialogVisible = false
+    var newID = this.listOfWidget.length + 1;
+    console.log(newID)
+    var idString = this.id + '-' + String(newID);  
+    var newEntry = new WidgetStruct(1,idString,'helslo created a new todo for you');
+
+
+       //add note contents and date to the note storage (update ui first)
+       this.db.widget.add({type:newEntry.type,id:newEntry.id,content:newEntry.content}).catch(e => {
+           console.log(e);
+       });    
+
+    this.listOfWidget.push(newEntry)    
+    console.log(this.listOfWidget)
+  }
+
+
+
+  /**
+   * Fetch all widget on this card
+   * @param db The database connector 
+   */
+  private _fetchAllWidget(db: Database) : void{
+     var noteData = db.widget.filter(widget => {return widget.id.split('-')[0] == String(this.id);}).toArray().then(widgets => 
+     {
+        widgets.forEach(widget => {
+              this.listOfWidget.push(new WidgetStruct(
+                widget.type,widget.id,widget.content
+              ));
+            }
+        );
+     });
+  }
+
+
+
+
+
+
+
+
+
+
 
   /**
    * Play the disapearing animation for this note 
@@ -831,17 +828,18 @@ export default class Note extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.notes{
+.card{
   width: 850px;
   position: relative;
-  right:-30px;
+  right: -30px;
+  margin-bottom:30px; 
+  padding-right: 10px;
+  height: auto;
+  background: transparent;
+
+  
 }
 
-.note-container{
-  width: 950px;
-  position: relative;
-  bottom: 600px;
-}
 
 .notes-text{
   font-size: 13px;

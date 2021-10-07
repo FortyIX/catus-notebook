@@ -10,7 +10,7 @@
       
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import Note from './Note.vue'
+import Note from './Article.vue'
 import Todo from './Todo.vue'
 
 @Options({

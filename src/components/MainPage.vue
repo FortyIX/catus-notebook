@@ -10,9 +10,9 @@
           </div>
           
           <div class="note-container">
-            <Card  v-for="li in listOfCards" :key="li.id" :contents="li.content" :submitDate="li.submitDate" :tag="li.tag" :notebook="li.notebook" :date="li.date" :isdone="li.isdone" :id="li.id" />  
+            <Card  v-for="li in listOfCards" :key="li.id" :contents="li.content" :submitDate="li.submitDate" :tag="li.tag" :notebook="li.notebook" 
+            :reminderMsg="li.reminderMsg"   :date="li.date" :isdone="li.isdone" :id="li.id" :type="li.cardType" />  
           </div>
- 
       </div>
       <!-- <div class="note-timeline-area"></div> -->
   </div>
@@ -91,6 +91,10 @@ export default class MainPage extends Vue {
     bus.on('add-note-event',() => {
       this.addNote();
      });
+
+    bus.on('add-group=evet',() => {
+      this.addGroup();
+    }) 
     
     //Listener for the event that remove a note on UI 
     bus.on('reload_notes_with_removed_note', (id) => {
@@ -178,14 +182,14 @@ export default class MainPage extends Vue {
 
        var submitDateStr = currTime.getUTCDate() + '-' + currTime.getMonth() + '-' + currTime.getFullYear();
        
-       var newEntry = new CardStruct("New note added, click the edit button below to start editing",submitDateStr,"", "", time,"",0)
+       var newEntry = new CardStruct("New note added, click the edit button below to start editing",submitDateStr,"", "", time,"",0,1)
     
        //add note contents and date to the note storage (update ui first)
-       this.db.card.add({content: newEntry.content,submitDate:submitDateStr,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, reminderMsg:newEntry.reminderMsg,isdone:newEntry.isdone},).then(() => {
+       this.db.card.add({content: newEntry.content,submitDate:submitDateStr,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, reminderMsg:newEntry.reminderMsg,isdone:newEntry.isdone,type:newEntry.cardType},).then(() => {
          //and and the latest note to the user interface by retriving the last added note from the database.
          this.db.card.orderBy("id").reverse().limit(1).toArray().then((newEntry) => {
             this.listOfCards.push(new CardStruct(
-              newEntry[0].content,newEntry[0].submitDate,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].reminderMsg,newEntry[0].isdone,newEntry[0].id,true,'none'
+              newEntry[0].content,newEntry[0].submitDate,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].reminderMsg,newEntry[0].isdone,newEntry[0].type,newEntry[0].id
             ))
 
           // document.getElementsByClassName('note-container')[0].scrollTo(0,this.listOfCards.length * 50);  
@@ -198,6 +202,42 @@ export default class MainPage extends Vue {
   }
 
   /**
+   * Add a new note 
+   */
+  public addGroup() : void {
+      
+
+       if(this.isEmpty){
+         this.isEmpty = false;
+       } 
+
+       var time = -1;
+       var currTime = null
+       currTime = new Date();
+
+       var submitDateStr = currTime.getUTCDate() + '-' + currTime.getMonth() + '-' + currTime.getFullYear();
+       
+       var newEntry = new CardStruct("New note added, click the edit button below to start editing",submitDateStr,"", "", time,"",0,0)
+    
+       //add note contents and date to the note storage (update ui first)
+       this.db.card.add({content: newEntry.content,submitDate:submitDateStr,tag:newEntry.tag, notebook: newEntry.notebook, date: newEntry.date, reminderMsg:newEntry.reminderMsg,isdone:newEntry.isdone,type:newEntry.cardType},).then(() => {
+         //and and the latest note to the user interface by retriving the last added note from the database.
+         this.db.card.orderBy("id").reverse().limit(1).toArray().then((newEntry) => {
+            this.listOfCards.push(new CardStruct(
+              newEntry[0].content,newEntry[0].submitDate,newEntry[0].tag, newEntry[0].notebook,newEntry[0].date,newEntry[0].reminderMsg,newEntry[0].isdone,newEntry[0].type,newEntry[0].id
+            ))
+
+          // document.getElementsByClassName('note-container')[0].scrollTo(0,this.listOfCards.length * 50);  
+          console.log(this.listOfCards)
+         })
+       }).catch(e => {
+           console.log(e);
+       });    
+
+  }
+
+
+  /**
    * Fetch unarchived notes 
    * @param db The database connector 
    */
@@ -206,7 +246,7 @@ export default class MainPage extends Vue {
      var noteData = db.card.where('isdone').equals(0).toArray().then(notes => {
         notes.forEach(note => {
               this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
+                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.type,note.id
               ));
           
         }
@@ -271,7 +311,7 @@ export default class MainPage extends Vue {
      var noteData = db.card.where('isdone').equals(1).toArray().then(notes => {
         notes.forEach(note => {
               this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
+                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.type,note.id
               ));
 
         }
@@ -292,7 +332,7 @@ export default class MainPage extends Vue {
      }).toArray().then(notes => {
         notes.forEach(note => {
               this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
+                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.type,note.id
               ));
           
         }
@@ -315,7 +355,7 @@ export default class MainPage extends Vue {
      }).toArray().then(notes => {
         notes.forEach(note => {
               this.listOfCards.push(new CardStruct(
-                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.id,true,'none'
+                note.content,note.submitDate,note.tag, note.notebook,note.date,note.reminderMsg,note.isdone,note.type,note.id
               ));
     
         }

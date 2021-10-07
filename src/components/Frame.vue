@@ -22,6 +22,7 @@
                     </template>
                     <el-menu-item-group v-bind:title="uiText.actions">
                         <el-menu-item v-if="isNotArchive&&!isBackHomeBtnNeeded" index="1-1" @click="addNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><circle-plus /></el-icon> <span>{{$t('menu.addNewNote')}}</span></el-menu-item>
+                        <el-menu-item v-if="isNotArchive&&!isBackHomeBtnNeeded" index="1-1" @click="addGroup"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><circle-plus /></el-icon> <span>{{$t('menu.addNewGroup')}}</span></el-menu-item>
                         <el-menu-item v-if="!isNotArchive" index="1-1" @click="removeAllArchivedNote"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><delete /></el-icon><span>{{$t('menu.delete')}}</span></el-menu-item>
                         <el-menu-item v-if="isBackHomeBtnNeeded" index="1-1" @click="switchToMain"><el-icon style="height: 5px; margin-right: 5px; margin-bottom:20px; color:grey;" :size="20"><arrow-left /></el-icon><span>{{$t('menu.back')}}</span></el-menu-item>
                     </el-menu-item-group>
@@ -281,6 +282,10 @@ export default class Frame extends Vue {
     */
   public addNote() : void {
       bus.emit("add-note-event");    
+  }
+
+  public addGroup() : void {
+      bus.emit("add-group=evet");
   }
   
   /**
@@ -586,7 +591,7 @@ export default class Frame extends Vue {
     position: relative;
     left:50px;
     bottom:25px;
-    z-index: 2;
+    z-index: 0;
    -webkit-user-select: none;
    
 }
@@ -660,6 +665,8 @@ export default class Frame extends Vue {
     left:50px;
     width: 900px;
     height: 100%;
+    
+
 }
 
 .add-note-btn{

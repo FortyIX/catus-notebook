@@ -2,7 +2,7 @@ import { thisTypeAnnotation } from "@babel/types";
 import Dexie, { IndexableType } from "dexie";
 
 
-export interface INote{
+export interface ICard{
     id? : number;
     content : string;
     submitDate:string;
@@ -11,6 +11,7 @@ export interface INote{
     tag:string;
     notebook:string;
     isdone : number;
+    type:number;
 }
 
 export interface IWidget{
@@ -32,7 +33,7 @@ export interface ITags{
 export class Database extends Dexie {
     
     //TODOS: need to be optimized
-    card : Dexie.Table<INote,number>;
+    card : Dexie.Table<ICard,number>;
     notebooks : Dexie.Table<INotebooks,number>;
     tags:Dexie.Table<ITags,number>;
     widget : Dexie.Table<IWidget,string>;
@@ -41,7 +42,7 @@ export class Database extends Dexie {
         super('db_note');
         
         this.version(1).stores({
-            card: '++id,content,submitDate,tag,notebook,date,reminderMsg,isdone',
+            card: '++id,content,submitDate,tag,notebook,date,reminderMsg,isdone,type',
             notebooks: '++id, name',
             tags:'++id,name',
             widget:'id,type,content'

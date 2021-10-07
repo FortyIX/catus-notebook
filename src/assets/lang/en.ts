@@ -2,6 +2,7 @@ module.exports = {
     menu : {
         actions: "Actions",
         addNewNote : "Add a new note",
+        addNewGroup:"Add a new group",
         yourWriting : "Your writings",
         delete:"Delete all",
         note : "Note",

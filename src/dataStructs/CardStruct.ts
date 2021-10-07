@@ -9,11 +9,12 @@ export class CardStruct {
     tag : string;
     notebook : string
     isdone : number;
-    id? : number
-    cardType? : boolean
-    datePlateID? : string
+    cardType : number;
+    id? : number;
 
-    constructor(content:string,submitDate:string,tag:string,notebook:string, date:number,reminderMsg:string,isdone:number,id?: number,cardType?:boolean, datePlateID? : string){
+
+
+    constructor(content:string,submitDate:string,tag:string,notebook:string, date:number,reminderMsg:string,isdone:number,cardType:number,id?: number){
         this.content = content;
         this.submitDate = submitDate;
         this.date = date;
@@ -23,7 +24,7 @@ export class CardStruct {
         this.notebook = notebook;
         this.id = id;
         this.cardType = cardType;
-        this.datePlateID = datePlateID
+
     }
 
     

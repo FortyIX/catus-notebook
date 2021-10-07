@@ -2,6 +2,7 @@ module.exports = {
     menu : {
         actions: "操作",
         addNewNote : "新建笔记",
+        addNewGroup:"新建群组",
         yourWriting : "您的笔记",
         delete:"删除全部",
         note : "笔记",
