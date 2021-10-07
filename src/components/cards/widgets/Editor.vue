@@ -5,7 +5,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import bus from '../bus';
+import bus from '../../../bus';
 import E from "wangeditor";
 import i18next from 'i18next';
 

@@ -90,13 +90,13 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { CircleCheck,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight,Delete} from '@element-plus/icons';
-import {Database} from '../databases/database';
-import {TimeFormatter} from '../utils/timeFormatter';
+import {Database} from '../../databases/database';
+import {TimeFormatter} from '../../utils/timeFormatter';
 
-import bus from '../bus';
+import bus from '../../bus';
 import anime from "animejs/lib/anime.es.js";
 import { ElMessage } from 'element-plus';
-import Editor from './Editor.vue';
+import Editor from './widgets/Editor.vue';
 import { useI18n } from 'vue-i18n';
 
 

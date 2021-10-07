@@ -21,11 +21,7 @@
         </el-space>
 
     </div>
-
-
-
 </el-card>
-
 <br/>
 </template>
 
@@ -33,10 +29,10 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { CircleCheck,CaretBottom,PriceTag,Timer,Notebook,Edit,RefreshRight,Delete} from '@element-plus/icons';
-import {Database} from '../databases/database';
-import {TimeFormatter} from '../utils/timeFormatter';
+import {Database} from '../../../databases/database';
+import {TimeFormatter} from '../../../utils/timeFormatter';
 
-import bus from '../bus';
+import bus from '../../../bus';
 import anime from "animejs/lib/anime.es.js";
 import { ElMessage } from 'element-plus';
 import Editor from './Editor.vue';
@@ -64,7 +60,7 @@ import { useI18n } from 'vue-i18n';
 
 
 
-export default class Todo extends Vue {
+export default class Article extends Vue {
 
   //props 
   contents! : string;
@@ -288,10 +284,7 @@ export default class Todo extends Vue {
 <style scoped>
 
 .notes{
-  width: 390px;
-  margin-left: 5px;
-  margin-right:5px;
-
+  width: 795px;
   right: 10px;
 }
 

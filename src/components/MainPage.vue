@@ -25,7 +25,7 @@ import { Options, Vue } from 'vue-class-component';
 import {ref} from "vue"
 import {Database} from '../databases/database';
 import bus from '../bus'
-import Card from './Card.vue'
+import Card from './cards/Card.vue'
 import { ElMessage } from 'element-plus';
 
 import { CircleCheckFilled,CaretBottom,PriceTag,Timer,Notebook, Expand} from '@element-plus/icons'

@@ -11,7 +11,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import Group from './Group.vue'
-import Todo from './Todo.vue'
+import Todo from './widgets/Todo.vue'
 import Note from './Note.vue'
 
 
