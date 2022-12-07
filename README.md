@@ -9,7 +9,7 @@
 	
 </p>
 The Catus Notebook combines the defination for both a note and a todo to enable you to easily create, edit and schedule your notes effectively⚡ and elegantly😎. It is developed as an Electron wrapped Vue.js application and is intended to work on multiple platforms. <br/><br/>
-<p align="center"><img  src="[https://pic.imgdb.cn/item/615c2a6a2ab3f51d91660c73.png]()](https://github.com/FortyIX/catus-notebook/blob/master/src/assets/editor.PNG?raw=true)" height="150" width="150">
+<p align="center"><img  src="https://raw.githubusercontent.com/FortyIX/catus-notebook/master/src/assets/editor.PNG" height="450" width="700">
 <h2></h2>
 
 
